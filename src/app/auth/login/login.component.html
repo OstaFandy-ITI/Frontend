@@ -1,0 +1,112 @@
+<!-- Background shapes -->
+<section class="sec">
+<div class="orange-circle"></div>
+<div class="blue-shape"></div>
+
+<!-- Container -->
+<div class="container" [ngClass]="containerClass" id="container">
+  <!-- Sign Up -->
+  <div class="form-container sign-up-container">
+    <form [formGroup]="registerForm" (ngSubmit)="register()">
+      <h1>Create Account</h1>
+
+      <div class="row w-100">
+        <div class="col">
+          <div class="input-icon">
+            <i class="bi bi-person"></i>
+            <input type="text" placeholder="First Name" formControlName="firstName" />
+          </div>
+          <small class="text-danger" *ngIf="registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid">
+            First name is required.
+          </small>
+        </div>
+        <div class="col">
+          <div class="input-icon">
+            <i class="bi bi-person"></i>
+            <input type="text" placeholder="Last Name" formControlName="lastName" />
+          </div>
+          <small class="text-danger" *ngIf="registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid">
+            Last name is required.
+          </small>
+        </div>
+      </div>
+
+      <div class="row w-100">
+        <div class="col">
+          <div class="input-icon">
+            <i class="bi bi-envelope"></i>
+            <input type="email" placeholder="Email" formControlName="email" />
+          </div>
+          <small class="text-danger" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
+            Valid email is required.
+          </small>
+        </div>
+        <div class="col">
+          <div class="input-icon">
+            <i class="bi bi-telephone"></i>
+            <input type="text" placeholder="Phone" formControlName="phone" />
+          </div>
+          <small class="text-danger" *ngIf="registerForm.get('phone')?.touched && registerForm.get('phone')?.invalid">
+            Phone is required.
+          </small>
+        </div>
+      </div>
+
+      <div class="row w-100">
+        <div class="col">
+          <div class="input-icon">
+            <i class="bi bi-lock"></i>
+            <input type="password" placeholder="Password" formControlName="password" />
+          </div>
+          <small class="text-danger" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
+            Password is required.
+          </small>
+        </div>
+        <div class="col">
+          <div class="input-icon">
+            <i class="bi bi-lock-fill"></i>
+            <input type="password" placeholder="Confirm Password" formControlName="confirmPassword" />
+          </div>
+          <small class="text-danger" *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.invalid">
+            Confirm password is required.
+          </small>
+        </div>
+      </div>
+
+      <button type="submit">Sign Up</button>
+    </form>
+  </div>
+
+  <!-- Sign In -->
+  <div class="form-container sign-in-container">
+    <form [formGroup]="loginForm" (ngSubmit)="login()">
+      <h1>Sign in to OstaFandy</h1>
+      <input type="email" placeholder="Email" formControlName="email" />
+      <small class="text-danger" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
+        Valid email is required.
+      </small>
+      <input type="password" placeholder="Password" formControlName="password" />
+      <small class="text-danger" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
+        Password is required.
+      </small>
+      <button type="submit">Log In</button>
+    </form>
+  </div>
+
+  <!-- Overlay -->
+  <div class="overlay-container">
+    <div class="overlay">
+      <div class="overlay-panel overlay-left">
+        <h1>Welcome Back!</h1>
+        <p>To keep connected with us please login with your personal info</p>
+        <button class="ghost" (click)="togglePanel(false)" id="signIn">Sign In</button>
+      </div>
+      <div class="overlay-panel overlay-right">
+        <h1>Hello, Friend!</h1>
+        <p>Enter your personal details and start your journey with us</p>
+        <button class="ghost" (click)="togglePanel(true)" id="signUp">Sign Up</button>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
