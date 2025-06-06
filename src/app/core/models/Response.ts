@@ -1,9 +1,9 @@
-export class Response<T> {
+export class ResponseDto<T> {
     constructor(
-        public IsSuccess: boolean,
-        public Message: string,
-        public Data: T | null = null,
-        StatusCode: number
+        public isSuccess: boolean,
+        public message: string,
+        public data: T | null = null,
+        public statusCode: number
     ) {}
 
 }
