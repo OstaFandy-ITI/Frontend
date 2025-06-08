@@ -1,10 +1,55 @@
+<!-- Header-->
+<header class="top-bar d-flex justify-content-between align-items-center px-3 shadow-sm bg-white fixed-top"
+  [class.sidebar-collapsed-header]="!sidebarOpen">
+  <!--  toggle button -->
+  <button class="btn btn-outline-primary" (click)="toggleSidebar()" aria-label="Toggle sidebar">
+    <i class="bi" [ngClass]="sidebarOpen ? 'bi-list' : 'bi-x-lg'"></i>
+  </button>
+
+  <div class="d-flex align-items-center gap-3">
+    <!-- إشعارات -->
+    <div class="dropdown">
+      <button class="btn btn-light position-relative dropdown-toggle" type="button" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        <i class="bi bi-bell fs-4"></i>
+        <span
+          class="badge bg-danger position-absolute top-0 start-100 translate-middle d-flex align-items-center justify-content-center rounded-circle"
+          style="width: 20px; height: 20px; font-size: 0.75rem;">3
+          <!-- add number later -->
+        </span> </button>
+      <ul class="dropdown-menu dropdown-menu-end shadow">
+        <!-- add content here -->
+        <li><a class="dropdown-item" href="#">New job posted</a></li>
+        <li><a class="dropdown-item" href="#">Payment received</a></li>
+        <li><a class="dropdown-item" href="#">New message</a></li>
+      </ul>
+    </div>
+
+  <!-- user prfile -->
+    <div class="dropdown">
+      <button class="btn btn-light dropdown-toggle p-0 border-0 rounded-circle" type="button" data-bs-toggle="dropdown"
+        aria-expanded="false" style="width: 40px; height: 40px; overflow: hidden;">
+        <!-- add photo here -->
+        <img src="https://i.pravatar.cc/40" alt="User profile" class="rounded-circle"
+          style="width: 40px; height: 40px; object-fit: cover;" /> 
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end shadow">
+        <li><a class="dropdown-item" routerLink="/admin/profile"><i class="bi bi-person me-2"></i>Profile</a></li>
+        <li><button class="dropdown-item" (click)="logout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</header>
+
 <!-- Sidebar -->
-<div class="sidebar d-flex flex-column">
+<div class="sidebar d-flex flex-column" [class.sidebar-collapsed]="!sidebarOpen">
   <h3 class="text-white mb-4">OstaFandy</h3>
 
   <div class="sidebar-section">
     <h6>Main</h6>
-    <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link" [routerLinkActiveOptions]="{ exact: true }">
+    <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link"
+      [routerLinkActiveOptions]="{ exact: true }">
       <i class="bi bi-speedometer2 me-2"></i>Dashboard
     </a>
     <a routerLink="/admin/bookings" routerLinkActive="active" class="nav-link">
@@ -24,15 +69,15 @@
 
   <div class="sidebar-section">
     <h6>User Management</h6>
-    <div class="dropdown-handyman">
-      <button class="nav-link dropdown-toggle text-white" type="button" (click)="toggleHandymanDropdown()" [attr.aria-expanded]="handymanDropdownOpen">
-        <i class="bi bi-person-check me-2"></i> Handymen
-      </button>
-      <div [class.collapse]="!handymanDropdownOpen" class="ps-4">
-        <a routerLink="/admin/handymen" routerLinkActive="active" class="nav-link text-white">All Handymen</a>
-        <a routerLink="/admin/handyman-orders" routerLinkActive="active" class="nav-link text-white">Orders & Feedback</a>
-        <a routerLink="/admin/handyman-applications" routerLinkActive="active" class="nav-link text-white">Applications</a>
-      </div>
+    <button class="nav-link dropdown-toggle text-white w-100 text-start" (click)="toggleHandymanDropdown()"
+      [attr.aria-expanded]="handymanDropdownOpen">
+      <i class="bi bi-person-check me-2"></i> Handymen
+    </button>
+    <div [class.collapse]="!handymanDropdownOpen" class="ps-4">
+      <a routerLink="/admin/handymen" routerLinkActive="active" class="nav-link text-white">All Handymen</a>
+      <a routerLink="/admin/handyman-orders" routerLinkActive="active" class="nav-link text-white">Orders & Feedback</a>
+      <a routerLink="/admin/handyman-applications" routerLinkActive="active"
+        class="nav-link text-white">Applications</a>
     </div>
     <a routerLink="/admin/clients" routerLinkActive="active" class="nav-link">
       <i class="bi bi-people me-2"></i>Clients
@@ -48,34 +93,7 @@
 </div>
 
 <!-- Main content -->
-<div class="main-content" [class.sidebar-open]="handymanDropdownOpen">
-  <!-- Top Bar -->
-  <div class="top-bar d-flex justify-content-end align-items-center mb-4 gap-3">
-    <!-- Notification -->
-    <div class="dropdown" ngbDropdown>
-      <button class="btn btn-link text-dark position-relative p-0" ngbDropdownToggle>
-        <i class="bi bi-bell fs-4"></i>
-        <span class="badge rounded-pill bg-warning">3</span>
-      </button>
-      <ul class="dropdown-menu dropdown-menu-end shadow" ngbDropdownMenu>
-        <li><a class="dropdown-item" href="#">New job posted</a></li>
-        <li><a class="dropdown-item" href="#">Payment received</a></li>
-        <li><a class="dropdown-item" href="#">New message</a></li>
-      </ul>
-    </div>
-
-    <!-- User -->
-    <div class="dropdown" ngbDropdown>
-      <button class="btn btn-link text-dark d-flex align-items-center gap-2" ngbDropdownToggle>
-        <i class="bi bi-person-circle fs-5"></i><span>admin</span>
-      </button>
-      <ul class="dropdown-menu dropdown-menu-end shadow" ngbDropdownMenu>
-        <li><a routerLink="/admin/profile" class="dropdown-item"><i class="bi bi-person me-2"></i>Profile</a></li>
-        <li><a (click)="logout()" class="dropdown-item"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- Content projection for child routes -->
+<div class="main-content" [class.sidebar-collapsed-main]="!sidebarOpen">
+  <h1 class="mt-5 pt-3">Admin Dashboard</h1>
   <router-outlet></router-outlet>
 </div>
