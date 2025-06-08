@@ -41,10 +41,12 @@ export class LoginComponent {
     });
   }
 
+  //animation for the login and register panels
   togglePanel(signUp: boolean) {
     this.containerClass = signUp ? 'right-panel-active' : '';
   }
 
+  //login subscription
   login() {
     console.log('Login function called');
     if (this.loginForm.invalid) return;
@@ -70,6 +72,8 @@ export class LoginComponent {
     });
   }
 
+
+  //register subscription
   register() {
     if (this.registerForm.invalid) return;
     const registerData =  this.registerForm.value as UserRegisterDto;
