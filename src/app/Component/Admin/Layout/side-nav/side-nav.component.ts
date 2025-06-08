@@ -10,16 +10,24 @@ import { CommonModule } from '@angular/common';
   styleUrl: './side-nav.component.css'
 })
 export class SideNavComponent {
-  handymanDropdownOpen = true;
+ sidebarOpen = true;
+  handymanDropdownOpen = false;
 
-  constructor(private router: Router,private authService:AuthService) {}
+  constructor(private router: Router, private authService: AuthService) {}
+
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
+    if (!this.sidebarOpen) {
+      this.handymanDropdownOpen = false;
+    }
+  }
 
   toggleHandymanDropdown() {
     this.handymanDropdownOpen = !this.handymanDropdownOpen;
   }
 
   logout() {
-    this.authService.Logout();;
+    this.authService.Logout();
     this.router.navigate(['/login']);
   }
 }
