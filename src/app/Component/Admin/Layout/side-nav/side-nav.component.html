@@ -1,0 +1,81 @@
+<!-- Sidebar -->
+<div class="sidebar d-flex flex-column">
+  <h3 class="text-white mb-4">OstaFandy</h3>
+
+  <div class="sidebar-section">
+    <h6>Main</h6>
+    <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link" [routerLinkActiveOptions]="{ exact: true }">
+      <i class="bi bi-speedometer2 me-2"></i>Dashboard
+    </a>
+    <a routerLink="/admin/bookings" routerLinkActive="active" class="nav-link">
+      <i class="bi bi-journal-check me-2"></i>Bookings
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <h6>Service</h6>
+    <a routerLink="/admin/category" routerLinkActive="active" class="nav-link">
+      <i class="bi bi-tags me-2"></i>Category
+    </a>
+    <a routerLink="/admin/services" routerLinkActive="active" class="nav-link">
+      <i class="bi bi-box-seam me-2"></i>Services
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <h6>User Management</h6>
+    <div class="dropdown-handyman">
+      <button class="nav-link dropdown-toggle text-white" type="button" (click)="toggleHandymanDropdown()" [attr.aria-expanded]="handymanDropdownOpen">
+        <i class="bi bi-person-check me-2"></i> Handymen
+      </button>
+      <div [class.collapse]="!handymanDropdownOpen" class="ps-4">
+        <a routerLink="/admin/handymen" routerLinkActive="active" class="nav-link text-white">All Handymen</a>
+        <a routerLink="/admin/handyman-orders" routerLinkActive="active" class="nav-link text-white">Orders & Feedback</a>
+        <a routerLink="/admin/handyman-applications" routerLinkActive="active" class="nav-link text-white">Applications</a>
+      </div>
+    </div>
+    <a routerLink="/admin/clients" routerLinkActive="active" class="nav-link">
+      <i class="bi bi-people me-2"></i>Clients
+    </a>
+  </div>
+
+  <div class="sidebar-section">
+    <h6>Payment</h6>
+    <a routerLink="/admin/transactions" routerLinkActive="active" class="nav-link">
+      <i class="bi bi-wallet2 me-2"></i>Transactions
+    </a>
+  </div>
+</div>
+
+<!-- Main content -->
+<div class="main-content" [class.sidebar-open]="handymanDropdownOpen">
+  <!-- Top Bar -->
+  <div class="top-bar d-flex justify-content-end align-items-center mb-4 gap-3">
+    <!-- Notification -->
+    <div class="dropdown" ngbDropdown>
+      <button class="btn btn-link text-dark position-relative p-0" ngbDropdownToggle>
+        <i class="bi bi-bell fs-4"></i>
+        <span class="badge rounded-pill bg-warning">3</span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end shadow" ngbDropdownMenu>
+        <li><a class="dropdown-item" href="#">New job posted</a></li>
+        <li><a class="dropdown-item" href="#">Payment received</a></li>
+        <li><a class="dropdown-item" href="#">New message</a></li>
+      </ul>
+    </div>
+
+    <!-- User -->
+    <div class="dropdown" ngbDropdown>
+      <button class="btn btn-link text-dark d-flex align-items-center gap-2" ngbDropdownToggle>
+        <i class="bi bi-person-circle fs-5"></i><span>admin</span>
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end shadow" ngbDropdownMenu>
+        <li><a routerLink="/admin/profile" class="dropdown-item"><i class="bi bi-person me-2"></i>Profile</a></li>
+        <li><a (click)="logout()" class="dropdown-item"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Content projection for child routes -->
+  <router-outlet></router-outlet>
+</div>
