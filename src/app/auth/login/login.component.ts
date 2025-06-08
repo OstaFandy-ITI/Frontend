@@ -7,6 +7,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ResponseDto } from '../../core/models/Response';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { UserType } from '../../core/Shared/Enum';
 
 @Component({
   selector: 'app-login',
@@ -51,17 +52,24 @@ export class LoginComponent {
     console.log('Login function called');
     if (this.loginForm.invalid) return;
     const loginData = this.loginForm.value as UserLoginDto;
-      console.log('Login data:', loginData);
-
-
     this._JwtService.Login(loginData).subscribe({
       
       next: (response: ResponseDto<string>) => {
         if (response && response.data) {
           this._AuthService.Login(response.data);
-          console.log('Full login response:', response);
-          this.toastr.success(response.message);
-          this.router.navigate(['/']); //letter to home page
+
+          this._AuthService.CurrentUser$.subscribe(user => {
+            if (user) {
+                this.toastr.success(response.message);
+                if (user.UserType === UserType.Admin) {
+                  this.router.navigate(['/admin']);
+                } else if (user.UserType === UserType.Customer) {
+                  //this.router.navigate(['/Home']);
+                } else if (user.UserType === UserType.Handyman) {
+                 // this.router.navigate(['/Handyman']);
+                }
+            }
+          });
         } else {
           this.toastr.error(response.message);
         }

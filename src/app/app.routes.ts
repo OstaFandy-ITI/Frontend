@@ -1,12 +1,14 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login.component';
 import{adminRoutes} from './Component/Admin/Admin.routes';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
 
     { path: 'login', component: LoginComponent },
-     { 
-    path: "Admin",
-    loadChildren: () => import('./Component/Admin/Admin.routes').then(m => m.adminRoutes) 
+     {
+    path: 'admin',
+    canActivate: [adminGuard],
+    children: adminRoutes
   },
 ];
