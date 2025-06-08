@@ -11,7 +11,10 @@ export const adminGuard: CanActivateFn = (route, state) => {
    return authServer.CurrentUser$.pipe(
     map(user=>{
       if(user && user.UserType === UserType.Admin )
+      {
+        
         return true;
+      }
       else {
         router.navigate(['/login']);
         return false;
