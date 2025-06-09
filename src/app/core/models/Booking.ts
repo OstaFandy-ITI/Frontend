@@ -1,10 +1,13 @@
 export class BookingViewModel {
     constructor(
-        public id?: Number,
+        public id?: number,
         public clientName?: string,
         public handymanName?: string,
+        public categoryName?: string,
         public serviceNames?: string[],
         public note?: string,
-        public status?: Date,
+        public preferredDate?: string,
+        public estimatedMinutes?: number,
+        public status?: string
     ) {}
 }

@@ -18,6 +18,11 @@
     "@angular/platform-browser": "^20.0.1",
     "@angular/platform-browser-dynamic": "^20.0.1",
     "@angular/router": "^20.0.1",
+    "@fullcalendar/angular": "^6.1.17",
+    "@fullcalendar/core": "^6.1.17",
+    "@fullcalendar/daygrid": "^6.1.17",
+    "@fullcalendar/interaction": "^6.1.17",
+    "@fullcalendar/timegrid": "^6.1.17",
     "bootstrap": "^5.3.6",
     "bootstrap-icons": "^1.13.1",
     "jquery": "^3.7.1",
@@ -39,6 +44,5 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "typescript": "~5.8.3"
-  
   }
 }
