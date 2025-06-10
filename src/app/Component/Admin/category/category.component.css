@@ -1,0 +1,174 @@
+/* Variables */
+:root {
+  --orange: #f7c743;
+  --light-gray: #EBEBEB;
+  --gray: #C0C0C0;
+  --blue-medium: #3A6EA5;
+  --blue-dark: #004E98;
+  --card-bg: linear-gradient(135deg, #3A6EA5 0%, #004E98 100%);
+}
+
+
+/* Main Content */
+.main-content {
+  padding: 30px;
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--light-gray);
+}
+
+/* Top bar (if used in this component) */
+.top-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.notification-icon {
+  position: relative;
+  margin-right: 1rem;
+}
+
+.notification-icon .badge {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  background-color: var(--orange);
+  color: white;
+}
+
+.admin-info {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+}
+
+.admin-info i {
+  margin-right: 5px;
+}
+
+/* Add Category Button */
+.btn-primary {
+  background-color: var(--blue-dark);
+  border: none;
+  border-radius: 6px;
+}
+
+.btn-primary:hover {
+  background-color: var(--blue-medium);
+}
+
+/* Search and Filter Bar */
+.search-filter-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.search-filter-bar .form-select,
+.search-filter-bar .form-control {
+  max-width: 250px;
+  border-radius: 8px;
+  border: 1px solid var(--gray);
+  box-shadow: none;
+  font-size: 0.9rem;
+}
+
+/* Table Styling */
+.custom-table {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.custom-table thead th {
+  background-color: var(--blue-dark);
+  color: white;
+}
+
+.table thead th {
+  vertical-align: middle;
+  font-weight: 600;
+  padding: 1rem;
+  font-size: 0.9rem;
+  border: none;
+}
+
+.table tbody td {
+  vertical-align: middle;
+  background-color: white;
+  padding: 0.9rem 1rem;
+  font-size: 0.875rem;
+}
+
+.table tbody tr:hover {
+  background-color: rgba(58, 110, 165, 0.05);
+}
+
+.badge.bg-success {
+  background-color: #28a745;
+}
+
+.form-check-input:checked {
+  background-color: var(--blue-dark);
+  border-color: var(--blue-dark);
+}
+
+.bi-pencil-square {
+  cursor: pointer;
+}
+
+.bi-trash {
+  cursor: pointer;
+}
+
+/* Modal Custom */
+.modal-header {
+  background-color: var(--blue-dark);
+  color: white;
+}
+
+.modal-footer .btn-primary {
+  background-color: var(--orange);
+  border: none;
+}
+
+.modal-footer .btn-primary:hover {
+  background-color: #e6b800;
+}
+
+.table thead th i {
+  margin-left: 5px;
+  font-size: 0.8rem;
+  color: #ddd;
+}
+
+.pagination .page-link {
+  color: var(--blue-dark);
+  border-radius: 6px;
+  margin: 0 2px;
+  border: 1px solid var(--gray);
+  background: #fff;
+  transition: background 0.2s, color 0.2s;
+}
+
+.pagination .page-item.active .page-link,
+.pagination .page-link:hover {
+  background: var(--blue-dark);
+  color: #fff;
+  border-color: var(--blue-dark);
+}
+
+.pagination .page-item.disabled .page-link {
+  color: var(--gray);
+  background: #f8f9fa;
+  border-color: var(--gray);
+}
+
+.form-select {
+  border-radius: 6px;
+  border: 1px solid var(--gray);
+  font-size: 0.95rem;
+}
