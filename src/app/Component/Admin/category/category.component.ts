@@ -59,7 +59,6 @@ export class CategoryComponent implements OnInit {
     this.getCategories();
   }
 
- 
   getCategories() {
     this.categoryService
       .getPaginated(

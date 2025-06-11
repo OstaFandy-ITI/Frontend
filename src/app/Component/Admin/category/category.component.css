@@ -140,9 +140,9 @@
 }
 
 .table thead th i {
-  margin-left: 5px;
+  margin-left: 2px;
   font-size: 0.8rem;
-  color: #ddd;
+  color: white; /* Always white */
 }
 
 .pagination .page-link {
