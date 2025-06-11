@@ -1,0 +1,212 @@
+/* application.component.css */
+
+/* Import the existing CSS variables and styles */
+:root {
+  --orange: #f7c743;
+  --blue-medium: #3A6EA5;
+  --blue-dark: #004E98;
+  --light-gray: #EBEBEB;
+  --gray: #C0C0C0;
+}
+
+/* Main Content */
+.main-content {
+  padding: 30px;
+  min-height: 100vh;
+  background-color: var(--light-gray);
+}
+
+/* Table Styles */
+.custom-table {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.custom-table thead {
+  background-color: var(--blue-dark);
+  color: white;
+}
+
+.custom-table th,
+.custom-table td {
+  vertical-align: middle;
+  padding: 1rem;
+  font-size: 0.9rem;
+  border: none;
+}
+
+.custom-table thead th {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.custom-table tbody tr:hover {
+  background-color: rgba(0, 78, 152, 0.05);
+  transition: background-color 0.2s ease;
+}
+
+.custom-table tbody tr {
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.custom-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* Profile Images */
+.profile-image {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Badges */
+.badge {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.375rem 0.75rem;
+}
+
+.badge.bg-primary {
+  background-color: var(--blue-medium) !important;
+}
+
+.badge.bg-secondary {
+  background-color: var(--gray) !important;
+  color: #333 !important;
+}
+
+/* Action Buttons */
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+  transform: translateY(-1px);
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+  border-color: #bd2130;
+  transform: translateY(-1px);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* Search and Filter Controls */
+.form-control,
+.form-select {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--blue-medium);
+  box-shadow: 0 0 0 0.2rem rgba(58, 110, 165, 0.25);
+}
+
+/* Loading Spinner */
+.spinner-border {
+  width: 2rem;
+  height: 2rem;
+}
+
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* Sort Icons */
+th[style*="cursor: pointer"]:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Empty State */
+.text-center.py-5 {
+  background: white;
+  border-radius: 12px;
+  margin-top: 2rem;
+}
+
+.text-center.py-5 .display-4 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+/* Toast Styling */
+.toast {
+  background: white;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+}
+
+.toast-header {
+  background: transparent;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Document Links */
+a[title] {
+  transition: transform 0.2s ease;
+}
+
+a[title]:hover {
+  transform: scale(1.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 15px;
+  }
+  
+  .d-flex.gap-3 {
+    flex-direction: column;
+    gap: 0.75rem !important;
+  }
+  
+  .form-control,
+  .form-select {
+    max-width: 100% !important;
+  }
+  
+  .custom-table th,
+  .custom-table td {
+    padding: 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+}
