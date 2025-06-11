@@ -27,8 +27,6 @@ export class BookingComponent implements OnInit {
     this.bookingSerivce.GetAllBookings().subscribe({
       next: (response) => {
         this.bookings = response;
-        console.log('Raw API response:', response);
-
         this.initializeCalendar();
       },
       error: (error) => {
