@@ -176,4 +176,31 @@ getServices(): void {
   this.getServices();
 }
 
+toggleStatus(service: ServiceItem): void {
+  const updatedService: ServiceItem = {
+    ...service,
+    isActive: !service.isActive,
+    updatedAt: new Date().toISOString()
+  };
+
+  this.serviceService.update(updatedService).subscribe({
+    next: () => {
+      this.getServices(); // Refresh the table
+    },
+    error: (err) => {
+      console.error('Failed to update status:', err);
+      alert('Something went wrong while updating status.');
+    }
+  });
+}
+
+confirmToggleStatus(service: ServiceItem): void {
+  const action = service.isActive ? 'deactivate' : 'activate';
+  const confirmation = confirm(`Are you sure you want to ${action} this service?`);
+  
+  if (confirmation) {
+    this.toggleStatus(service);
+  }
+}
+
 }

@@ -70,11 +70,16 @@
                     <td>{{ service.estimatedMinutes }}</td>
                     <td>{{ service.serviceType }}</td>
                     <td class="text-center">
-                        <span class="badge" [class.bg-success]="service.isActive"
-                            [class.bg-secondary]="!service.isActive">
-                            {{ service.isActive ? 'Active' : 'Inactive' }}
-                        </span>
-                    </td>
+  <span 
+    class="badge"
+    [class.bg-success]="service.isActive"
+    [class.bg-secondary]="!service.isActive"
+    style="cursor: pointer;"
+    (click)="confirmToggleStatus(service)">
+    {{ service.isActive ? 'Active' : 'Inactive' }}
+  </span>
+</td>
+
                     <td class="text-center">
                         <i class="bi bi-pencil-square me-2 text-primary" data-bs-toggle="modal"
                             data-bs-target="#editServiceModal" (click)="edit(service)" title="Edit"></i>
