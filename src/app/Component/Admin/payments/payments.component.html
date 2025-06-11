@@ -1,0 +1,207 @@
+<!-- Component/Admin/payments/payments.component.html -->
+<div class="container-fluid p-4">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Payments</h4>
+  </div>
+
+  <!-- Search and Filter Bar -->
+  <div class="row mb-3">
+    <div class="col-md-3">
+      <select 
+        class="form-select" 
+        [(ngModel)]="filter.status"
+        (change)="onFilterChange()">
+        <option *ngFor="let option of statusOptions" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <select 
+        class="form-select" 
+        [(ngModel)]="filter.method"
+        (change)="onFilterChange()">
+        <option *ngFor="let option of methodOptions" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <input 
+        type="text" 
+        class="form-control" 
+        placeholder="Search by client name or booking ID"
+        [(ngModel)]="filter.searchTerm"
+        (input)="onSearchChange()">
+    </div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="error" class="alert alert-danger" role="alert">
+    {{ error }}
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="d-flex justify-content-center py-4">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Payments Table -->
+  <div *ngIf="!loading" class="table-responsive custom-table">
+    <table class="table table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th class="sortable-header" 
+              [class.sorted]="isColumnSorted('clientName')"
+              (click)="onSort('clientName')">
+            Client 
+            <i [class]="getSortIcon('clientName')"></i>
+          </th>
+          <th class="sortable-header" 
+              [class.sorted]="isColumnSorted('bookingId')"
+              (click)="onSort('bookingId')">
+            Booking ID 
+            <i [class]="getSortIcon('bookingId')"></i>
+          </th>
+          <th class="sortable-header" 
+              [class.sorted]="isColumnSorted('amount')"
+              (click)="onSort('amount')">
+            Amount 
+            <i [class]="getSortIcon('amount')"></i>
+          </th>
+          <th class="sortable-header" 
+              [class.sorted]="isColumnSorted('method')"
+              (click)="onSort('method')">
+            Method 
+            <i [class]="getSortIcon('method')"></i>
+          </th>
+          <th class="sortable-header" 
+              [class.sorted]="isColumnSorted('status')"
+              (click)="onSort('status')">
+            Status 
+            <i [class]="getSortIcon('status')"></i>
+          </th>
+          <th class="sortable-header" 
+              [class.sorted]="isColumnSorted('date')"
+              (click)="onSort('date')">
+            Date 
+            <i [class]="getSortIcon('date')"></i>
+          </th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let payment of payments">
+          <td>{{ payment.clientName }}</td>
+          <td>#{{ payment.bookingId }}</td>
+          <td>{{ formatAmount(payment.amount) }}</td>
+          <td>
+            <span [class]="getMethodBadgeClass(payment.method)">
+              {{ payment.method }}
+            </span>
+          </td>
+          <td>
+            <span [class]="getStatusBadgeClass(payment.status)">
+              {{ payment.status }}
+            </span>
+          </td>
+          <td>{{ formatDate(payment.date) }}</td>
+          <td>
+            <i 
+              class="bi bi-eye-fill text-info cursor-pointer" 
+              title="View Details"
+              (click)="viewPaymentDetails(payment.id)"
+              data-bs-toggle="modal" 
+              data-bs-target="#paymentDetailsModal">
+            </i>
+          </td>
+        </tr>
+        <tr *ngIf="payments.length === 0">
+          <td colspan="7" class="text-center py-4">
+            <em>No payments found</em>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <nav *ngIf="!loading && totalPages > 1" aria-label="Payments pagination">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="!hasPreviousPage">
+        <a class="page-link" (click)="previousPage()" [style.cursor]="hasPreviousPage ? 'pointer' : 'not-allowed'">
+          Previous
+        </a>
+      </li>
+      
+      <li *ngFor="let page of [].constructor(totalPages); let i = index" 
+          class="page-item" 
+          [class.active]="pageNumber === i + 1">
+        <a class="page-link" (click)="goToPage(i + 1)" style="cursor: pointer">
+          {{ i + 1 }}
+        </a>
+      </li>
+      
+      <li class="page-item" [class.disabled]="!hasNextPage">
+        <a class="page-link" (click)="nextPage()" [style.cursor]="hasNextPage ? 'pointer' : 'not-allowed'">
+          Next
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Pagination Info -->
+  <div *ngIf="!loading && payments.length > 0" class="text-center mt-2">
+    <small class="text-muted">
+      Showing {{ ((pageNumber - 1) * pageSize) + 1 }} to 
+      {{ Math.min(pageNumber * pageSize, totalCount) }} of {{ totalCount }} entries
+    </small>
+  </div>
+</div>
+
+<!-- Payment Details Modal -->
+<div class="modal fade" id="paymentDetailsModal" tabindex="-1" aria-labelledby="paymentDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header  text-white" style="background-color: #004e98;">
+        <h5 class="modal-title" id="paymentDetailsModalLabel">Payment Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body" *ngIf="selectedPayment">
+        <div class="row">
+          <div class="col-md-6">
+            <p><strong>Client:</strong> {{ selectedPayment.clientName }}</p>
+            <p><strong>Booking ID:</strong> #{{ selectedPayment.bookingId }}</p>
+            <p><strong>Amount:</strong> {{ formatAmount(selectedPayment.amount) }}</p>
+            <p><strong>Method:</strong> 
+              <span [class]="getMethodBadgeClass(selectedPayment.method)">
+                {{ selectedPayment.method }}
+              </span>
+            </p>
+          </div>
+          <div class="col-md-6">
+            <p><strong>Status:</strong> 
+              <span [class]="getStatusBadgeClass(selectedPayment.status)">
+                {{ selectedPayment.status }}
+              </span>
+            </p>
+            <p><strong>Date:</strong> {{ formatDateTime(selectedPayment.date) }}</p>
+            <p *ngIf="selectedPayment.paymentIntentId"><strong>Payment Intent ID:</strong> {{ selectedPayment.paymentIntentId }}</p>
+            <p *ngIf="selectedPayment.receipt">
+              <strong>Receipt:</strong> 
+              <a [href]="selectedPayment.receipt" target="_blank" class="text-decoration-none">
+                View Receipt <i class="bi bi-box-arrow-up-right"></i>
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
