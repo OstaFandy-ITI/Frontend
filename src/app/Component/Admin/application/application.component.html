@@ -1,20 +1,18 @@
 <div class="main-content">
-  <!-- Page Title -->
   <h4 class="mb-3">Handyman Applications</h4>
 
-  <!-- Search and Filter Controls -->
   <div class="d-flex mb-3 gap-3">
-    <input 
-      type="text" 
-      class="form-control" 
+    <input
+      type="text"
+      class="form-control"
       id="searchInput"
       [(ngModel)]="searchTerm"
       (input)="filterApplications()"
-      placeholder="Search by name..." 
+      placeholder="Search by name..."
       style="max-width: 250px;">
-    
-    <select 
-      class="form-select" 
+
+    <select
+      class="form-select"
       id="specialtyFilter"
       [(ngModel)]="selectedSpecialty"
       (change)="filterApplications()"
@@ -24,75 +22,157 @@
     </select>
   </div>
 
-  <!-- Loading Spinner -->
   <div *ngIf="isLoading" class="text-center py-4">
     <div class="spinner-border text-primary" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
   </div>
 
-  <!-- Applications Table -->
   <div *ngIf="!isLoading" class="table-responsive custom-table">
-    <table class="table" id="applicationTable">
-      <thead>
+    <table class="table table-hover">
+      <thead class="table-dark">
         <tr>
-          <th (click)="sortBy('fullName')" style="cursor: pointer;">
-            Name 
+          <th class="sortable-header"
+              [class.sorted]="getSortIcon('fullName').includes('up') || getSortIcon('fullName').includes('down')"
+              (click)="sortBy('fullName')">
+            Name
             <i [class]="getSortIcon('fullName')" class="text-white"></i>
           </th>
           <th>Specialty</th>
           <th>National ID</th>
           <th>Address</th>
           <th>Experience</th>
-          <th>Actions</th>
+          <th>Details</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let application of filteredApplications; trackBy: trackByUserId">
+        <tr *ngFor="let application of paginatedApplications; trackBy: trackByUserId">
           <td>{{ application.fullName }}</td>
           <td>{{ application.specializationCategory }}</td>
           <td>{{ application.nationalId }}</td>
           <td>{{application.defaultAddressPlace}}</td>
           <td>{{application.experienceYears}}</td>
 
-         
           <td>
-            <div class="d-flex gap-2">
-              <button 
-                class="btn btn-success btn-sm" 
-                (click)="approveApplication(application)"
-                [disabled]="processingUserId === application.userId"
-                title="Approve Application">
-                <span *ngIf="processingUserId === application.userId" class="spinner-border spinner-border-sm me-1"></span>
-                Accept
-              </button>
-              <button 
-                class="btn btn-danger btn-sm" 
-                (click)="rejectApplication(application)"
-                [disabled]="processingUserId === application.userId"
-                title="Reject Application">
-                <span *ngIf="processingUserId === application.userId" class="spinner-border spinner-border-sm me-1"></span>
-                Reject
-              </button>
-            </div>
+            <button
+              class="btn custom-view-btn btn-sm text-white"
+              (click)="openHandymanDetailsModal(application)"
+              data-bs-toggle="modal"
+              data-bs-target="#handymanDetailsModal"
+              title="View Handyman Details">
+              View
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="paginatedApplications.length === 0">
+          <td colspan="6" class="text-center py-5 no-applications-message-in-table">
+            <i class="bi bi-inbox display-4 text-muted"></i>
+            <h5 class="mt-3 text-muted">No Applications Found</h5>
+            <p class="text-muted">
+              <span *ngIf="searchTerm || selectedSpecialty">Try adjusting your search criteria.</span>
+            </p>
           </td>
         </tr>
       </tbody>
     </table>
+  </div>
 
-    <!-- No Applications Message -->
-    <div *ngIf="filteredApplications.length === 0" class="text-center py-5">
-      <i class="bi bi-inbox display-4 text-muted"></i>
-      <h5 class="mt-3 text-muted">No Applications Found</h5>
-      <p class="text-muted">
-        <span *ngIf="searchTerm || selectedSpecialty">Try adjusting your search criteria.</span>
-        <span *ngIf="!searchTerm && !selectedSpecialty">No pending handyman applications at the moment.</span>
-      </p>
+  <nav *ngIf="!isLoading && totalPages > 1" aria-label="Applications pagination">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="!hasPreviousPage">
+        <a class="page-link" (click)="previousPage()" [style.cursor]="hasPreviousPage ? 'pointer' : 'not-allowed'">
+          Previous
+        </a>
+      </li>
+
+      <li *ngFor="let page of [].constructor(totalPages); let i = index"
+          class="page-item"
+          [class.active]="pageNumber === i + 1">
+        <a class="page-link" (click)="goToPage(i + 1)" style="cursor: pointer">
+          {{ i + 1 }}
+        </a>
+      </li>
+
+      <li class="page-item" [class.disabled]="!hasNextPage">
+        <a class="page-link" (click)="nextPage()" [style.cursor]="hasNextPage ? 'pointer' : 'not-allowed'">
+          Next
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div *ngIf="!isLoading && paginatedApplications.length > 0 && totalPages > 1" class="text-center mt-2">
+    <small class="text-muted">
+      Showing {{ ((pageNumber - 1) * pageSize) + 1 }} to
+      {{ Math.min(pageNumber * pageSize, totalCount) }} of {{ totalCount }} entries
+    </small>
+  </div>
+</div>
+
+<div class="modal fade" id="handymanDetailsModal" tabindex="-1" aria-labelledby="handymanDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" *ngIf="selectedApplication">
+      <div class="modal-header custom-modal-header text-white">
+        <h5 class="modal-title" id="handymanDetailsModalLabel">Details for {{ selectedApplication.fullName }}</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4 text-center mb-3">
+            <img
+              [src]="selectedApplication.img || 'https://via.placeholder.com/150?text=No+Image'"
+              class="img-fluid rounded-circle mb-2 profile-modal-img"
+              alt="Handyman Profile">
+            <p class="fw-bold">{{ selectedApplication.fullName }}</p>
+            <span class="badge bg-primary">{{ selectedApplication.specializationCategory }}</span>
+          </div>
+          <div class="col-md-8">
+            <h6 class="text-primary">Contact Information:</h6>
+            <p><strong>Email:</strong> {{ selectedApplication.email }}</p>
+            <p><strong>Phone:</strong> {{ selectedApplication.phone }}</p>
+            <p><strong>Address:</strong> {{ selectedApplication.defaultAddressPlace }}</p>
+
+            <h6 class="text-primary mt-3">Professional Details:</h6>
+            <p><strong>National ID:</strong> {{ selectedApplication.nationalId }}</p>
+            <p><strong>Experience:</strong> {{ selectedApplication.experienceYears }} years</p>
+            <p><strong>Application Date:</strong> {{ selectedApplication.createdAt | date: 'mediumDate' }}</p>
+
+            <h6 class="text-primary mt-3" *ngIf="selectedApplication.nationalIdImg">Documents:</h6>
+            <div class="d-flex flex-wrap gap-3 justify-content-center">
+              <div *ngIf="selectedApplication.nationalIdImg" class="document-image-container">
+                <p class="document-label">National ID:</p>
+                <img [src]="selectedApplication.nationalIdImg" alt="National ID" class="img-fluid document-image">
+              </div>
+              <div *ngIf="!selectedApplication.nationalIdImg" class="text-muted document-no-image">
+                No document images available.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-success"
+          (click)="approveApplication(selectedApplication)"
+          [disabled]="processingUserId === selectedApplication.userId">
+          <span *ngIf="processingUserId === selectedApplication.userId" class="spinner-border spinner-border-sm me-1"></span>
+          Accept
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="rejectApplication(selectedApplication)"
+          [disabled]="processingUserId === selectedApplication.userId">
+          <span *ngIf="processingUserId === selectedApplication.userId" class="spinner-border spinner-border-sm me-1"></span>
+          Reject
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Success/Error Toast -->
+
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
   <div id="actionToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header">
