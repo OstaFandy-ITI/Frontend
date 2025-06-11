@@ -38,7 +38,7 @@ export class ServiceComponent implements OnInit {
   editForm!: FormGroup;
 sortField: string = 'name';
 sortOrder: 'asc' | 'desc' = 'asc';
-
+filterCategoryId: number | null = null;
   @ViewChild('addCloseBtn') addCloseBtn!: ElementRef;
 
   constructor(
@@ -76,14 +76,14 @@ sortOrder: 'asc' | 'desc' = 'asc';
   }
 getServices(): void {
   this.serviceService
-  .getPaginated(this.pageNumber, this.pageSize, this.searchTerm, this.filterStatus, this.sortField, this.sortOrder)
+  .getPaginated(this.pageNumber, this.pageSize, this.searchTerm, this.filterStatus, this.sortField, this.sortOrder, this.filterCategoryId)
   .subscribe({
-      next: result => {
-        this.services = result.items;
-        this.totalItems = result.totalItems;
-      },
-      error: err => console.error(err)
-    });
+    next: (result) => {
+      this.services = result.items;
+      this.totalItems = result.totalItems;
+    },
+    error: (err) => console.error(err)
+  });
 }
 
   loadCategories(): void {

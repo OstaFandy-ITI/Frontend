@@ -43,21 +43,26 @@ export class ServiceService {
 
   constructor(private http: HttpClient) {}
 
-  getPaginated(
+getPaginated(
   pageNumber: number,
   pageSize: number,
   search: string,
   status: string,
   sortField?: string,
-  sortOrder?: string
+  sortOrder?: string,
+  categoryId?: number | null
 ): Observable<PaginatedResult<ServiceItem>> {
   let query = `?pageNumber=${pageNumber}&pageSize=${pageSize}`;
+
   if (search) query += `&search=${encodeURIComponent(search)}`;
   if (status && status !== 'All') query += `&status=${status}`;
   if (sortField) query += `&sortField=${sortField}`;
   if (sortOrder) query += `&sortOrder=${sortOrder}`;
+  if (categoryId) query += `&categoryId=${categoryId}`;
+
   return this.http.get<PaginatedResult<ServiceItem>>(`${this.apiUrl}/paginated${query}`);
 }
+
 
 add(service: ServiceCreateDTO): Observable<void> {
   return this.http.post<void>(this.apiUrl, service);

@@ -14,6 +14,11 @@
             <option value="Active">Active</option>
             <option value="Inactive">Inactive</option>
         </select>
+        <select class="form-select w-auto" [(ngModel)]="filterCategoryId" (change)="getServices()">
+  <option [ngValue]="null">All Categories</option>
+  <option *ngFor="let cat of categories" [ngValue]="cat.id">{{ cat.name }}</option>
+</select>
+
         <input type="text" class="form-control" placeholder="Search..." [(ngModel)]="searchTerm"
             (input)="getServices()" />
     </div>
@@ -23,34 +28,34 @@
         <table class="table">
             <thead class="table-header">
                 <tr>
-                   <th (click)="sortBy('name')" style="cursor: pointer;">
-  Name
-  <i class="bi" [ngClass]="
-    sortField === 'name'
-      ? (sortOrder === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down')
-      : 'bi-arrow-down'
-  "></i>
-</th>
+                    <th (click)="sortBy('name')" style="cursor: pointer;">
+                        Name
+                        <i class="bi" [ngClass]="
+                          sortField === 'name'
+                          ? (sortOrder === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down')
+                        : 'bi-arrow-down'
+                         "></i>
+                    </th>
 
                     <th>Description</th>
-                  <th (click)="sortBy('fixedPrice')" style="cursor: pointer;">
-  Fixed Price
-  <i class="bi" [ngClass]="
-    sortField === 'fixedPrice'
-      ? (sortOrder === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down')
-      : 'bi-arrow-down'
-  "></i>
-</th>
+                    <th (click)="sortBy('fixedPrice')" style="cursor: pointer;">
+                        Fixed Price
+                        <i class="bi" [ngClass]="
+                      sortField === 'fixedPrice'
+                    ? (sortOrder === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down')
+                     : 'bi-arrow-down'
+                     "></i>
+                    </th>
 
                     <th>Category</th>
                     <th (click)="sortBy('estimatedMinutes')" style="cursor: pointer;">
-  Duration (min)
-  <i class="bi" [ngClass]="
-    sortField === 'estimatedMinutes'
-      ? (sortOrder === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down')
-      : 'bi-arrow-down'
-  "></i>
-</th>
+                        Duration (min)
+                        <i class="bi" [ngClass]="
+                          sortField === 'estimatedMinutes'
+                      ? (sortOrder === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down')
+                         : 'bi-arrow-down'
+                          "></i>
+                    </th>
                     <th>Service Type</th>
                     <th class="text-center">Status</th>
                     <th class="text-center">Action</th>
