@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { SideNavComponent} from './Layout/side-nav/side-nav.component';
 import { BookingComponent } from './booking/booking.component';
 import { PaymentsComponent } from './payments/payments.component';
+import { ApplicationComponent } from './application/application.component';
+
 
 export const adminRoutes: Routes = [
  {
@@ -9,8 +11,8 @@ export const adminRoutes: Routes = [
     component: SideNavComponent, 
     children: [
       { path: 'booking', component: BookingComponent },
-      { path: 'payments', component: PaymentsComponent }
-
+      { path: 'payments', component: PaymentsComponent },
+      {path: 'application', component: ApplicationComponent }
     ]
   }
 
