@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Application } from './../../../core/models/Application';
 import { ApplicationService } from './../services/application.service';
 
-declare var bootstrap: any;
+declare var bootstrap: any; // Declare bootstrap to access its JavaScript functions
 
 @Component({
   selector: 'app-application',
@@ -15,11 +15,13 @@ declare var bootstrap: any;
 export class ApplicationComponent implements OnInit {
   applications: Application[] = [];
   filteredApplications: Application[] = [];
+  paginatedApplications: Application[] = [];
   specialties: string[] = [];
 
   // UI State
   isLoading = false;
   processingUserId: number | null = null;
+  selectedApplication: Application | null = null; // New property for modal data
 
   // Filters
   searchTerm = '';
@@ -28,6 +30,12 @@ export class ApplicationComponent implements OnInit {
   // Sorting
   sortField = '';
   sortDirection: 'asc' | 'desc' = 'asc';
+  
+  // Pagination
+  pageNumber = 1;
+  pageSize = 10;
+  totalCount = 0;
+  totalPages = 0;
   
   // Toast properties
   toastTitle = '';
@@ -134,10 +142,16 @@ export class ApplicationComponent implements OnInit {
       return matchesSearch && matchesSpecialty;
     });
     
+    // Reset to first page when filtering
+    this.pageNumber = 1;
+    
     // Reapply sorting if exists
     if (this.sortField) {
       this.applySorting();
     }
+    
+    // Apply pagination
+    this.updatePagination();
   }
 
   // Keep the old method name for backward compatibility with template
@@ -153,6 +167,7 @@ export class ApplicationComponent implements OnInit {
       this.sortDirection = 'asc';
     }
     this.applySorting();
+    this.updatePagination();
   }
 
   private applySorting(): void {
@@ -178,27 +193,98 @@ export class ApplicationComponent implements OnInit {
     });
   }
 
+  // Pagination methods
+  private updatePagination(): void {
+    this.totalCount = this.filteredApplications.length;
+    this.totalPages = Math.ceil(this.totalCount / this.pageSize);
+    
+    // Ensure current page is valid
+    if (this.pageNumber > this.totalPages && this.totalPages > 0) {
+      this.pageNumber = this.totalPages;
+    } else if (this.totalPages === 0) { // If no items, ensure pageNumber is 1
+      this.pageNumber = 1;
+    }
+    
+    // Calculate start and end indices
+    const startIndex = (this.pageNumber - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    
+    // Get paginated data
+    this.paginatedApplications = this.filteredApplications.slice(startIndex, endIndex);
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.pageNumber = page;
+      this.updatePagination();
+    }
+  }
+
+  previousPage(): void {
+    if (this.hasPreviousPage) {
+      this.pageNumber--;
+      this.updatePagination();
+    }
+  }
+
+  nextPage(): void {
+    if (this.hasNextPage) {
+      this.pageNumber++;
+      this.updatePagination();
+    }
+  }
+
+  get hasPreviousPage(): boolean {
+    return this.pageNumber > 1;
+  }
+
+  get hasNextPage(): boolean {
+    return this.pageNumber < this.totalPages;
+  }
+
+  // Expose Math for template usage
+  Math = Math;
+
+  // New method to open the modal and set the selected application
+  openHandymanDetailsModal(application: Application): void {
+    this.selectedApplication = application;
+    // Bootstrap modal is handled by data-bs-toggle and data-bs-target in HTML
+    // No need to manually show it here unless you want to add more logic before showing.
+  }
+
+  closeHandymanDetailsModal(): void {
+    const modalElement = document.getElementById('handymanDetailsModal');
+    if (modalElement) {
+      const modal = bootstrap.Modal.getInstance(modalElement);
+      if (modal) {
+        modal.hide();
+      } else {
+        // Fallback if getInstance returns null (e.g., modal not fully initialized)
+        const newModal = new bootstrap.Modal(modalElement);
+        newModal.hide();
+      }
+    }
+    this.selectedApplication = null; // Clear selected application after closing
+  }
+
   approveApplication(application: Application): void {
     if (!application.userId) {
       console.error('Application userId is missing');
       return;
     }
     
-    console.log('🔄 Approving application for user:', application.userId, application.fullName);
+    console.log('Approving application for user:', application.userId, application.fullName);
     this.processingUserId = application.userId;
 
     this.applicationService.approveHandyman(application.userId).subscribe({
       next: (response) => {
-        console.log('✅ Application approved successfully:', response);
+        console.log('Application approved successfully:', response);
         this.showToast('Success', `${application.fullName} has been approved successfully`, 'bi bi-check-circle text-success');
         
-        // Remove from both arrays immediately
         this.removeApplicationFromList(application.userId!);
-        
-        // Update specialties list in case this was the only application with this specialty
-        this.extractSpecialties();
-        
+        this.extractSpecialties(); // Update specialties list
         this.processingUserId = null;
+        this.closeHandymanDetailsModal(); // Close modal after action
       },
       error: (error) => {
         console.error('Error approving application:', error);
@@ -222,13 +308,10 @@ export class ApplicationComponent implements OnInit {
         console.log('Application rejected successfully:', response);
         this.showToast('Success', `${application.fullName} has been rejected`, 'bi bi-x-circle text-warning');
         
-        // Remove from both arrays immediately
         this.removeApplicationFromList(application.userId!);
-        
-        // Update specialties list in case this was the only application with this specialty
-        this.extractSpecialties();
-        
+        this.extractSpecialties(); // Update specialties list
         this.processingUserId = null;
+        this.closeHandymanDetailsModal(); // Close modal after action
       },
       error: (error) => {
         console.error('Error rejecting application:', error);
