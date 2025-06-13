@@ -1,0 +1,149 @@
+<!-- components/client-detail-modal/client-detail-modal.component.html -->
+<div class="modal fade" [id]="modalId" tabindex="-1" aria-labelledby="clientDetailModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="clientDetailModalLabel">
+          <i class="bi bi-person-circle me-2"></i>
+          Client Details
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body" *ngIf="client">
+        <div class="row">
+          <!-- Left Column - Basic Info -->
+          <div class="col-md-6">
+            <div class="card h-100">
+              <div class="card-header">
+                <h6 class="card-title mb-0">
+                  <i class="bi bi-person me-2"></i>
+                  Personal Information
+                </h6>
+              </div>
+              <div class="card-body">
+                <div class="row mb-3">
+                  <div class="col-4">
+                    <img 
+                      src="assets/images/default-avatar.png" 
+                      alt="Profile" 
+                      class="rounded-circle img-fluid"
+                      width="80" 
+                      height="80"
+                      onerror="this.src='https://via.placeholder.com/80x80/6c757d/ffffff?text=U'">
+                  </div>
+                  <div class="col-8">
+                    <h5 class="mb-1">{{ client.firstName }} {{ client.lastName }}</h5>
+                    <p class="text-muted mb-1">ID: {{ client.id }}</p>
+                    <span [class]="client.isActive ? 'badge bg-success' : 'badge bg-danger'">
+                      {{ client.isActive ? 'Active' : 'Inactive' }}
+                    </span>
+                  </div>
+                </div>
+                
+                <div class="info-group">
+                  <div class="info-item">
+                    <strong>Email:</strong>
+                    <span class="ms-2">{{ client.email }}</span>
+                  </div>
+                  <div class="info-item">
+                    <strong>Phone:</strong>
+                    <span class="ms-2">{{ client.phone }}</span>
+                  </div>
+                  <div class="info-item">
+                    <strong>Created:</strong>
+                    <span class="ms-2">{{ formatDate(client.createdAt) }}</span>
+                  </div>
+                  <div class="info-item">
+                    <strong>Updated:</strong>
+                    <span class="ms-2">{{ formatDate(client.updatedAt) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Right Column - Statistics -->
+          <div class="col-md-6">
+            <div class="card h-100">
+              <div class="card-header">
+                <h6 class="card-title mb-0">
+                  <i class="bi bi-graph-up me-2"></i>
+                  Statistics
+                </h6>
+              </div>
+              <div class="card-body">
+                <div class="row text-center">
+                  <div class="col-4">
+                    <div class="stat-card">
+                      <div class="stat-number text-primary">{{ client.totalBookings }}</div>
+                      <div class="stat-label">Total Bookings</div>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="stat-card">
+                      <div class="stat-number text-success">{{ client.activeBookings }}</div>
+                      <div class="stat-label">Active Bookings</div>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="stat-card">
+                      <div class="stat-number text-info">{{ formatCurrency(client.totalSpent) }}</div>
+                      <div class="stat-label">Total Spent</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Addresses Section -->
+        <div class="row mt-4">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h6 class="card-title mb-0">
+                  <i class="bi bi-geo-alt me-2"></i>
+                  Addresses ({{ client.addresses.length }})
+                </h6>
+              </div>
+              <div class="card-body">
+                <div *ngIf="client.addresses.length === 0" class="text-muted text-center py-3">
+                  <i class="bi bi-geo-alt-fill display-4"></i>
+                  <p class="mt-2">No addresses found</p>
+                </div>
+                
+                <div *ngFor="let address of client.addresses" class="address-item">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <h6 class="mb-1">
+                        {{ address.address1 }}, {{ address.city }}
+                        <span *ngIf="address.isDefault" class="badge bg-primary ms-2">Default</span>
+                        <span [class]="address.isActive ? 'badge bg-success ms-1' : 'badge bg-danger ms-1'">
+                          {{ address.isActive ? 'Active' : 'Inactive' }}
+                        </span>
+                      </h6>
+                      <p class="text-muted mb-1">
+                        <strong>Type:</strong> {{ address.addressType }}
+                      </p>
+                      <p class="text-muted mb-0" *ngIf="address.latitude && address.longitude">
+                        <strong>Coordinates:</strong> {{ address.latitude }}, {{ address.longitude }}
+                      </p>
+                      <small class="text-muted">Created: {{ formatDate(address.createdAt) }}</small>
+                    </div>
+                  </div>
+                  <hr *ngIf="client.addresses.indexOf(address) !== client.addresses.length - 1">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

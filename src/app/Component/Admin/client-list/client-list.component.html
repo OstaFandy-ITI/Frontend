@@ -1,0 +1,176 @@
+<!-- components/client-list/client-list.component.html -->
+<div class="container-fluid p-4">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Client Management</h2>
+  </div>
+
+  <!-- Filters Row -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+        <!-- <select class="form-select" (change)="onStatusFilterChange($event.target.value)"></select> -->
+      <select #statusSelect class="form-select" (change)="onStatusFilterChange(statusSelect.value)">
+        <option value="">Status: All</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <input 
+        type="text" 
+        class="form-control" 
+        placeholder="Search by name or email"
+        [formControl]="searchControl">
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="text-center py-4">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <!-- Clients Table -->
+  <div *ngIf="!loading" class="card">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="px-4 py-3">Image</th>
+              <th class="px-4 py-3">Name</th>
+              <th class="px-4 py-3">Email</th>
+              <th class="px-4 py-3">Phone</th>
+              <th class="px-4 py-3">Status</th>
+              <th class="px-4 py-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let client of clients" class="align-middle">
+              <!-- Profile Image -->
+              <td class="px-4 py-3">
+                <div class="d-flex align-items-center">
+                  <img 
+                    src="assets/images/default-avatar.png" 
+                    alt="Profile" 
+                    class="rounded-circle"
+                    width="40" 
+                    height="40"
+                    onerror="this.src='https://via.placeholder.com/40x40/6c757d/ffffff?text=U'">
+                </div>
+              </td>
+              
+              <!-- Name -->
+              <td class="px-4 py-3">
+                <div class="fw-medium">{{ client.firstName }} {{ client.lastName }}</div>
+                <small class="text-muted">ID: {{ client.id }}</small>
+              </td>
+              
+              <!-- Email -->
+              <td class="px-4 py-3">{{ client.email }}</td>
+              
+              <!-- Phone -->
+              <td class="px-4 py-3">{{ client.phone }}</td>
+              
+              <!-- Status -->
+              <td class="px-4 py-3">
+                <span [class]="getStatusBadgeClass(client.isActive)" class="px-2 py-1 rounded-pill">
+                  {{ getStatusText(client.isActive) }}
+                </span>
+              </td>
+              
+              <!-- Actions -->
+              <td class="px-4 py-3">
+                <div class="d-flex gap-2">
+                  <!-- View Button -->
+                  <button 
+                    type="button" 
+                    class="btn btn-outline-info btn-sm"
+                    (click)="openDetailModal(client)"
+                    title="View Details">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  
+                  <!-- Edit Button -->
+                  <button 
+                    type="button" 
+                    class="btn btn-outline-primary btn-sm"
+                    (click)="openEditModal(client)"
+                    title="Edit Client">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  
+                  <!-- Delete Button -->
+                  <button 
+                    type="button" 
+                    class="btn btn-outline-danger btn-sm"
+                    (click)="confirmDelete(client)"
+                    title="Delete Client">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && clients.length === 0" class="text-center py-5">
+    <div class="text-muted">
+      <i class="bi bi-person-x display-1"></i>
+      <h4 class="mt-3">No clients found</h4>
+      <p>There are no clients matching your search criteria.</p>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <nav *ngIf="!loading && clients.length > 0" aria-label="Clients pagination" class="mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="text-muted">
+        <!-- Showing {{ ((currentPage - 1) * pageSize) + 1 }} to {{ Math.min(currentPage * pageSize, totalCount) }} of {{ totalCount }} entries -->
+        Showing {{ ((currentPage - 1) * pageSize) + 1 }} to 
+        {{ (currentPage * pageSize) < totalCount ? (currentPage * pageSize) : totalCount }} of {{ totalCount }} entries
+      </div>
+      
+      <ul class="pagination mb-0">
+        <!-- Previous -->
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <button class="page-link" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">
+            Previous
+          </button>
+        </li>
+        
+        <!-- Page Numbers -->
+        <li *ngFor="let page of paginationPages" 
+            class="page-item" 
+            [class.active]="page === currentPage">
+          <button class="page-link" (click)="onPageChange(page)">{{ page }}</button>
+        </li>
+        
+        <!-- Next -->
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <button class="page-link" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">
+            Next
+          </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<!-- Client Detail Modal -->
+<app-client-detail-modal 
+  [client]="selectedClient"
+  modalId="clientDetailModal">
+</app-client-detail-modal>
+
+<!-- Client Edit Modal -->
+<app-client-edit-modal
+  [client]="selectedClient"
+  modalId="clientEditModal"
+  (clientUpdated)="onClientUpdated()">
+</app-client-edit-modal>
