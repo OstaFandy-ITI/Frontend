@@ -5,6 +5,9 @@ import { CategoryComponent } from './category/category.component';
 import { ServiceComponent } from './ServiceCAT/services.component';
 import { PaymentsComponent } from './payments/payments.component';
 import { ApplicationComponent } from './application/application.component';
+import { OrderFeedbackComponent } from './order-feedback.component/order-feedback.component.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { ClientListComponent } from './client-list/client-list.component';
 
 
 export const adminRoutes: Routes = [
@@ -16,7 +19,11 @@ export const adminRoutes: Routes = [
       { path: 'category', component: CategoryComponent },
       {path:"services", component: ServiceComponent},
       { path: 'payments', component: PaymentsComponent },
-      {path: 'application', component: ApplicationComponent }
+      {path: 'application', component: ApplicationComponent },
+      {path: 'orderfeedback', component: OrderFeedbackComponent  },
+      {path: 'AdminDashboard', component: DashboardComponent},
+      {path: 'AdminClient', component: ClientListComponent},
+
     ]
   }
 
