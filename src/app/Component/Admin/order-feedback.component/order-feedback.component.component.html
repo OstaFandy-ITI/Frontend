@@ -1,0 +1,234 @@
+<!-- order-feedback.component.html -->
+<div class="orders-feedback-container">
+  <div class="header">
+    <h1 class="title">Orders & Feedback</h1>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="search-container">
+      <input 
+        type="text" 
+        [(ngModel)]="searchString"
+        (keyup.enter)="onSearch()"
+        placeholder="Search by handyman name"
+        class="search-input">
+    </div>
+
+    <div class="filter-container">
+      <select 
+        [(ngModel)]="selectedService"
+        (change)="onFilterChange()"
+        class="filter-select">
+        <option value="">Filter by Service</option>
+        <option *ngFor="let service of uniqueServices" [value]="service">
+          {{ service }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-container">
+      <select 
+        [(ngModel)]="selectedRating"
+        (change)="onFilterChange()"
+        class="filter-select">
+        <option value="">Filter by Rating</option>
+        <option value="5">5 Stars</option>
+        <option value="4">4 Stars</option>
+        <option value="3">3 Stars</option>
+        <option value="2">2 Stars</option>
+        <option value="1">1 Star</option>
+      </select>
+    </div>
+
+    <div class="filter-actions">
+      <button (click)="clearFilters()" class="clear-filters-btn">
+        Clear Filters
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading orders feedback...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error-container">
+    <p class="error-message">{{ error }}</p>
+    <button (click)="loadOrdersFeedback()" class="retry-btn">Retry</button>
+  </div>
+
+  <!-- Table -->
+  <div *ngIf="!loading && !error" class="table-container">
+    <table class="feedback-table">
+      <thead>
+        <tr>
+          <th class="sortable">
+            Handyman
+            <span class="sort-icon">↕</span>
+          </th>
+          <th>Specialty</th>
+          <th>Client</th>
+          <th>Service</th>
+          <th class="sortable">
+            Rating
+            <span class="sort-icon">↕</span>
+          </th>
+          <th>Feedback</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let feedback of ordersFeedback; trackBy: trackByBookingId" class="table-row">
+          <td class="handyman-cell">{{ feedback.handymanName }}</td>
+          <td class="specialty-cell">{{ feedback.handymanSpecialty }}</td>
+          <td class="client-cell">{{ feedback.clientName }}</td>
+          <td class="service-cell">{{ feedback.serviceName }}</td>
+          <td class="rating-cell">
+            <div class="star-rating">
+              <span 
+                *ngFor="let star of getStarRating(feedback.rating); let i = index"
+                class="star"
+                [class.filled]="star">
+                ★
+              </span>
+            </div>
+          </td>
+          <td class="feedback-cell">
+            <span class="feedback-text">{{ truncateText(feedback.comment) }}</span>
+          </td>
+          <td class="actions-cell">
+            <button 
+              (click)="showDetails(feedback)"
+              class="details-btn"
+              title="View Details">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Empty State -->
+    <div *ngIf="ordersFeedback.length === 0" class="empty-state">
+      <div class="empty-icon">📋</div>
+      <h3>No feedback found</h3>
+      <p>There are no order feedback records matching your criteria.</p>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="totalPages > 1" class="pagination-container">
+    <div class="pagination-info">
+      <!-- Showing {{ ((currentPage - 1) * pageSize) + 1 }} to 
+      {{ Math.min(currentPage * pageSize, totalCount) }} of {{ totalCount }} results -->
+        Showing {{ ((currentPage - 1) * pageSize) + 1 }} to 
+    {{ (currentPage * pageSize) < totalCount ? (currentPage * pageSize) : totalCount }} of {{ totalCount }} results
+    </div>
+    <div class="pagination-controls">
+      <button 
+        (click)="onPageChange(currentPage - 1)"
+        [disabled]="currentPage === 1"
+        class="pagination-btn">
+        Previous
+      </button>
+      
+      <button 
+        *ngFor="let page of getPaginationPages()"
+        (click)="onPageChange(page)"
+        [class.active]="page === currentPage"
+        class="pagination-btn page-number">
+        {{ page }}
+      </button>
+      
+      <button 
+        (click)="onPageChange(currentPage + 1)"
+        [disabled]="currentPage === totalPages"
+        class="pagination-btn">
+        Next
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div *ngIf="showModal" class="modal-overlay" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Order Feedback Details</h2>
+      <button (click)="closeModal()" class="close-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    
+    <div *ngIf="selectedFeedback" class="modal-body">
+      <div class="detail-grid">
+        <div class="detail-item">
+          <label>Booking ID:</label>
+          <span>{{ selectedFeedback.bookingId }}</span>
+        </div>
+        
+        <div class="detail-item">
+          <label>Handyman:</label>
+          <span>{{ selectedFeedback.handymanName }}</span>
+        </div>
+        
+        <div class="detail-item">
+          <label>Specialty:</label>
+          <span>{{ selectedFeedback.handymanSpecialty }}</span>
+        </div>
+        
+        <div class="detail-item">
+          <label>Client:</label>
+          <span>{{ selectedFeedback.clientName }}</span>
+        </div>
+        
+        <div class="detail-item">
+          <label>Service:</label>
+          <span>{{ selectedFeedback.serviceName }}</span>
+        </div>
+        
+        <div class="detail-item">
+          <label>Total Amount:</label>
+          <span>${{ selectedFeedback.totalAmount.toFixed(2) }}</span>
+        </div>
+        
+        <div class="detail-item">
+          <label>Rating:</label>
+          <div class="star-rating">
+            <span 
+              *ngFor="let star of getStarRating(selectedFeedback.rating); let i = index"
+              class="star"
+              [class.filled]="star">
+              ★
+            </span>
+            <span class="rating-number">({{ selectedFeedback.rating }}/5)</span>
+          </div>
+        </div>
+        
+        <div class="detail-item full-width">
+          <label>Feedback Comment:</label>
+          <p class="comment-text">{{ selectedFeedback.comment }}</p>
+        </div>
+        
+        <div class="detail-item">
+          <label>Completed At:</label>
+          <span>{{ formatDate(selectedFeedback.completedAt) }}</span>
+        </div>
+        
+        <div class="detail-item">
+          <label>Review Created:</label>
+          <span>{{ formatDate(selectedFeedback.reviewCreatedAt) }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

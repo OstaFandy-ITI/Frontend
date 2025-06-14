@@ -48,7 +48,7 @@
 
   <div class="sidebar-section">
     <h6>Main</h6>
-    <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-link"
+    <a routerLink="/admin/AdminDashboard" routerLinkActive="active" class="nav-link"
       [routerLinkActiveOptions]="{ exact: true }">
       <i class="bi bi-speedometer2 me-2"></i>Dashboard
     </a>
@@ -75,11 +75,11 @@
     </button>
     <div [class.collapse]="!handymanDropdownOpen" class="ps-4">
       <a routerLink="/admin/handymen" routerLinkActive="active" class="nav-link text-white">All Handymen</a>
-      <a routerLink="/admin/handyman-orders" routerLinkActive="active" class="nav-link text-white">Orders & Feedback</a>
+      <a routerLink="/admin/orderfeedback" routerLinkActive="active" class="nav-link text-white">Orders & Feedback</a>
       <a routerLink="/admin/application" routerLinkActive="active"
         class="nav-link text-white">Applications</a>
     </div>
-    <a routerLink="/admin/clients" routerLinkActive="active" class="nav-link">
+    <a routerLink="/admin/AdminClient" routerLinkActive="active" class="nav-link">
       <i class="bi bi-people me-2"></i>Clients
     </a>
   </div>
