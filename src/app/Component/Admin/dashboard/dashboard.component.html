@@ -1,0 +1,197 @@
+<div class="dashboard-container">
+  <!-- Statistics Cards -->
+  <div class="stats-grid">
+    <div class="stat-card total-jobs">
+      <div class="stat-content">
+        <div class="stat-info">
+          <h3 class="stat-title">Total Jobs</h3>
+          <div class="stat-value">
+            {{ isStatisticsLoading ? '...' : statistics.completedJobCount }}
+          </div>
+        </div>
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9,11 12,14 22,4"></polyline>
+            <path d="m21,3-2.5,2.5L16,8"></path>
+            <path d="m13,13-2-2-2,2"></path>
+            <path d="m21,13v6a2,2 0 0,1-2,2H5a2,2 0 0,1-2-2V5a2,2 0 0,1,2-2h6"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card total-revenue">
+      <div class="stat-content">
+        <div class="stat-info">
+          <h3 class="stat-title">Total Revenue</h3>
+          <div class="stat-value">
+            {{ isStatisticsLoading ? '...' : (statistics.totalRevenue | number:'1.0-0') }}
+          </div>
+        </div>
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card avg-rating">
+      <div class="stat-content">
+        <div class="stat-info">
+          <h3 class="stat-title">Avg Rating</h3>
+          <div class="stat-value">
+            {{ isStatisticsLoading ? '...' : (statistics.averageRating | number:'1.1-1') }}
+          </div>
+        </div>
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26 12,2"></polygon>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-card clients">
+      <div class="stat-content">
+        <div class="stat-info">
+          <h3 class="stat-title">Clients</h3>
+          <div class="stat-value">
+            {{ isStatisticsLoading ? '...' : statistics.activeClientCount }}
+          </div>
+        </div>
+        <div class="stat-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filter Bar -->
+  <div class="search-filter-bar">
+    <div class="search-container">
+      <div class="search-input-wrapper">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <input 
+          type="text" 
+          placeholder="Search clients, jobs, etc..." 
+          [(ngModel)]="searchString"
+          (keyup.enter)="onSearch()"
+          class="search-input">
+      </div>
+    </div>
+
+    <div class="filter-container">
+      <div class="filter-dropdown" [class.open]="isDropdownOpen">
+        <button class="filter-button" (click)="toggleDropdown()">
+          <svg class="filter-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46 22,3"></polygon>
+          </svg>
+          <span>{{ getSelectedFiltersText() }}</span>
+          <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6,9 12,15 18,9"></polyline>
+          </svg>
+        </button>
+
+        <div class="filter-dropdown-menu" *ngIf="isDropdownOpen">
+          <div 
+            *ngFor="let option of filterOptions" 
+            class="filter-option"
+            [class.selected]="isFilterSelected(option.value)"
+            (click)="toggleFilter(option.value)">
+            <span class="filter-checkbox">
+              <svg *ngIf="isFilterSelected(option.value)" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20,6 9,17 4,12"></polyline>
+              </svg>
+            </span>
+            {{ option.label }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <div class="table-container">
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Location</th>
+            <th>Client</th>
+            <th>Handyman</th>
+            <th>Review</th>
+            <th>Revenue</th>
+            <th>More</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="isLoading">
+            <td colspan="7" class="loading-cell">Loading...</td>
+          </tr>
+          <tr *ngIf="!isLoading && dashboardData.length === 0">
+            <td colspan="7" class="no-data-cell">No data available</td>
+          </tr>
+          <tr *ngFor="let item of dashboardData">
+            <td>{{ item.service }}</td>
+            <td>{{ item.location }}</td>
+            <td>{{ item.client }}</td>
+            <td>{{ item.handyman }}</td>
+            <td>{{ item.review }}</td>
+            <td>${{ item.revenue | number:'1.2-2' }}</td>
+            <td>
+              <button class="action-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="1"></circle>
+                  <circle cx="12" cy="5" r="1"></circle>
+                  <circle cx="12" cy="19" r="1"></circle>
+                </svg>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container" *ngIf="totalPages > 1">
+      <div class="pagination-info">
+        <!-- Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize, totalCount) }} of {{ totalCount }} entries -->
+      Showing {{ ((currentPage - 1) * pageSize) + 1 }} to {{ (currentPage * pageSize) < totalCount ? (currentPage * pageSize) : totalCount }} of {{ totalCount }} results
+    </div>
+      <div class="pagination">
+        <button 
+          class="pagination-button"
+          [disabled]="currentPage === 1"
+          (click)="onPageChange(currentPage - 1)">
+          Previous
+        </button>
+        
+        <button 
+          *ngFor="let page of getPaginationNumbers()"
+          class="pagination-button"
+          [class.active]="page === currentPage"
+          (click)="onPageChange(page)">
+          {{ page }}
+        </button>
+        
+        <button 
+          class="pagination-button"
+          [disabled]="currentPage === totalPages"
+          (click)="onPageChange(currentPage + 1)">
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
