@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RegisterService } from '../../Component/HandyMan/services/register.service';
 import { ResponseDto } from '../../core/models/Response.model';
@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { JwtService } from '../../core/services/jwt.service';
 import { ToastrService } from 'ngx-toastr';
 import { ReactiveFormsModule } from '@angular/forms';
-
+import { AddressTypes } from '../../core/Shared/Enum';
 
 @Component({
   selector: 'app-handyman-registration',
@@ -15,8 +15,14 @@ import { ReactiveFormsModule } from '@angular/forms';
   templateUrl: './handyman-registration.component.html',
   styleUrl: './handyman-registration.component.css',
 })
-export class HandymanRegistrationComponent {
+export class HandymanRegistrationComponent implements OnInit {
+  //cacheItem: CacheItem<Category[]>
+  addressTypes: string[] = [];
   step = 1;
+
+  ngOnInit(): void {
+    this.addressTypes = Object.values(AddressTypes);
+  }
 
   //forms
   userForm: FormGroup;
@@ -41,10 +47,10 @@ export class HandymanRegistrationComponent {
       phone: ['', Validators.required],
       password: ['', Validators.required],
       confirmpassword: ['', Validators.required],
+      SpecializationId: [null, Validators.required],
     });
 
     this.handymanForm = this.fb.group({
-      SpecializationId: [null, Validators.required],
       Latitude: [null],
       Longitude: [null],
       NationalId: ['', Validators.required],
@@ -67,11 +73,31 @@ export class HandymanRegistrationComponent {
 
   //handel moving to next step
   nextStep() {
-    if (this.step === 1 && this.userForm.valid) this.step = 2;
+    this.userForm.markAllAsTouched();
+
+    if (this.userForm.invalid) {
+      this.toastr.error('Please fill all required fields in the user form.');
+      return;
+    }
+
+    if (this.step === 1) {
+      this.step = 2;
+    }
   }
 
   previousStep() {
     this.step = 1;
+  }
+
+  //get catogories and cash it
+  getCategories() {
+    //get cashed categories from localStorage
+    const cashekey = 'categories';
+    const cashedData = localStorage.getItem(cashekey);
+
+    if(cashedData){
+
+    }
   }
 
   //submit registration

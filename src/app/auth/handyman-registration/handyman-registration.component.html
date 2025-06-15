@@ -1,66 +1,136 @@
-  <div class="container">
-        <div class="header">
-            <h1>Join Us</h1>
-            <p>Are you a skilled handyman looking for stable work and a professional platform?</p>
-            <p>Join our team and get matched with clients, receive a free salary, and focus on what you do best — providing great service.</p>
-        </div>
-        
-        <div class="divider"></div>
-        
-        <div class="form-section">
-            <h2>Personal Information</h2>
-            
-            <form>
-                <div class="form-group">
-                    <label for="firstName">First Name</label>
-                    <input type="text" id="firstName" name="firstName" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="lastName">Last Name</label>
-                    <input type="text" id="lastName" name="lastName" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="phone">Phone</label>
-                    <input type="tel" id="phone" name="phone" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="confirmPassword">Confirm Password</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" required>
-                </div>
-                
-                <div class="specialist-select">
-                    <h3>Choose Your Specialist</h3>
-                    <!-- You would add a select dropdown or checkboxes here for specialist selection -->
-                    <select class="form-group" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px;">
-                        <option value="">Select your specialty</option>
-                        <option value="plumber">Plumber</option>
-                        <option value="electrician">Electrician</option>
-                        <option value="carpenter">Carpenter</option>
-                        <option value="painter">Painter</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                
-                <button type="submit" class="btn">Sign Up</button>
-            </form>
-            
-            <div class="stats">
-                <div class="stat-item">1.2K +</div>
-                <div class="stat-item">2.5K</div>
-                <div class="stat-item">Customer Completed Booking</div>
+<!-- handyman-registration.component.html -->
+<div class="gradiant">
+  @if(step === 1) {
+
+  <div class="container py-5">
+    <div class="row align-items-center justify-content-center text-center text-lg-start">
+
+      <!-- Left Section -->
+      <div class="col-lg-4 mb-5">
+        <h1 class="fw-bold mb-3">Join Us</h1>
+        <p>
+          Are you a skilled handyman looking for stable work and a professional platform?
+          Join our team and get matched with clients, receive a fixed salary,
+          and focus on what you do best — providing great service.
+        </p>
+      </div>
+
+      <!-- Center Image -->
+      <div class="col-lg-4 mb-2 d-flex justify-content-center d-none d-lg-flex">
+        <img src="handyman.png" alt="Handyman" class="handyman-img" />
+      </div>
+
+      <!-- Form Section -->
+      <div class="col-lg-4 d-flex justify-content-center">
+        <div class="form-card">
+          <h3 class="text-center mb-4">Personal Information</h3>
+          <form [formGroup]="userForm" (ngSubmit)="nextStep()">
+            <div class="form-group">
+              <i class="bi bi-person form-icon"></i>
+              <input type="text" class="form-control" formControlName="firstname" placeholder="First Name" />
             </div>
+            <div class="form-group">
+              <i class="bi bi-person form-icon"></i>
+              <input type="text" class="form-control" formControlName="lastname" placeholder="Last Name" />
+            </div>
+            <div class="form-group">
+              <i class="bi bi-envelope form-icon"></i>
+              <input type="email" class="form-control" formControlName="email" placeholder="Email" />
+            </div>
+            <div class="form-group">
+              <i class="bi bi-telephone form-icon"></i>
+              <input type="tel" class="form-control" formControlName="phone" placeholder="Phone Number" />
+            </div>
+            <div class="form-group">
+              <i class="bi bi-lock form-icon"></i>
+              <input type="password" class="form-control" formControlName="password" placeholder="Password" />
+            </div>
+            <div class="form-group">
+              <i class="bi bi-lock form-icon"></i>
+              <input type="password" class="form-control" formControlName="confirmpassword" placeholder="Confirm Password" />
+            </div>
+            <div class="form-group">
+              <i class="bi bi-briefcase form-icon"></i>
+              <select class="form-control" formControlName="SpecializationId">
+                <option disabled selected>Choose Your Speciality</option>
+                <option value="1">Plumbing</option>
+                <option value="2">Electrical</option>
+                <option value="3">Carpentry</option>
+                <option value="4">Cleaning</option>
+                <option value="5">Painting</option>
+                <option value="6">HVAC</option>
+                <option value="7">Other</option>
+              </select>
+            </div>
+            <button type="submit" class="btn-submit mt-3">Sign Up</button>
+          </form>
         </div>
+      </div>
     </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar-container d-flex justify-content-start gap-5">
+      <div class="stats-item">
+        <div class="number" data-target="1200">0</div>
+        <div class="label">Customers</div>
+      </div>
+      <div class="stats-item">
+        <div class="number" data-target="2500">0</div>
+        <div class="label">Completed Bookings</div>
+      </div>
+    </div>
+  </div>
+  }
+  @else if (step==2) {
+  <div class="app-card  mt-5">
+    <h3>Complete Your Application</h3>
+    <form [formGroup]="handymanForm" (ngSubmit)="submit()">
+      <div class="form-group upload-wrapper">
+        <i class="bi bi-credit-card-2-front upload-icon"></i>
+        <input type="text" class="upload-input" placeholder="Upload National ID Image" [value]="nationalIdImg?.name || ''" readonly>
+        <button type="button" class="custom-file-btn" (click)="nationalIdInput.click()">Choose File</button>
+        <input type="file" #nationalIdInput class="hidden-file-input" accept="image/*" (change)="onNationalIdSelected($event)">
+      </div>
+
+      <div class="form-group upload-wrapper">
+        <i class="bi bi-camera upload-icon"></i>
+        <input type="text" class="upload-input" placeholder="Upload Personal Photo" [value]="profileImg?.name || ''" readonly>
+        <button type="button" class="custom-file-btn" (click)="profileImgInput.click()">Choose File</button>
+        <input type="file" #profileImgInput class="hidden-file-input" accept="image/*" (change)="onProfileImgSelected($event)">
+      </div>
+
+      <div class="form-group">
+        <i class="bi bi-credit-card-2-front form-icon"></i>
+        <input type="text" class="form-control" placeholder="National ID Number" formControlName="NationalId">
+      </div>
+
+      <div class="form-group">
+        <i class="bi bi-briefcase form-icon"></i>
+        <input type="number" class="form-control" placeholder="Years of Experience" formControlName="ExperienceYears">
+      </div>
+
+      <div class="form-group">
+        <i class="bi bi-geo-alt form-icon"></i>
+        <input type="text" class="form-control" placeholder="Address" formControlName="Address">
+      </div>
+
+      <div class="form-group">
+        <i class="bi bi-building form-icon"></i>
+        <input type="text" class="form-control" placeholder="City" formControlName="City">
+      </div>
+
+      <div class="form-group">
+        <i class="bi bi-briefcase form-icon"></i>
+        <select class="form-control" formControlName="AddressType">
+          <option disabled selected>Choose Your AddressType</option>
+          @for (item of addressTypes; track $index) {
+            <option [value]="item">{{ item }}</option>
+          }
+        </select>
+      </div>
+
+      <button type="submit" class="btn-submit mt-2">Submit Application</button>
+      <button type="button" class="btn btn-link mt-2" (click)="previousStep()">Back</button>
+    </form>
+  </div>}
+</div>
