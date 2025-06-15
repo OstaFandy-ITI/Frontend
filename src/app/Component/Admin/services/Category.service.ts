@@ -1,29 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
-export interface Category {
-  id: number;
-  name: string;
-  description: string;
-  iconImg?: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CategoryCreate {
-  name: string;
-  description?: string;
-  isActive: boolean;
-}
-
-export interface PaginatedResult<T> {
-  totalItems: number;
-  items: T[];
-  pageNumber: number;
-  pageSize: number;
-}
+import { Category, CategoryCreate, PaginatedResult } from '../../../core/models/category.models';  
 
 @Injectable({
   providedIn: 'root'
@@ -37,18 +15,15 @@ export class CategoryService {
     return this.http.get<Category[]>(this.apiUrl);
   }
 
+  getPaginated(pageNumber: number, pageSize: number, search = '', status = 'All'): Observable<PaginatedResult<Category>> {
+    let params = new HttpParams()
+      .set('pageNumber', pageNumber)
+      .set('pageSize', pageSize)
+      .set('search', search)
+      .set('status', status);
 
-
-getPaginated(pageNumber: number, pageSize: number, search = '', status = 'All'): Observable<PaginatedResult<Category>> {
-  let params = new HttpParams()
-    .set('pageNumber', pageNumber)
-    .set('pageSize', pageSize)
-    .set('search', search)
-    .set('status', status);
-
-  return this.http.get<PaginatedResult<Category>>(`${this.apiUrl}/paginated`, { params });
-}
-
+    return this.http.get<PaginatedResult<Category>>(`${this.apiUrl}/paginated`, { params });
+  }
 
   getById(id: number): Observable<Category> {
     return this.http.get<Category>(`${this.apiUrl}/${id}`);
@@ -64,6 +39,13 @@ getPaginated(pageNumber: number, pageSize: number, search = '', status = 'All'):
 
   delete(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`, this.getAuthHeaders());
+  }
+
+  toggleStatus(id: number): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/${id}/toggle-status`, {}, {
+      ...this.getAuthHeaders(),
+      responseType: 'text' as 'json'
+    });
   }
 
   private getAuthHeaders() {

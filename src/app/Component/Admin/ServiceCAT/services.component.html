@@ -1,112 +1,100 @@
 <div class="main-content">
-    <!-- Page Header -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>Service List</h4>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal">
-            <i class="bi bi-plus-lg"></i> Add Service
-        </button>
-    </div>
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Service List</h4>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal">
+      <i class="bi bi-plus-lg"></i> Add Service
+    </button>
+  </div>
 
-    <!-- Filters -->
-    <div class="search-filter-bar d-flex gap-3 mb-3">
-        <select class="form-select w-auto" [(ngModel)]="filterStatus" (change)="getServices()">
-            <option value="All">All</option>
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-        </select>
-        <select class="form-select w-auto" [(ngModel)]="filterCategoryId" (change)="getServices()">
-  <option [ngValue]="null">All Categories</option>
-  <option *ngFor="let cat of categories" [ngValue]="cat.id">{{ cat.name }}</option>
-</select>
+  <!-- Filters -->
+  <div class="search-filter-bar d-flex gap-3 mb-3">
+    <select class="form-select w-auto" [(ngModel)]="filterStatus" (change)="getServices()">
+      <option value="All">All</option>
+      <option value="Active">Active</option>
+      <option value="Inactive">Inactive</option>
+    </select>
+    <select class="form-select w-auto" [(ngModel)]="filterCategoryId" (change)="getServices()">
+      <option [ngValue]="null">All Categories</option>
+      <option *ngFor="let cat of categories" [ngValue]="cat.id">{{ cat.name }}</option>
+    </select>
 
-        <input type="text" class="form-control" placeholder="Search..." [(ngModel)]="searchTerm"
-            (input)="getServices()" />
-    </div>
+    <input type="text" class="form-control" placeholder="Search..." [(ngModel)]="searchTerm" (input)="getServices()" />
+  </div>
 
-    <!-- Table -->
-    <div class="table-responsive custom-table">
-        <table class="table">
-            <thead class="table-header">
-                <tr>
-                    <th (click)="sortBy('name')" style="cursor: pointer;">
-                        Name
-                        <i class="bi" [ngClass]="
-                          sortField === 'name'
-                          ? (sortOrder === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down')
-                        : 'bi-arrow-down'
-                         "></i>
-                    </th>
+  <!-- Table -->
+  <div class="table-responsive custom-table">
+    <table class="table">
+      <thead class="table-header">
+        <tr>
+          <th (click)="sortBy('name')" style="cursor: pointer;">
+            Name <i class="bi" [ngClass]="sortField === 'name' ? (sortOrder === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'"></i>
+          </th>
+          <th>Description</th>
+          <th (click)="sortBy('fixedPrice')" style="cursor: pointer;">
+            Fixed Price <i class="bi" [ngClass]="sortField === 'fixedPrice' ? (sortOrder === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'"></i>
+          </th>
+          <th>Category</th>
+          <th (click)="sortBy('estimatedMinutes')" style="cursor: pointer;">
+            Duration (min) <i class="bi" [ngClass]="sortField === 'estimatedMinutes' ? (sortOrder === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'"></i>
+          </th>
+          <th>Service Type</th>
+          <th class="text-center">Status</th>
+          <th class="text-center">Action</th>
+        </tr>
+      </thead>
 
-                    <th>Description</th>
-                    <th (click)="sortBy('fixedPrice')" style="cursor: pointer;">
-                        Fixed Price
-                        <i class="bi" [ngClass]="
-                      sortField === 'fixedPrice'
-                    ? (sortOrder === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down')
-                     : 'bi-arrow-down'
-                     "></i>
-                    </th>
+      <tbody>
+        <!-- Data rows -->
+        <tr *ngFor="let service of services">
+          <td>{{ service.name }}</td>
+          <td>{{ service.description }}</td>
+          <td>{{ service.fixedPrice | currency }}</td>
+          <td>{{ service.categoryName }}</td>
+          <td>{{ service.estimatedMinutes }}</td>
+          <td>{{ service.serviceType }}</td>
+          <td class="text-center">
+            <button class="status-btn" 
+  [ngClass]="service.isActive ? 'active' : 'inactive'"
+  data-bs-toggle="modal" 
+  data-bs-target="#confirmStatusModal" 
+  (click)="openStatusModal(service)">
+  {{ service.isActive ? 'Active' : 'Inactive' }}
+</button>
 
-                    <th>Category</th>
-                    <th (click)="sortBy('estimatedMinutes')" style="cursor: pointer;">
-                        Duration (min)
-                        <i class="bi" [ngClass]="
-                          sortField === 'estimatedMinutes'
-                      ? (sortOrder === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down')
-                         : 'bi-arrow-down'
-                          "></i>
-                    </th>
-                    <th>Service Type</th>
-                    <th class="text-center">Status</th>
-                    <th class="text-center">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let service of services">
-                    <td>{{ service.name }}</td>
-                    <td>{{ service.description }}</td>
-                    <td>{{ service.fixedPrice | currency }}</td>
-                    <td>{{ service.categoryName }}</td>
-                    <td>{{ service.estimatedMinutes }}</td>
-                    <td>{{ service.serviceType }}</td>
-                    <td class="text-center">
-  <span 
-    class="badge"
-    [class.bg-success]="service.isActive"
-    [class.bg-secondary]="!service.isActive"
-    style="cursor: pointer;"
-    (click)="confirmToggleStatus(service)">
-    {{ service.isActive ? 'Active' : 'Inactive' }}
-  </span>
-</td>
+          </td>
+          <td class="text-center">
+            <i class="bi bi-pencil-square me-2 text-primary" data-bs-toggle="modal" data-bs-target="#editServiceModal"
+              (click)="openEditModal(service)" title="Edit"></i>
+          </td>
+        </tr>
 
-                    <td class="text-center">
-                        <i class="bi bi-pencil-square me-2 text-primary" data-bs-toggle="modal"
-                            data-bs-target="#editServiceModal" (click)="edit(service)" title="Edit"></i>
-                        <i class="bi bi-trash text-danger" data-bs-toggle="modal" data-bs-target="#deleteServiceModal"
-                            (click)="edit(service)" title="Delete"></i>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        <!-- Empty state -->
+        <tr *ngIf="services.length === 0">
+          <td colspan="8" class="text-center text-muted py-4 fs-5">
+            No services found.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-    <!-- Pagination -->
-    <nav class="mt-3">
-        <ul class="pagination justify-content-center">
-            <li class="page-item" [class.disabled]="pageNumber === 1">
-                <a class="page-link" (click)="onPageChange(pageNumber - 1)">&laquo;</a>
-            </li>
-            <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
-                [class.active]="pageNumber === i + 1">
-                <a class="page-link" (click)="onPageChange(i + 1)">{{ i + 1 }}</a>
-            </li>
-            <li class="page-item" [class.disabled]="pageNumber === totalPages">
-                <a class="page-link" (click)="onPageChange(pageNumber + 1)">&raquo;</a>
-            </li>
-        </ul>
-    </nav>
+  <!-- Pagination -->
+  <nav class="mt-3">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="pageNumber === 1">
+        <a class="page-link" (click)="onPageChange(pageNumber - 1)">&laquo;</a>
+      </li>
+      <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index" [class.active]="pageNumber === i + 1">
+        <a class="page-link" (click)="onPageChange(i + 1)">{{ i + 1 }}</a>
+      </li>
+      <li class="page-item" [class.disabled]="pageNumber === totalPages">
+        <a class="page-link" (click)="onPageChange(pageNumber + 1)">&raquo;</a>
+      </li>
+    </ul>
+  </nav>
 </div>
+
 
 
 <!-- Add Service Modal -->
@@ -212,3 +200,97 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="editServiceModal" tabindex="-1" aria-labelledby="editServiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="editServiceModalLabel">Edit Service</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" #editCloseBtn></button>
+            </div>
+
+            <div class="modal-body">
+                <form [formGroup]="editForm" (ngSubmit)="updateService()" novalidate>
+
+                    <!-- All fields same as addForm -->
+
+                    <!-- Category -->
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <select class="form-select" formControlName="categoryId">
+                            <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" formControlName="name" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" formControlName="description"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Fixed Price</label>
+                        <input type="number" class="form-control" formControlName="fixedPrice" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Estimated Minutes</label>
+                        <input type="number" class="form-control" formControlName="estimatedMinutes" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Service Type</label>
+                        <select class="form-select" formControlName="serviceType">
+                            <option value="Fixed">Fixed</option>
+                            <option value="Inspection">Inspection</option>
+                        </select>
+                    </div>
+
+                  
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Confirm Status Modal -->
+<!-- Confirm Status Modal -->
+<div class="modal fade" id="confirmStatusModal" tabindex="-1" aria-labelledby="confirmStatusModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmStatusModalLabel">Confirm Status Change</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        Are you sure you want to 
+        <strong>{{ selectedService?.isActive ? 'deactivate' : 'activate' }}</strong> 
+        this service?
+      </div>
+
+      <div class="modal-footer">
+<button class="btn btn-secondary" type="button" data-bs-dismiss="modal" #statusCloseBtn>Cancel</button>
+        <button class="btn btn-warning" type="button" (click)="toggleStatus()">Yes, Confirm</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+

@@ -1,9 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import {
-  CategoryService,
-  Category,
-  PaginatedResult,
-} from '../services/Category.service';
+import { CategoryService } from '../services/Category.service';
+import { Category, PaginatedResult } from '../../../core/models/category.models';
+
 import {
   FormBuilder,
   FormGroup,
@@ -12,6 +10,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-category',
@@ -36,10 +35,13 @@ export class CategoryComponent implements OnInit {
   @ViewChild('addCloseBtn') addCloseBtn!: ElementRef;
   @ViewChild('editCloseBtn') editCloseBtn!: ElementRef;
   @ViewChild('deleteCloseBtn') deleteCloseBtn!: ElementRef;
+@ViewChild('statusCloseBtn') statusCloseBtn!: ElementRef;
 
   constructor(
     private categoryService: CategoryService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+
+  private toastr: ToastrService
   ) {
     this.addForm = this.fb.group({
       name: ['', Validators.required],
@@ -93,10 +95,11 @@ export class CategoryComponent implements OnInit {
           this.getCategories();
           this.addForm.reset({ isActive: true });
           this.addCloseBtn.nativeElement.click();
+          this.toastr.success('Category added successfully!', 'Success');
         },
         error: (err) => {
           console.error('Add failed:', err);
-          alert('Add failed: ' + (err.error?.message || 'Unknown error'));
+          this.toastr.error('Failed to add category.', 'Error');
         },
       });
     }
@@ -146,4 +149,28 @@ export class CategoryComponent implements OnInit {
     this.pageNumber = 1;
     this.getCategories();
   }
+
+
+  openStatusModal(category: Category): void {
+  this.selectedCategory = { ...category };
+}
+
+toggleStatus(): void {
+  if (!this.selectedCategory) return;
+
+  this.categoryService.toggleStatus(this.selectedCategory.id).subscribe({
+    next: () => {
+      this.getCategories();
+      this.statusCloseBtn.nativeElement.click();
+      this.toastr.success('Category status updated successfully!', 'Success');
+    },
+    error: (err) => {
+      console.error('Failed to toggle status:', err);
+      const errorMsg = err.error || 'Failed to toggle category status.';
+      this.toastr.error(errorMsg, 'Error');
+    }
+  });
+}
+
+
 }
