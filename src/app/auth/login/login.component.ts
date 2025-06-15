@@ -4,7 +4,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { JwtService } from '../../core/services/jwt.service';
 import { UserLoginDto, UserRegisterDto } from '../../core/models/user.model';
 import { ToastrService } from 'ngx-toastr';
-import { ResponseDto } from '../../core/models/Response';
+import { ResponseDto } from '../../core/models/Response.model';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserType } from '../../core/Shared/Enum';
