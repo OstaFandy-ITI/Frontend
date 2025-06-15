@@ -74,4 +74,13 @@ getPaginated(pageNumber: number, pageSize: number, search = '', status = 'All'):
       })
     };
   }
+
+
+ toggleStatus(id: number): Observable<any> {
+  return this.http.patch(`${this.apiUrl}/${id}/toggle-status`, {}, {
+    ...this.getAuthHeaders(),
+    responseType: 'text' as 'json'
+  });
+}
+
 }

@@ -1,9 +1,4 @@
-import {
-  Component,
-  OnInit,
-  ViewChild,
-  ElementRef
-} from '@angular/core';
+import {Component,OnInit,ViewChild,ElementRef} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -13,6 +8,8 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ServiceItem, ServiceService } from '../services/Service.service';
+import { ServiceUpdateDTO } from '../services/Service.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-services',
@@ -22,28 +19,35 @@ import { ServiceItem, ServiceService } from '../services/Service.service';
   styleUrl: './services.component.css'
 })
 export class ServiceComponent implements OnInit {
+
   services: ServiceItem[] = [];
   categories: { id: number; name: string }[] = [];
 
   selectedService?: ServiceItem;
 
   pageNumber = 1;
-  pageSize = 7;
+  pageSize = 5;
   totalItems = 0;
 
   searchTerm: string = '';
   filterStatus: string = 'All';
+  filterCategoryId: number | null = null;
+
+  sortField: string = 'name';
+  sortOrder: 'asc' | 'desc' = 'asc';
 
   addForm!: FormGroup;
   editForm!: FormGroup;
-sortField: string = 'name';
-sortOrder: 'asc' | 'desc' = 'asc';
-filterCategoryId: number | null = null;
   @ViewChild('addCloseBtn') addCloseBtn!: ElementRef;
+  @ViewChild('editCloseBtn') editCloseBtn!: ElementRef;
+@ViewChild('statusCloseBtn') statusCloseBtn!: ElementRef;
 
   constructor(
     private serviceService: ServiceService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+     private toastr: ToastrService
+
+
   ) {}
 
   ngOnInit(): void {
@@ -70,21 +74,26 @@ filterCategoryId: number | null = null;
       description: [''],
       fixedPrice: [1, [Validators.required, Validators.min(1)]],
       estimatedMinutes: [1, [Validators.required, Validators.min(1)]],
-      serviceType: ['Fixed', Validators.required],
-      isActive: [true]
+      serviceType: ['Fixed', Validators.required]
+      // no isActive in editForm (hidden)
     });
   }
-getServices(): void {
-  this.serviceService
-  .getPaginated(this.pageNumber, this.pageSize, this.searchTerm, this.filterStatus, this.sortField, this.sortOrder, this.filterCategoryId)
-  .subscribe({
-    next: (result) => {
-      this.services = result.items;
-      this.totalItems = result.totalItems;
-    },
-    error: (err) => console.error(err)
-  });
-}
+
+  getServices(): void {
+    this.serviceService
+      .getPaginated(
+        this.pageNumber, this.pageSize,
+        this.searchTerm, this.filterStatus,
+        this.sortField, this.sortOrder, this.filterCategoryId
+      )
+      .subscribe({
+        next: (result) => {
+          this.services = result.items;
+          this.totalItems = result.totalItems;
+        },
+        error: (err) => console.error(err)
+      });
+  }
 
   loadCategories(): void {
     this.serviceService.getCategories().subscribe({
@@ -124,27 +133,55 @@ getServices(): void {
       },
       error: (err) => {
         console.error('Failed to save service:', err);
-        alert('Failed to save service. Please check inputs.');
+        this.toastr.error('Failed to save service.', 'Error');
       }
     });
   }
 
-  edit(service: ServiceItem): void {
+  openEditModal(service: ServiceItem): void {
     this.selectedService = { ...service };
-    this.editForm.patchValue(service);
+    this.editForm.patchValue({
+      id: service.id,
+      categoryId: service.categoryId,
+      name: service.name,
+      description: service.description,
+      fixedPrice: service.fixedPrice,
+      estimatedMinutes: service.estimatedMinutes,
+      serviceType: service.serviceType
+    });
   }
 
-  editService(): void {
-    if (this.editForm.invalid) return;
+updateService(): void {
+  if (this.editForm.invalid || !this.selectedService) return;
 
-    const updated: ServiceItem = {
-      ...this.selectedService!,
-      ...this.editForm.value,
-      updatedAt: new Date().toISOString()
-    };
+  const formValues = this.editForm.value;
 
-    this.serviceService.update(updated).subscribe(() => this.getServices());
-  }
+  const updatedService: ServiceUpdateDTO = {
+    id: formValues.id,
+    categoryId: formValues.categoryId,
+    name: formValues.name,
+    description: formValues.description,
+    fixedPrice: formValues.fixedPrice,
+    estimatedMinutes: formValues.estimatedMinutes,
+    serviceType: formValues.serviceType,
+    isActive: this.selectedService.isActive // keep original status
+  };
+
+  this.serviceService.update(updatedService).subscribe({
+    next: () => {
+      this.getServices();
+      this.editCloseBtn.nativeElement.click();
+      this.toastr.success('Service updated successfully!', 'Success');
+
+    },
+    error: (err) => {
+      console.error('Failed to update service:', err);
+        this.toastr.error('Failed to update service.', 'Error');
+    }
+  });
+}
+
+
 
   deleteService(): void {
     if (!this.selectedService) return;
@@ -165,42 +202,34 @@ getServices(): void {
     return Math.ceil(this.totalItems / this.pageSize) || 1;
   }
 
-
- sortBy(field: string): void {
-  if (this.sortField === field) {
-    this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
-  } else {
-    this.sortField = field;
-    this.sortOrder = 'asc';
+  sortBy(field: string): void {
+    if (this.sortField === field) {
+      this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortField = field;
+      this.sortOrder = 'asc';
+    }
+    this.getServices();
   }
-  this.getServices();
+
+ openStatusModal(service: ServiceItem): void {
+  this.selectedService = { ...service };
 }
+toggleStatus(): void {
+  if (!this.selectedService) return;
 
-toggleStatus(service: ServiceItem): void {
-  const updatedService: ServiceItem = {
-    ...service,
-    isActive: !service.isActive,
-    updatedAt: new Date().toISOString()
-  };
-
-  this.serviceService.update(updatedService).subscribe({
+  this.serviceService.toggleStatus(this.selectedService.id).subscribe({
     next: () => {
-      this.getServices(); // Refresh the table
+      this.getServices();
+      this.statusCloseBtn.nativeElement.click();
+      this.toastr.success('Service status updated successfully!', 'Success');
     },
     error: (err) => {
-      console.error('Failed to update status:', err);
-      alert('Something went wrong while updating status.');
+      console.error('Failed to toggle status:', err);
+      const errorMsg = err.error || 'Failed to toggle service status.';
+      this.toastr.error(errorMsg, 'Error');
     }
   });
-}
-
-confirmToggleStatus(service: ServiceItem): void {
-  const action = service.isActive ? 'deactivate' : 'activate';
-  const confirmation = confirm(`Are you sure you want to ${action} this service?`);
-  
-  if (confirmation) {
-    this.toggleStatus(service);
-  }
 }
 
 }
