@@ -1,48 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-
-export interface ServiceItem {
-  id: number;
-  categoryId: number;
-  categoryName: string;
-  name: string;
-  description: string;
-  fixedPrice: number;
-  estimatedMinutes: number;
-  serviceType: string;
-  isActive: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface PaginatedResult<T> {
-  totalItems: number;
-  items: T[];
-  pageNumber: number;
-  pageSize: number;
-}
-
-export interface ServiceUpdateDTO {
-  id: number;
-  categoryId: number;
-  name: string;
-  description: string;
-  fixedPrice: number;
-  estimatedMinutes: number;
-  serviceType: string;
-  isActive: boolean;
-}
-
-export type ServiceCreateDTO = {
-  categoryId: number;
-  name: string;
-  description?: string;
-  fixedPrice: number;
-  estimatedMinutes: number;
-  serviceType: string;
-  isActive: boolean;
-};
+import { ServiceItem, PaginatedResult, ServiceCreateDTO, ServiceUpdateDTO } from '../../../core/models/service.models';
 
 @Injectable({
   providedIn: 'root',

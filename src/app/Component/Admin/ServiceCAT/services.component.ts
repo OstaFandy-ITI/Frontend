@@ -7,8 +7,9 @@ import {
   FormsModule
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ServiceItem, ServiceService } from '../services/Service.service';
-import { ServiceUpdateDTO } from '../services/Service.service';
+import { ServiceService } from '../services/Service.service';
+import { ServiceItem, ServiceUpdateDTO } from '../../../core/models/service.models';
+
 import { ToastrService } from 'ngx-toastr';
 
 @Component({

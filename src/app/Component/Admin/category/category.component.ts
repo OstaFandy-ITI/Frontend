@@ -1,9 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import {
-  CategoryService,
-  Category,
-  PaginatedResult,
-} from '../services/Category.service';
+import { CategoryService } from '../services/Category.service';
+import { Category, PaginatedResult } from '../../../core/models/category.models';
+
 import {
   FormBuilder,
   FormGroup,
