@@ -7,6 +7,3 @@ export class ResponseDto<T> {
   ) {}
 }
 
-export class CacheItem<T> {
-  constructor(public value: T, public expiry: number) {}
-}
