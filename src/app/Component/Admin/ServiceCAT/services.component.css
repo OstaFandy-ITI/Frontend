@@ -117,8 +117,32 @@ body {
   background-color: rgba(58, 110, 165, 0.05);
 }
 
-.badge.bg-success {
-  background-color: #28a745;
+/* Clean consistent status buttons for both Service & Category */
+.status-btn {
+  border: none;
+  padding: 6px 18px;
+  font-size: 0.85rem;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  text-transform: capitalize;
+}
+
+.status-btn.active {
+  background-color: var(--orange);
+  color: white;
+}
+
+.status-btn.inactive {
+  background-color: var(--gray);
+  color: white;
+}
+
+.status-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .form-check-input:checked {
