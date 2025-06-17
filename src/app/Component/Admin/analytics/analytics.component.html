@@ -1,0 +1,115 @@
+<div class="dashboard-container">
+  <h4 class="dashboard-title">Analytics</h4>
+
+  <section class="dashboard-section service-usage-section">
+    <h3 class="section-title">Service Usage Statistics</h3>
+
+    <div *ngIf="serviceStatsError" class="alert error-message">
+      <p>Error: {{ serviceStatsError }}</p>
+    </div>
+
+    <div *ngIf="!serviceUsageStats.length && !serviceStatsError" class="alert loading-message">
+      <p>Loading service usage statistics...</p>
+    </div>
+
+    <div *ngIf="serviceUsageStats.length > 0">
+      <div class="stats-summary">
+        <p>Total Unique Services Tracked: <strong class="highlight-value">{{ serviceStatsCount }}</strong></p>
+        <p class="api-message">{{ serviceStatsMessage }}</p>
+      </div>
+
+      <div class="chart-wrapper">
+        <h4 class="chart-title">Service Usage by Name</h4>
+        <canvas baseChart
+          [data]="serviceUsageChartData"
+          [type]="serviceUsageChartType"
+          [options]="serviceUsageChartOptions">
+        </canvas>
+      </div>
+
+      <div class="data-table">
+        <h4 class="table-title">Detailed Service Usage</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Service ID</th>
+              <th>Service Name</th>
+              <th>Category</th>
+              <th>Usage Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let stat of serviceUsageStats">
+              <td>{{ stat.serviceId }}</td>
+              <td>{{ stat.serviceName }}</td>
+              <td>{{ stat.categoryName }}</td>
+              <td>{{ stat.usageCount }}</td>
+            </tr>
+            <tr *ngIf="!serviceUsageStats.length">
+              <td colspan="4">No service usage data available.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="dashboard-section booking-location-section">
+    <h3 class="section-title">Booking Location Statistics</h3>
+
+    <div *ngIf="bookingStatsError" class="alert error-message">
+      <p>Error: {{ bookingStatsError }}</p>
+    </div>
+
+    <div *ngIf="!bookingLocationStats.length && !bookingStatsError" class="alert loading-message">
+      <p>Loading booking location statistics...</p>
+    </div>
+
+    <div *ngIf="bookingLocationStats.length > 0">
+      <div class="stats-summary">
+        <p>Total Bookings Across All Locations: <strong class="highlight-value">{{ bookingStatsTotalBookings }}</strong></p>
+        <p class="api-message">{{ bookingStatsMessage }}</p>
+      </div>
+
+      <div class="chart-wrapper">
+        <h4 class="chart-title">Bookings by City</h4>
+        <canvas baseChart
+          [data]="bookingCityChartData"
+          [type]="bookingCityChartType"
+          [options]="bookingCityChartOptions">
+        </canvas>
+      </div>
+
+      <div class="data-table detailed-bookings">
+        <h4 class="table-title">Detailed Bookings by Address</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>City</th>
+              <th>City Booking Count</th>
+              <th>Addresses</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let cityStat of bookingLocationStats">
+              <tr>
+                <td>{{ cityStat.city }}</td>
+                <td>{{ cityStat.bookingCount }}</td>
+                <td>
+                  <ul>
+                    <li *ngFor="let addressStat of cityStat.addresses">
+                      {{ addressStat.address }} (<span class="address-booking-count">{{ addressStat.bookingCount }}</span> bookings)
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+            </ng-container>
+            <tr *ngIf="!bookingLocationStats.length">
+              <td colspan="3">No booking location data available.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</div>

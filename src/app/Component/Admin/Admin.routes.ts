@@ -8,7 +8,9 @@ import { ApplicationComponent } from './application/application.component';
 import { OrderFeedbackComponent } from './order-feedback.component/order-feedback.component.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ClientListComponent } from './client-list/client-list.component';
+import { AnalyticsComponent } from './analytics/analytics.component';
 import { HandymanListComponent } from './handyman-list/handyman-list.component';
+
 
 
 export const adminRoutes: Routes = [
@@ -23,7 +25,8 @@ export const adminRoutes: Routes = [
       {path: 'application', component: ApplicationComponent },
       {path: 'orderfeedback', component: OrderFeedbackComponent  },
       {path: 'AdminDashboard', component: DashboardComponent},
-      {path: 'AdminClient', component: ClientListComponent},
+      {path: 'AdminClient', component: ClientListComponent}, 
+      {path: 'analytics', component: AnalyticsComponent}
       {path: 'allhandymen', component: HandymanListComponent},
 
     ]
