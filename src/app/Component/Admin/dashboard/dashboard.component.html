@@ -85,6 +85,7 @@
           type="text" 
           placeholder="Search clients, jobs, etc..." 
           [(ngModel)]="searchString"
+          (input)="onSearchInput()"
           (keyup.enter)="onSearch()"
           class="search-input">
       </div>
@@ -132,15 +133,14 @@
             <th>Handyman</th>
             <th>Review</th>
             <th>Revenue</th>
-            <th>More</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngIf="isLoading">
-            <td colspan="7" class="loading-cell">Loading...</td>
+            <td colspan="6" class="loading-cell">Loading...</td>
           </tr>
           <tr *ngIf="!isLoading && dashboardData.length === 0">
-            <td colspan="7" class="no-data-cell">No data available</td>
+            <td colspan="6" class="no-data-cell">No data available</td>
           </tr>
           <tr *ngFor="let item of dashboardData">
             <td>{{ item.service }}</td>
@@ -149,15 +149,6 @@
             <td>{{ item.handyman }}</td>
             <td>{{ item.review }}</td>
             <td>${{ item.revenue | number:'1.2-2' }}</td>
-            <td>
-              <button class="action-button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="1"></circle>
-                  <circle cx="12" cy="5" r="1"></circle>
-                  <circle cx="12" cy="19" r="1"></circle>
-                </svg>
-              </button>
-            </td>
           </tr>
         </tbody>
       </table>
@@ -166,9 +157,8 @@
     <!-- Pagination -->
     <div class="pagination-container" *ngIf="totalPages > 1">
       <div class="pagination-info">
-        <!-- Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize, totalCount) }} of {{ totalCount }} entries -->
-      Showing {{ ((currentPage - 1) * pageSize) + 1 }} to {{ (currentPage * pageSize) < totalCount ? (currentPage * pageSize) : totalCount }} of {{ totalCount }} results
-    </div>
+        Showing {{ ((currentPage - 1) * pageSize) + 1 }} to {{ (currentPage * pageSize) < totalCount ? (currentPage * pageSize) : totalCount }} of {{ totalCount }} results
+      </div>
       <div class="pagination">
         <button 
           class="pagination-button"

@@ -1,38 +1,22 @@
 <!-- order-feedback.component.html -->
-<div class="orders-feedback-container">
-  <div class="header">
-    <h1 class="title">Orders & Feedback</h1>
+<div class="container-fluid p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Orders & Feedback</h2>
   </div>
 
   <!-- Filters Section -->
-  <div class="filters-section">
-    <div class="search-container">
-      <input 
-        type="text" 
-        [(ngModel)]="searchString"
-        (keyup.enter)="onSearch()"
-        placeholder="Search by handyman name"
-        class="search-input">
-    </div>
-
-    <div class="filter-container">
-      <select 
-        [(ngModel)]="selectedService"
-        (change)="onFilterChange()"
-        class="filter-select">
-        <option value="">Filter by Service</option>
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <select #serviceSelect class="form-select" (change)="onServiceFilterChange(serviceSelect.value)" [value]="selectedService">
+        <option value="">Service: All</option>
         <option *ngFor="let service of uniqueServices" [value]="service">
           {{ service }}
         </option>
       </select>
     </div>
-
-    <div class="filter-container">
-      <select 
-        [(ngModel)]="selectedRating"
-        (change)="onFilterChange()"
-        class="filter-select">
-        <option value="">Filter by Rating</option>
+    <div class="col-md-3">
+      <select #ratingSelect class="form-select" (change)="onRatingFilterChange(ratingSelect.value)" [value]="selectedRating">
+        <option value="">Rating: All</option>
         <option value="5">5 Stars</option>
         <option value="4">4 Stars</option>
         <option value="3">3 Stars</option>
@@ -40,132 +24,146 @@
         <option value="1">1 Star</option>
       </select>
     </div>
-
-    <div class="filter-actions">
-      <button (click)="clearFilters()" class="clear-filters-btn">
+    <div class="col-md-4">
+      <input 
+        type="text" 
+        class="form-control" 
+        placeholder="Search by handyman name"
+        [formControl]="searchControl">
+    </div>
+    <div class="col-md-2">
+      <button (click)="clearFilters()" class="btn btn-outline-secondary">
         Clear Filters
       </button>
     </div>
   </div>
 
   <!-- Loading State -->
-  <div *ngIf="loading" class="loading-container">
-    <div class="spinner"></div>
-    <p>Loading orders feedback...</p>
+  <div *ngIf="loading" class="text-center py-4">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
   </div>
 
   <!-- Error State -->
-  <div *ngIf="error" class="error-container">
-    <p class="error-message">{{ error }}</p>
-    <button (click)="loadOrdersFeedback()" class="retry-btn">Retry</button>
+  <div *ngIf="error" class="alert alert-danger" role="alert">
+    <div class="d-flex align-items-center">
+      <i class="bi bi-exclamation-triangle-fill me-2"></i>
+      <div>
+        <strong>Error:</strong> {{ error }}
+        <button (click)="loadOrdersFeedback()" class="btn btn-sm btn-outline-danger ms-2">
+          Retry
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- Table -->
-  <div *ngIf="!loading && !error" class="table-container">
-    <table class="feedback-table">
-      <thead>
-        <tr>
-          <th class="sortable">
-            Handyman
-            <span class="sort-icon">↕</span>
-          </th>
-          <th>Specialty</th>
-          <th>Client</th>
-          <th>Service</th>
-          <th class="sortable">
-            Rating
-            <span class="sort-icon">↕</span>
-          </th>
-          <th>Feedback</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let feedback of ordersFeedback; trackBy: trackByBookingId" class="table-row">
-          <td class="handyman-cell">{{ feedback.handymanName }}</td>
-          <td class="specialty-cell">{{ feedback.handymanSpecialty }}</td>
-          <td class="client-cell">{{ feedback.clientName }}</td>
-          <td class="service-cell">{{ feedback.serviceName }}</td>
-          <td class="rating-cell">
-            <div class="star-rating">
-              <span 
-                *ngFor="let star of getStarRating(feedback.rating); let i = index"
-                class="star"
-                [class.filled]="star">
-                ★
-              </span>
-            </div>
-          </td>
-          <td class="feedback-cell">
-            <span class="feedback-text">{{ truncateText(feedback.comment) }}</span>
-          </td>
-          <td class="actions-cell">
-            <button 
-              (click)="showDetails(feedback)"
-              class="details-btn"
-              title="View Details">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                <circle cx="12" cy="12" r="3"></circle>
-              </svg>
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div *ngIf="!loading && !error" class="card">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="px-4 py-3">Handyman</th>
+              <th class="px-4 py-3">Specialty</th>
+              <th class="px-4 py-3">Client</th>
+              <th class="px-4 py-3">Service</th>
+              <th class="px-4 py-3">Rating</th>
+              <th class="px-4 py-3">Feedback</th>
+              <th class="px-4 py-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let feedback of ordersFeedback; trackBy: trackByBookingId" class="align-middle">
+              <td class="px-4 py-3">
+                <div class="fw-medium">{{ feedback.handymanName }}</div>
+                <small class="text-muted">ID: {{ feedback.bookingId }}</small>
+              </td>
+              <td class="px-4 py-3">{{ feedback.handymanSpecialty }}</td>
+              <td class="px-4 py-3">{{ feedback.clientName }}</td>
+              <td class="px-4 py-3">{{ feedback.serviceName }}</td>
+              <td class="px-4 py-3">
+                <div class="d-flex align-items-center">
+                  <div class="star-rating me-2">
+                    <span 
+                      *ngFor="let star of getStarRating(feedback.rating); let i = index"
+                      class="star"
+                      [class.filled]="star">
+                      ★
+                    </span>
+                  </div>
+                  <span [class]="getRatingBadgeClass(feedback.rating)" class="px-2 py-1 rounded-pill">
+                    {{ feedback.rating }}/5
+                  </span>
+                </div>
+              </td>
+              <td class="px-4 py-3">
+                <span class="text-muted">{{ truncateText(feedback.comment, 40) }}</span>
+              </td>
+              <td class="px-4 py-3">
+                <div class="d-flex gap-2">
+                  <button 
+                    type="button" 
+                    class="btn btn-outline-info btn-sm"
+                    (click)="showDetails(feedback)"
+                    title="View Details">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
-    <!-- Empty State -->
-    <div *ngIf="ordersFeedback.length === 0" class="empty-state">
-      <div class="empty-icon">📋</div>
-      <h3>No feedback found</h3>
+  <!-- Empty State -->
+  <div *ngIf="!loading && !error && ordersFeedback.length === 0" class="text-center py-5">
+    <div class="text-muted">
+      <i class="bi bi-chat-square-text display-1"></i>
+      <h4 class="mt-3">No feedback found</h4>
       <p>There are no order feedback records matching your criteria.</p>
     </div>
   </div>
 
   <!-- Pagination -->
-  <div *ngIf="totalPages > 1" class="pagination-container">
-    <div class="pagination-info">
-      <!-- Showing {{ ((currentPage - 1) * pageSize) + 1 }} to 
-      {{ Math.min(currentPage * pageSize, totalCount) }} of {{ totalCount }} results -->
-        Showing {{ ((currentPage - 1) * pageSize) + 1 }} to 
-    {{ (currentPage * pageSize) < totalCount ? (currentPage * pageSize) : totalCount }} of {{ totalCount }} results
-    </div>
-    <div class="pagination-controls">
-      <button 
-        (click)="onPageChange(currentPage - 1)"
-        [disabled]="currentPage === 1"
-        class="pagination-btn">
-        Previous
-      </button>
+  <nav *ngIf="shouldShowPagination()" aria-label="Orders feedback pagination" class="mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="text-muted">
+        {{ getPaginationInfo() }}
+      </div>
       
-      <button 
-        *ngFor="let page of getPaginationPages()"
-        (click)="onPageChange(page)"
-        [class.active]="page === currentPage"
-        class="pagination-btn page-number">
-        {{ page }}
-      </button>
-      
-      <button 
-        (click)="onPageChange(currentPage + 1)"
-        [disabled]="currentPage === totalPages"
-        class="pagination-btn">
-        Next
-      </button>
+      <ul class="pagination mb-0">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <button class="page-link" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">
+            Previous
+          </button>
+        </li>
+        
+        <li *ngFor="let page of paginationPages" 
+            class="page-item" 
+            [class.active]="page === currentPage">
+          <button class="page-link" (click)="onPageChange(page)">{{ page }}</button>
+        </li>
+        
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <button class="page-link" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">
+            Next
+          </button>
+        </li>
+      </ul>
     </div>
-  </div>
-</div>
-
+  </nav>
+ 
 <!-- Modal -->
 <div *ngIf="showModal" class="modal-overlay" (click)="closeModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h2>Order Feedback Details</h2>
       <button (click)="closeModal()" class="close-btn">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
+        <i class="bi bi-x-lg"></i>
       </button>
     </div>
     
@@ -203,13 +201,15 @@
         
         <div class="detail-item">
           <label>Rating:</label>
-          <div class="star-rating">
-            <span 
-              *ngFor="let star of getStarRating(selectedFeedback.rating); let i = index"
-              class="star"
-              [class.filled]="star">
-              ★
-            </span>
+          <div class="d-flex align-items-center">
+            <div class="star-rating me-2">
+              <span 
+                *ngFor="let star of getStarRating(selectedFeedback.rating); let i = index"
+                class="star"
+                [class.filled]="star">
+                ★
+              </span>
+            </div>
             <span class="rating-number">({{ selectedFeedback.rating }}/5)</span>
           </div>
         </div>
