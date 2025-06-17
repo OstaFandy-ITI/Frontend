@@ -1,4 +1,3 @@
-// components/client-list/client-list.component.ts
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -25,17 +24,14 @@ export class ClientListComponent implements OnInit {
   selectedClient: AdminDisplayClientDTO | null = null;
   loading = false;
   
-  // Pagination
   currentPage = 1;
   totalPages = 1;
   totalCount = 0;
   pageSize = 5;
   
-  // Search and filters
   searchControl = new FormControl('');
   statusFilter: boolean | null = null;
   
-  // Modal instances
   private detailModalInstance: any;
   private editModalInstance: any;
 
@@ -73,16 +69,26 @@ export class ClientListComponent implements OnInit {
 
     this.clientService.getAllClients(params).subscribe({
       next: (response) => {
-        this.clients = response.data;
+        this.clients = response.data || []; 
         this.currentPage = response.currentPage;
         this.totalPages = response.totalPages;
         this.totalCount = response.totalCount;
         this.loading = false;
+        
+        if (this.clients.length === 0 && this.currentPage > 1 && this.totalCount === 0) {
+          this.currentPage = 1;
+          this.loadClients();
+          return;
+        }
       },
       error: (error) => {
         console.error('Error loading clients:', error);
         this.toastr.error('Failed to load clients', 'Error');
         this.loading = false;
+        this.clients = [];  
+        this.totalCount = 0;
+        this.totalPages = 1;
+        this.currentPage = 1;
       }
     });
   }
@@ -103,7 +109,7 @@ export class ClientListComponent implements OnInit {
   }
 
   onPageChange(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
+    if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
       this.currentPage = page;
       this.loadClients();
     }
@@ -113,41 +119,78 @@ export class ClientListComponent implements OnInit {
     this.selectedClient = client;
     const modalElement = document.getElementById('clientDetailModal');
     if (modalElement) {
+      if (this.detailModalInstance) {
+        this.detailModalInstance.dispose();
+      }
       this.detailModalInstance = new bootstrap.Modal(modalElement);
       this.detailModalInstance.show();
     }
   }
 
   openEditModal(client: AdminDisplayClientDTO): void {
-    this.selectedClient = { ...client };
+    this.selectedClient = { ...client }; 
     const modalElement = document.getElementById('clientEditModal');
     if (modalElement) {
+      if (this.editModalInstance) {
+        this.editModalInstance.dispose();
+      }
       this.editModalInstance = new bootstrap.Modal(modalElement);
       this.editModalInstance.show();
     }
   }
 
   onClientUpdated(): void {
-    this.editModalInstance?.hide();
+    if (this.editModalInstance) {
+      this.editModalInstance.hide();
+    }
     this.loadClients();
     this.toastr.success('Client updated successfully', 'Success');
   }
 
-  confirmDelete(client: AdminDisplayClientDTO): void {
-    if (confirm(`Are you sure you want to delete ${client.firstName} ${client.lastName}?`)) {
-      this.deleteClient(client.id);
-    }
-  }
+  // confirmDelete(client: AdminDisplayClientDTO): void {
+  //   if (confirm(`Are you sure you want to delete ${client.firstName} ${client.lastName}?`)) {
+  //     this.deleteClient(client.id);
+  //   }
+  // }
+private deleteModalInstance: any;
 
+confirmDelete(client: AdminDisplayClientDTO): void {
+  this.selectedClient = client;
+
+  const modalElement = document.getElementById('deleteConfirmModal');
+  if (modalElement) {
+    if (this.deleteModalInstance) this.deleteModalInstance.dispose();
+    this.deleteModalInstance = new bootstrap.Modal(modalElement);
+    this.deleteModalInstance.show();
+  }
+}
+
+proceedDelete(): void {
+  if (!this.selectedClient) return;
+
+  this.deleteClient(this.selectedClient.id);
+
+  if (this.deleteModalInstance) {
+    this.deleteModalInstance.hide();
+  }
+}
   private deleteClient(id: number): void {
+    this.loading = true;  
+    
     this.clientService.deleteClient(id).subscribe({
       next: () => {
+        const remainingClientsOnCurrentPage = this.clients.length - 1;
+        if (remainingClientsOnCurrentPage === 0 && this.currentPage > 1) {
+          this.currentPage = this.currentPage - 1;
+        }
+        
         this.loadClients();
         this.toastr.success('Client deleted successfully', 'Success');
       },
       error: (error) => {
         console.error('Error deleting client:', error);
         this.toastr.error('Failed to delete client', 'Error');
+        this.loading = false; // Stop loading on error
       }
     });
   }
@@ -162,13 +205,55 @@ export class ClientListComponent implements OnInit {
 
   get paginationPages(): number[] {
     const pages: number[] = [];
-    const start = Math.max(1, this.currentPage - 2);
-    const end = Math.min(this.totalPages, this.currentPage + 2);
+    const maxPagesToShow = 5;
     
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
+    if (this.totalPages <= maxPagesToShow) {
+      for (let i = 1; i <= this.totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      const start = Math.max(1, this.currentPage - Math.floor(maxPagesToShow / 2));
+      const end = Math.min(this.totalPages, start + maxPagesToShow - 1);
+      const adjustedStart = Math.max(1, end - maxPagesToShow + 1);
+      
+      for (let i = adjustedStart; i <= end; i++) {
+        pages.push(i);
+      }
     }
     
     return pages;
+  }
+  resetFilters(): void {
+    this.searchControl.setValue('');
+    this.statusFilter = null;
+    this.currentPage = 1;
+    
+    const statusSelect = document.querySelector('select') as HTMLSelectElement;
+    if (statusSelect) {
+      statusSelect.value = '';
+    }
+    
+    this.loadClients();
+  }
+
+  get showingText(): string {
+    if (this.totalCount === 0) {
+      return 'Showing 0 to 0 of 0 entries';
+    }
+    
+    const start = ((this.currentPage - 1) * this.pageSize) + 1;
+    const end = Math.min(this.currentPage * this.pageSize, this.totalCount);
+    
+    return `Showing ${start} to ${end} of ${this.totalCount} entries`;
+  }
+
+  // Cleanup method
+  ngOnDestroy(): void {
+    if (this.detailModalInstance) {
+      this.detailModalInstance.dispose();
+    }
+    if (this.editModalInstance) {
+      this.editModalInstance.dispose();
+    }
   }
 }

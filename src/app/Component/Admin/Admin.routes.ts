@@ -8,6 +8,7 @@ import { ApplicationComponent } from './application/application.component';
 import { OrderFeedbackComponent } from './order-feedback.component/order-feedback.component.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ClientListComponent } from './client-list/client-list.component';
+import { HandymanListComponent } from './handyman-list/handyman-list.component';
 
 
 export const adminRoutes: Routes = [
@@ -23,6 +24,7 @@ export const adminRoutes: Routes = [
       {path: 'orderfeedback', component: OrderFeedbackComponent  },
       {path: 'AdminDashboard', component: DashboardComponent},
       {path: 'AdminClient', component: ClientListComponent},
+      {path: 'allhandymen', component: HandymanListComponent},
 
     ]
   }

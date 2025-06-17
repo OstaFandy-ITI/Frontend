@@ -1,42 +1,65 @@
 // components/order-feedback/order-feedback.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { OrderFeedbackService } from '../../Admin/services/order-feedback.service.service';
 import { OrderFeedback, OrderFeedbackResponse, OrderFeedbackFilters } from '../../../core/models/Orderfeedback';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-order-feedback',
   templateUrl: './order-feedback.component.component.html',
   styleUrls: ['./order-feedback.component.component.css'],
-  imports: [FormsModule, CommonModule]
+  imports: [FormsModule, CommonModule, ReactiveFormsModule]
 })
-export class OrderFeedbackComponent implements OnInit {
+export class OrderFeedbackComponent implements OnInit, OnDestroy {
   ordersFeedback: OrderFeedback[] = [];
-  allOrdersFeedback: OrderFeedback[] = []; // Store all data for client-side filtering
+  allOrdersFeedback: OrderFeedback[] = [];  
+  filteredOrdersFeedback: OrderFeedback[] = [];
   loading = false;
   error = '';
   
-  // Pagination
   currentPage = 1;
   totalPages = 1;
   totalCount = 0;
-  pageSize = 10;
+  pageSize = 5;
+  paginationPages: number[] = [];
   
-  // Filters
-  searchString = '';
+  searchControl = new FormControl('');
   selectedService = '';
   selectedRating = '';
   uniqueServices: string[] = [];
   
-  // Modal
   selectedFeedback: OrderFeedback | null = null;
   showModal = false;
+
+  private hasActiveFilters = false;
+
+  private destroy$ = new Subject<void>();
 
   constructor(private orderFeedbackService: OrderFeedbackService) {}
 
   ngOnInit(): void {
+    this.setupSearchSubscription();
     this.loadOrdersFeedback();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  setupSearchSubscription(): void {
+    this.searchControl.valueChanges
+      .pipe(
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(searchValue => {
+        this.onSearch(searchValue || '');
+      });
   }
 
   loadOrdersFeedback(): void {
@@ -44,19 +67,28 @@ export class OrderFeedbackComponent implements OnInit {
     this.error = '';
     
     const filters: OrderFeedbackFilters = {
-      searchString: this.searchString,
+      searchString: this.searchControl.value || '',
       pageNumber: this.currentPage,
       pageSize: this.pageSize
     };
 
     this.orderFeedbackService.getAllOrdersFeedback(filters).subscribe({
       next: (response: OrderFeedbackResponse) => {
-        this.allOrdersFeedback = response.data; // Store original data
+        this.allOrdersFeedback = response.data;
         this.currentPage = response.currentPage;
         this.totalPages = response.totalPages;
         this.totalCount = response.totalCount;
         this.uniqueServices = this.orderFeedbackService.getUniqueServices(response.data);
-        this.applyClientSideFilters(); // Apply filters after loading data
+        
+        this.hasActiveFilters = !!(this.selectedService || this.selectedRating);
+        
+        if (this.hasActiveFilters) {
+          this.applyClientSideFilters();
+        } else {
+          this.ordersFeedback = this.allOrdersFeedback;
+          this.updatePaginationPages();
+        }
+        
         this.loading = false;
       },
       error: (error) => {
@@ -67,15 +99,63 @@ export class OrderFeedbackComponent implements OnInit {
     });
   }
 
-  onSearch(): void {
+  onSearch(searchValue: string): void {
     this.currentPage = 1;
-    this.selectedService = ''; // Reset filters when searching
+    this.selectedService = '';
     this.selectedRating = '';
+    this.hasActiveFilters = false;
     this.loadOrdersFeedback();
   }
 
-  onFilterChange(): void {
-    this.applyClientSideFilters();
+  onServiceFilterChange(value: string): void {
+    this.selectedService = value;
+    this.currentPage = 1;
+    this.hasActiveFilters = !!(value || this.selectedRating);
+    
+    if (this.hasActiveFilters) {
+      this.loadAllDataForFiltering();
+    } else {
+      this.loadOrdersFeedback();
+    }
+  }
+
+  onRatingFilterChange(value: string): void {
+    this.selectedRating = value;
+    this.currentPage = 1;
+    this.hasActiveFilters = !!(this.selectedService || value);
+    
+    if (this.hasActiveFilters) {
+      this.loadAllDataForFiltering();
+    } else {
+      this.loadOrdersFeedback();
+    }
+  }
+
+  loadAllDataForFiltering(): void {
+    this.loading = true;
+    this.error = '';
+    
+    const filters: OrderFeedbackFilters = {
+      searchString: this.searchControl.value || '',
+      pageNumber: 1,
+      pageSize: 1000
+    };
+
+    this.orderFeedbackService.getAllOrdersFeedback(filters).subscribe({
+      next: (response: OrderFeedbackResponse) => {
+        this.allOrdersFeedback = response.data;
+        this.uniqueServices = this.orderFeedbackService.getUniqueServices(response.data);
+        
+        // Apply client-side filters
+        this.applyClientSideFilters();
+        this.loading = false;
+      },
+      error: (error) => {
+        this.error = 'Failed to load orders feedback';
+        this.loading = false;
+        console.error('Error loading orders feedback:', error);
+      }
+    });
   }
 
   applyClientSideFilters(): void {
@@ -93,20 +173,52 @@ export class OrderFeedbackComponent implements OnInit {
       );
     }
     
-    this.ordersFeedback = filteredData;
-    // Update pagination for filtered results
+    this.filteredOrdersFeedback = filteredData;
+    
     this.totalCount = filteredData.length;
     this.totalPages = Math.ceil(this.totalCount / this.pageSize);
+    
+    if (this.currentPage > this.totalPages && this.totalPages > 0) {
+      this.currentPage = this.totalPages;
+    } else if (this.totalPages === 0) {
+      this.currentPage = 1;
+    }
+    
+    this.getCurrentPageData();
+    this.updatePaginationPages();
+  }
+
+  getCurrentPageData(): void {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.ordersFeedback = this.filteredOrdersFeedback.slice(startIndex, endIndex);
   }
 
   onPageChange(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    
     this.currentPage = page;
-    if (this.selectedService || this.selectedRating) {
-      // If filters are applied, just change the current page display
-      this.applyClientSideFilters();
+    
+    if (this.hasActiveFilters) {
+      this.getCurrentPageData();
+      this.updatePaginationPages();
     } else {
-      // If no filters, reload from server
       this.loadOrdersFeedback();
+    }
+  }
+
+  updatePaginationPages(): void {
+    this.paginationPages = [];
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
+    
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+      this.paginationPages.push(i);
     }
   }
 
@@ -144,28 +256,31 @@ export class OrderFeedbackComponent implements OnInit {
     return item.bookingId;
   }
 
-  getPaginationPages(): number[] {
-    const pages: number[] = [];
-    const maxVisiblePages = 5;
-    let startPage = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
-    
-    if (endPage - startPage + 1 < maxVisiblePages) {
-      startPage = Math.max(1, endPage - maxVisiblePages + 1);
-    }
-    
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
-    }
-    
-    return pages;
-  }
-
   clearFilters(): void {
     this.selectedService = '';
     this.selectedRating = '';
-    this.searchString = '';
+    this.searchControl.setValue('');
     this.currentPage = 1;
+    this.hasActiveFilters = false;
     this.loadOrdersFeedback();
+  }
+
+  getRatingBadgeClass(rating: number): string {
+    if (rating >= 4) return 'badge bg-success';
+    if (rating >= 3) return 'badge bg-warning';
+    return 'badge bg-danger';
+  }
+
+  // Helper method to get pagination info text
+  getPaginationInfo(): string {
+    if (this.totalCount === 0) return 'No entries found';
+    
+    const start = (this.currentPage - 1) * this.pageSize + 1;
+    const end = Math.min(this.currentPage * this.pageSize, this.totalCount);
+    return `Showing ${start} to ${end} of ${this.totalCount} entries`;
+  }
+
+  shouldShowPagination(): boolean {
+    return !this.loading && !this.error && this.totalPages > 1;
   }
 }

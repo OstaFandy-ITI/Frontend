@@ -3,6 +3,8 @@ import { DashboardService } from '../services/dashboard.service';
 import { DashboardDTO, PaginationResult, DashboardStatistics, DashboardFilter, FilterOption } from '../../../core/models/dashboard.models';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-dashboard',
@@ -36,6 +38,9 @@ export class DashboardComponent implements OnInit {
   isLoading = false;
   isStatisticsLoading = false;
 
+  // Search subject for debouncing
+  private searchSubject = new Subject<string>();
+
   // Filter options
   filterOptions: FilterOption[] = [
     { value: DashboardFilter.Today, label: 'Today' },
@@ -52,6 +57,24 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     this.loadStatistics();
     this.loadDashboardData();
+    this.setupSearchDebounce();
+  }
+
+  ngOnDestroy(): void {
+    this.searchSubject.complete();
+  }
+
+  private setupSearchDebounce(): void {
+    this.searchSubject
+      .pipe(
+        debounceTime(300), // Wait 300ms after user stops typing
+        distinctUntilChanged() // Only trigger if the search term actually changed
+      )
+      .subscribe(searchTerm => {
+        this.searchString = searchTerm;
+        this.currentPage = 1;
+        this.loadDashboardData();
+      });
   }
 
   loadStatistics(): void {
@@ -91,6 +114,12 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  // Called when user types in search input (real-time search)
+  onSearchInput(): void {
+    this.searchSubject.next(this.searchString);
+  }
+
+  // Called when user presses Enter (immediate search)
   onSearch(): void {
     this.currentPage = 1;
     this.loadDashboardData();

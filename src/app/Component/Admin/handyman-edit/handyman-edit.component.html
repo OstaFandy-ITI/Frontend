@@ -1,0 +1,349 @@
+<!-- Handyman Edit Modal -->
+<div class="modal fade" [class.show]="isVisible" [style.display]="isVisible ? 'block' : 'none'" 
+     tabindex="-1" role="dialog" aria-labelledby="handymanEditModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title" id="handymanEditModalLabel">
+          Edit Handyman: {{ handyman?.firstName }} {{ handyman?.lastName }}
+        </h5>
+        <button type="button" class="btn-close" (click)="onClose()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body">
+        <form [formGroup]="editForm" (ngSubmit)="onSubmit()">
+          <!-- Tab Navigation -->
+          <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+              <button type="button" 
+                      class="nav-link" 
+                      [class.active]="activeTab === 'personal'"
+                      (click)="switchTab('personal')">
+                Personal Information
+              </button>
+            </li>
+            <li class="nav-item">
+              <button type="button" 
+                      class="nav-link" 
+                      [class.active]="activeTab === 'professional'"
+                      (click)="switchTab('professional')">
+                Professional Details
+              </button>
+            </li>
+            <li class="nav-item">
+              <button type="button" 
+                      class="nav-link" 
+                      [class.active]="activeTab === 'address'"
+                      (click)="switchTab('address')">
+                Address Information
+              </button>
+            </li>
+          </ul>
+
+          <!-- Personal Information Tab -->
+          <div *ngIf="activeTab === 'personal'" class="tab-content">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="firstName" class="form-label">First Name *</label>
+                <input type="text" 
+                       id="firstName"
+                       class="form-control" 
+                       formControlName="firstName"
+                       [class.is-invalid]="editForm.get('firstName')?.invalid && editForm.get('firstName')?.touched">
+                <div class="invalid-feedback" *ngIf="editForm.get('firstName')?.invalid && editForm.get('firstName')?.touched">
+                  First name is required
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="lastName" class="form-label">Last Name *</label>
+                <input type="text" 
+                       id="lastName"
+                       class="form-control" 
+                       formControlName="lastName"
+                       [class.is-invalid]="editForm.get('lastName')?.invalid && editForm.get('lastName')?.touched">
+                <div class="invalid-feedback" *ngIf="editForm.get('lastName')?.invalid && editForm.get('lastName')?.touched">
+                  Last name is required
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="email" class="form-label">Email *</label>
+                <input type="email" 
+                       id="email"
+                       class="form-control" 
+                       formControlName="email"
+                       [class.is-invalid]="editForm.get('email')?.invalid && editForm.get('email')?.touched">
+                <div class="invalid-feedback" *ngIf="editForm.get('email')?.invalid && editForm.get('email')?.touched">
+                  <span *ngIf="editForm.get('email')?.errors?.['required']">Email is required</span>
+                  <span *ngIf="editForm.get('email')?.errors?.['email']">Please enter a valid email</span>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="phone" class="form-label">Phone *</label>
+                <input type="tel" 
+                       id="phone"
+                       class="form-control" 
+                       formControlName="phone"
+                       [class.is-invalid]="editForm.get('phone')?.invalid && editForm.get('phone')?.touched">
+                <div class="invalid-feedback" *ngIf="editForm.get('phone')?.invalid && editForm.get('phone')?.touched">
+                  Phone number is required
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="nationalId" class="form-label">National ID *</label>
+                <input type="text" 
+                       id="nationalId"
+                       class="form-control" 
+                       formControlName="nationalId"
+                       [class.is-invalid]="editForm.get('nationalId')?.invalid && editForm.get('nationalId')?.touched">
+                <div class="invalid-feedback" *ngIf="editForm.get('nationalId')?.invalid && editForm.get('nationalId')?.touched">
+                  National ID is required
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="status" class="form-label">Status *</label>
+                <select id="status" 
+                        class="form-select" 
+                        formControlName="status"
+                        [class.is-invalid]="editForm.get('status')?.invalid && editForm.get('status')?.touched">
+                  <option value="">Select Status</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Approved">Approved</option>
+                  <option value="Rejected">Rejected</option>
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="editForm.get('status')?.invalid && editForm.get('status')?.touched">
+                  Status is required
+                </div>
+              </div>
+            </div>
+
+            <!-- Images Section -->
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="nationalIdImg" class="form-label">National ID Image URL</label>
+                <input type="url" 
+                       id="nationalIdImg"
+                       class="form-control" 
+                       formControlName="nationalIdImg">
+                <small class="form-text">Current: {{ handyman?.nationalIdImg || 'No image' }}</small>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="img" class="form-label">Profile Image URL</label>
+                <input type="url" 
+                       id="img"
+                       class="form-control" 
+                       formControlName="img">
+                <small class="form-text">Current: {{ handyman?.img || 'No image' }}</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Professional Details Tab -->
+          <div *ngIf="activeTab === 'professional'" class="tab-content">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="specializationId" class="form-label">Specialization *</label>
+                <select id="specializationId" 
+                        class="form-select" 
+                        formControlName="specializationId"
+                        [class.is-invalid]="editForm.get('specializationId')?.invalid && editForm.get('specializationId')?.touched">
+                  <option value="">Select Specialization</option>
+                  <option value="1">Plumbing</option>
+                  <option value="2">Electrical</option>
+                  <option value="3">Carpentry</option>
+                  <option value="4">Painting</option>
+                  <option value="5">HVAC</option>
+                  <!-- Add more specializations as needed -->
+                </select>
+                <div class="invalid-feedback" *ngIf="editForm.get('specializationId')?.invalid && editForm.get('specializationId')?.touched">
+                  Specialization is required
+                </div>
+                <small class="form-text">Current: {{ handyman?.specializationCategory }}</small>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="experienceYears" class="form-label">Experience Years *</label>
+                <input type="number" 
+                       id="experienceYears"
+                       class="form-control" 
+                       formControlName="experienceYears"
+                       min="0"
+                       [class.is-invalid]="editForm.get('experienceYears')?.invalid && editForm.get('experienceYears')?.touched">
+                <div class="invalid-feedback" *ngIf="editForm.get('experienceYears')?.invalid && editForm.get('experienceYears')?.touched">
+                  <span *ngIf="editForm.get('experienceYears')?.errors?.['required']">Experience years is required</span>
+                  <span *ngIf="editForm.get('experienceYears')?.errors?.['min']">Experience must be 0 or greater</span>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="latitude" class="form-label">Latitude</label>
+                <input type="number" 
+                       id="latitude"
+                       class="form-control" 
+                       formControlName="latitude"
+                       step="any">
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="longitude" class="form-label">Longitude</label>
+                <input type="number" 
+                       id="longitude"
+                       class="form-control" 
+                       formControlName="longitude"
+                       step="any">
+              </div>
+            </div>
+
+            <!-- Professional Stats -->
+            <div class="info-section">
+              <h6>Professional Statistics</h6>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="info-item">
+                    <strong>Total Jobs:</strong>
+                    <span>{{ handyman?.jobAssignments?.length || 0 }}</span>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="info-item">
+                    <strong>Active Jobs:</strong>
+                    <span>{{ (handyman?.jobAssignments | slice:0:5)?.length || 0 }}</span>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="info-item">
+                    <strong>Total Spent:</strong>
+                    <span>${{ calculateTotalSpent() }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Address Information Tab -->
+          <div *ngIf="activeTab === 'address'" class="tab-content">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="defaultAddressPlace" class="form-label">Address</label>
+                <input type="text" 
+                       id="defaultAddressPlace"
+                       class="form-control" 
+                       formControlName="defaultAddressPlace">
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="defaultAddressCity" class="form-label">City</label>
+                <input type="text" 
+                       id="defaultAddressCity"
+                       class="form-control" 
+                       formControlName="defaultAddressCity">
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="addressType" class="form-label">Address Type</label>
+                <select id="addressType" 
+                        class="form-select" 
+                        formControlName="addressType">
+                  <option value="">Select Address Type</option>
+                  <option value="Home">Home</option>
+                  <option value="Work">Work</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <!-- Empty column for spacing -->
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="defaultAddressLatitude" class="form-label">Address Latitude</label>
+                <input type="number" 
+                       id="defaultAddressLatitude"
+                       class="form-control" 
+                       formControlName="defaultAddressLatitude"
+                       step="any">
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="defaultAddressLongitude" class="form-label">Address Longitude</label>
+                <input type="number" 
+                       id="defaultAddressLongitude"
+                       class="form-control" 
+                       formControlName="defaultAddressLongitude"
+                       step="any">
+              </div>
+            </div>
+
+            <!-- Current Address Info -->
+            <div class="info-section" *ngIf="handyman?.defaultAddress">
+              <h6>Current Address Information</h6>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="info-item">
+                    <strong>Address:</strong>
+                    <span>{{ handyman.defaultAddress.address1 || 'N/A' }}</span>
+                  </div>
+                  <div class="info-item">
+                    <strong>City:</strong>
+                    <span>{{ handyman.defaultAddress.city || 'N/A' }}</span>
+                  </div>
+                  <div class="info-item">
+                    <strong>Type:</strong>
+                    <span>{{ handyman.defaultAddress.addressType || 'N/A' }}</span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="info-item">
+                    <strong>Default:</strong>
+                    <span [class]="handyman.defaultAddress.isDefault ? 'text-success' : 'text-muted'">
+                      {{ handyman.defaultAddress.isDefault ? 'Yes' : 'No' }}
+                    </span>
+                  </div>
+                  <div class="info-item">
+                    <strong>Active:</strong>
+                    <span [class]="handyman.defaultAddress.isActive ? 'text-success' : 'text-danger'">
+                      {{ handyman.defaultAddress.isActive ? 'Yes' : 'No' }}
+                    </span>
+                  </div>
+                  <div class="info-item">
+                    <strong>Created:</strong>
+                    <span>{{ handyman.defaultAddress.createdAt | date:'short' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onClose()" [disabled]="loading">
+          Cancel
+        </button>
+        <button type="submit" 
+                class="btn btn-primary" 
+                (click)="onSubmit()" 
+                >
+                <!-- [disabled]="editForm.invalid || loading" -->
+          <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          {{ loading ? 'Updating...' : 'Update Handyman' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Backdrop -->
+<div class="modal-backdrop fade" [class.show]="isVisible" *ngIf="isVisible"></div>
