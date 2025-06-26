@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HandymanService } from '../services/handyman.service';
-import { AdminHandyManDTO, EditHandymanDTO } from '../../../core/models/Adminhandyman.model';
+import { HandymanService } from '../../services/handyman.service';
+import { AdminHandyManDTO, EditHandymanDTO } from '../../../../core/models/Adminhandyman.model';
 import { CommonModule } from '@angular/common';
 
 @Component({

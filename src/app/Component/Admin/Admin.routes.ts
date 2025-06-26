@@ -5,11 +5,11 @@ import { CategoryComponent } from './category/category.component';
 import { ServiceComponent } from './ServiceCAT/services.component';
 import { PaymentsComponent } from './payments/payments.component';
 import { ApplicationComponent } from './application/application.component';
-import { OrderFeedbackComponent } from './order-feedback.component/order-feedback.component.component';
+import { OrderFeedbackComponent } from './order-feedback/order-feedback.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { ClientListComponent } from './client-list/client-list.component';
+import { ClientListComponent } from '../Admin/Client/client-list/client-list.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
-import { HandymanListComponent } from './handyman-list/handyman-list.component';
+import { HandymanListComponent } from './HandyMan/handyman-list/handyman-list.component';
 
 
 

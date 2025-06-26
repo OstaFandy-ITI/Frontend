@@ -6,7 +6,7 @@
       <!-- Modal Header -->
       <div class="modal-header">
         <h5 class="modal-title" id="handymanEditModalLabel">
-          Edit Handyman: {{ handyman?.firstName }} {{ handyman?.lastName }}
+          Edit Handyman: {{ handyman!.firstName }} {{ handyman!.lastName }}
         </h5>
         <button type="button" class="btn-close" (click)="onClose()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -135,7 +135,7 @@
                        id="nationalIdImg"
                        class="form-control" 
                        formControlName="nationalIdImg">
-                <small class="form-text">Current: {{ handyman?.nationalIdImg || 'No image' }}</small>
+                <small class="form-text">Current: {{ handyman!.nationalIdImg || 'No image' }}</small>
               </div>
 
               <div class="col-md-6 mb-3">
@@ -144,7 +144,7 @@
                        id="img"
                        class="form-control" 
                        formControlName="img">
-                <small class="form-text">Current: {{ handyman?.img || 'No image' }}</small>
+                <small class="form-text">Current: {{ handyman!.img || 'No image' }}</small>
               </div>
             </div>
           </div>
@@ -169,7 +169,7 @@
                 <div class="invalid-feedback" *ngIf="editForm.get('specializationId')?.invalid && editForm.get('specializationId')?.touched">
                   Specialization is required
                 </div>
-                <small class="form-text">Current: {{ handyman?.specializationCategory }}</small>
+                <small class="form-text">Current: {{ handyman!.specializationCategory }}</small>
               </div>
 
               <div class="col-md-6 mb-3">
@@ -212,13 +212,13 @@
                 <div class="col-md-4">
                   <div class="info-item">
                     <strong>Total Jobs:</strong>
-                    <span>{{ handyman?.jobAssignments?.length || 0 }}</span>
+                    <span>{{ handyman!.jobAssignments.length || 0 }}</span>
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="info-item">
                     <strong>Active Jobs:</strong>
-                    <span>{{ (handyman?.jobAssignments | slice:0:5)?.length || 0 }}</span>
+                    <span>{{ (handyman!.jobAssignments | slice:0:5)?.length || 0 }}</span>
                   </div>
                 </div>
                 <div class="col-md-4">

@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HandymanService } from '../services/handyman.service';
-import { CreateHandymanDTO, AdminHandyManDTO } from '../../../core/models/Adminhandyman.model';
+import { HandymanService } from '../../services/handyman.service';
+import { CreateHandymanDTO, AdminHandyManDTO } from '../../../../core/models/Adminhandyman.model';
 
 @Component({
   selector: 'app-handyman-create',
