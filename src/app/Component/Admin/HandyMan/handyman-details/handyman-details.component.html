@@ -1,0 +1,169 @@
+<div class="modal-overlay" [class.visible]="isVisible" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()" *ngIf="handyman">
+    <div class="modal-header">
+      <h2>🔧 Handyman Details</h2>
+      <button class="close-btn" (click)="onClose()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="tabs">
+        <button 
+          [class.active]="activeTab === 'personal'" 
+          (click)="switchTab('personal')"
+          class="tab-btn">
+          👤 Personal Information
+        </button>
+        <button 
+          [class.active]="activeTab === 'statistics'" 
+          (click)="switchTab('statistics')"
+          class="tab-btn">
+          📊 Statistics
+        </button>
+      </div>
+
+      <div class="tab-content">
+        <!-- Personal Information Tab -->
+        <div *ngIf="activeTab === 'personal'" class="personal-info">
+          <div class="handyman-header">
+            <h3>{{ handyman.firstName || 'N/A' }} {{ handyman.lastName || '' }}</h3>
+            <span class="id-badge">ID: {{ handyman.userId }}</span>
+            <span class="status-badge" [class]="'status-' + handyman.status.toLowerCase()">
+              {{ handyman.status }}
+            </span>
+          </div>
+
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Email:</label>
+              <span>{{ handyman.email || 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Phone:</label>
+              <span>{{ handyman.phone || 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Specialty:</label>
+              <span>{{ handyman.specializationCategory || 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Experience:</label>
+              <span>{{ handyman.experienceYears || 0 }} years</span>
+            </div>
+            <div class="info-item">
+              <label>National ID:</label>
+              <span>{{ handyman.nationalId || 'N/A' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Active:</label>
+              <span>{{ handyman.isActive ? 'Yes' : 'No' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Created:</label>
+              <span>{{ handyman.createdAt | date:'MMM dd, yyyy \'at\' hh:mm a' }}</span>
+            </div>
+            <div class="info-item">
+              <label>Updated:</label>
+              <span>{{ handyman.updatedAt | date:'MMM dd, yyyy \'at\' hh:mm a' }}</span>
+            </div>
+          </div>
+          <div class="info-grid">
+  <div class="info-item">
+    <label>Profile Image:</label>
+    <div class="image-row">
+      <span class="image-container">
+        <img [src]="handyman.img || ''"
+             alt="{{ handyman.firstName }}"
+             class="handyman-image"
+             (error)="$any($event.target).src=''" />
+      </span>
+    </div>
+  </div>
+
+  <div class="info-item">
+    <label>National ID Image:</label>
+    <div class="image-row">
+      <span class="image-container">
+        <img [src]="handyman.nationalIdImg || ''"
+             alt="{{ handyman.firstName }}"
+             class="handyman-image"
+             (error)="$any($event.target).src=''" />
+      </span>
+    </div>
+  </div>
+</div>
+
+
+          <div class="addresses-section" *ngIf="handyman.defaultAddress">
+            <h4>  Default Address</h4>
+            <div class="address-card">
+              <div class="address-header">
+                <span class="address-name">{{ handyman.defaultAddress.address1 }}</span>
+                <div class="address-badges">
+                  <span class="badge default" *ngIf="handyman.defaultAddress.isDefault">Default</span>
+                  <span class="badge active" *ngIf="handyman.defaultAddress.isActive">Active</span>
+                </div>
+              </div>
+              <div class="address-details">
+                <p><strong>Type:</strong> {{ handyman.defaultAddress.addressType }}</p>
+                <p><strong>City:</strong> {{ handyman.defaultAddress.city }}</p>
+                <p><strong>Coordinates:</strong> {{ handyman.defaultAddress.latitude }}, {{ handyman.defaultAddress.longitude }}</p>
+                <p><strong>Created:</strong> {{ handyman.defaultAddress.createdAt | date:'MMM dd, yyyy \'at\' hh:mm a' }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Show coordinates from handyman if no default address -->
+          <div class="addresses-section" *ngIf="!handyman.defaultAddress && (handyman.latitude || handyman.longitude)">
+            <h4>  Location Coordinates</h4>
+            <div class="address-card">
+              <div class="address-details">
+                <p><strong>Latitude:</strong> {{ handyman.latitude }}</p>
+                <p><strong>Longitude:</strong> {{ handyman.longitude }}</p>
+                <p><strong>Default Address Place:</strong> {{ handyman.defaultAddressPlace || 'N/A' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Statistics Tab -->
+        <div *ngIf="activeTab === 'statistics'" class="statistics">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <h4>{{ getTotalBookings() }}</h4>
+              <p>Total Bookings</p>
+            </div>
+            <div class="stat-card">
+              <h4>{{ getActiveBookings() }}</h4>
+              <p>Active Bookings</p>
+            </div>
+            <!-- LATTER CAN IMPLEMENT THIS ONE -->
+            <!-- <div class="stat-card">
+              <h4>${{ getTotalSpent() }}</h4>
+              <p>Total Spent</p>
+            </div> -->
+          </div>
+
+          <div class="block-dates" *ngIf="handyman.adminBlockDateDTO && handyman.adminBlockDateDTO.length > 0">
+            <h4>🚫 Blocked Dates</h4>
+            <div class="block-date-list">
+              <div *ngFor="let blockDate of handyman.adminBlockDateDTO" class="block-date-item">
+                <div class="block-date-info">
+                  <span class="reason">{{ blockDate.reason }}</span>
+                  <span class="date-range">
+                    {{ blockDate.startDate | date:'MMM dd, yyyy' }} - {{ blockDate.endDate | date:'MMM dd, yyyy' }}
+                  </span>
+                </div>
+                <span class="active-badge" *ngIf="blockDate.isActive">Active</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- No block dates message -->
+          <div *ngIf="!handyman.adminBlockDateDTO || handyman.adminBlockDateDTO.length === 0" class="empty-state">
+            <p>No block dates found for this handyman.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

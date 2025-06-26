@@ -42,3 +42,11 @@ export interface PaginatedResult<T> {
   pageNumber: number;
   pageSize: number;
 }
+
+export class CategorySelect{
+  constructor(
+    public id: number ,
+    public name: string ,
+  )
+  { }
+}

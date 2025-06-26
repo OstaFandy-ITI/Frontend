@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BookingService } from '../services/booking.service';
-import { BookingViewModel } from '../../../core/models/Booking';
+import { BookingViewModel } from '../../../core/models/Booking.model';
 import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -27,8 +27,6 @@ export class BookingComponent implements OnInit {
     this.bookingSerivce.GetAllBookings().subscribe({
       next: (response) => {
         this.bookings = response;
-        console.log('Raw API response:', response);
-
         this.initializeCalendar();
       },
       error: (error) => {

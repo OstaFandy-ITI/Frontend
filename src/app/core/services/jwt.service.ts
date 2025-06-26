@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ResponseDto } from '../models/Response'; 
+import { ResponseDto } from '../models/Response.model'; 
 import { UserLoginDto, UserRegisterDto } from '../models/user.model';
 import { URL } from '../Shared/URL';
 

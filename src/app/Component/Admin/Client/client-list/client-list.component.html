@@ -1,0 +1,153 @@
+<div class="container-fluid p-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Client Management</h2>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <select #statusSelect class="form-select" (change)="onStatusFilterChange(statusSelect.value)">
+        <option value="">Status: All</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <input 
+        type="text" 
+        class="form-control" 
+        placeholder="Search by name or email"
+        [formControl]="searchControl">
+    </div>
+  </div>
+  <div *ngIf="loading" class="text-center py-4">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div *ngIf="!loading" class="card">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="px-4 py-3">Name</th>
+              <th class="px-4 py-3">Email</th>
+              <th class="px-4 py-3">Phone</th>
+              <th class="px-4 py-3">Status</th>
+              <th class="px-4 py-3">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let client of clients" class="align-middle">
+              <td class="px-4 py-3">
+                <div class="fw-medium">{{ client.firstName }} {{ client.lastName }}</div>
+                <small class="text-muted">ID: {{ client.id }}</small>
+              </td>
+              <td class="px-4 py-3">{{ client.email }}</td>
+              <td class="px-4 py-3">{{ client.phone }}</td>
+              <td class="px-4 py-3">
+                <span [class]="getStatusBadgeClass(client.isActive)" class="px-2 py-1 rounded-pill">
+                  {{ getStatusText(client.isActive) }}
+                </span>
+              </td>
+              <td class="px-4 py-3">
+                <div class="d-flex gap-2">
+                  <button 
+                    type="button" 
+                    class="btn btn-outline-info btn-sm"
+                    (click)="openDetailModal(client)"
+                    title="View Details">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  <button 
+                    type="button" 
+                    class="btn btn-outline-primary btn-sm"
+                    (click)="openEditModal(client)"
+                    title="Edit Client">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button 
+                    type="button" 
+                    class="btn btn-outline-danger btn-sm"
+                    (click)="confirmDelete(client)"
+                    title="Delete Client">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && clients.length === 0" class="text-center py-5">
+    <div class="text-muted">
+      <i class="bi bi-person-x display-1"></i>
+      <h4 class="mt-3">No clients found</h4>
+      <p>There are no clients matching your search criteria.</p>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <nav *ngIf="!loading && clients.length > 0" aria-label="Clients pagination" class="mt-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="text-muted">
+        Showing {{ ((currentPage - 1) * pageSize) + 1 }} to 
+        {{ (currentPage * pageSize) < totalCount ? (currentPage * pageSize) : totalCount }} of {{ totalCount }} entries
+      </div>
+      
+      <ul class="pagination mb-0">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <button class="page-link" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">
+            Previous
+          </button>
+        </li>
+        
+        <li *ngFor="let page of paginationPages" 
+            class="page-item" 
+            [class.active]="page === currentPage">
+          <button class="page-link" (click)="onPageChange(page)">{{ page }}</button>
+        </li>
+        
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <button class="page-link" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">
+            Next
+          </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">Confirm Deletion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete <strong>{{ selectedClient?.firstName }} {{ selectedClient?.lastName }}</strong>?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="proceedDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-client-detail-modal 
+  [client]="selectedClient"
+  modalId="clientDetailModal">
+</app-client-detail-modal>
+
+<app-client-edit-modal
+  [client]="selectedClient"
+  modalId="clientEditModal"
+  (clientUpdated)="onClientUpdated()">
+</app-client-edit-modal>

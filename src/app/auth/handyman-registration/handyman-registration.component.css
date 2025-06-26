@@ -1,0 +1,231 @@
+.gradiant {
+  background: linear-gradient(180deg, #ffa940 0%, #ffe5b4 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.app-card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  width: 65%;
+  min-width: 2rem;
+  z-index: 2;
+}
+.form-card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 350px;
+  z-index: 2;
+}
+
+.form-group {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.form-control {
+  position: relative;
+  border-radius: 50px;
+  padding-left: 45px;
+    z-index: 1;
+}
+
+.form-icon,
+.upload-icon {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  color: #999;
+  font-size: 1.1rem;
+  z-index: 2;
+}
+
+.btn-submit {
+  background-color: #fbb03b;
+  color: #fff;
+  padding: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  border-radius: 50px;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+  background-color: #e29a24;
+}
+
+.handyman-img {
+  margin-top: 60px;
+  height: 500px;
+  width: auto;
+}
+
+.stats-bar-container {
+  height: 152px;
+  margin-top: -160px;
+  background-color: #ffa940;
+  padding: 30px 40px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.stats-item .number {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.stats-item .label {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+/* step2 */
+.upload-wrapper {
+  position: relative;
+}
+
+.upload-input {
+  width: 100%;
+  border-radius: 50px;
+  border: 1px solid #ced4da;
+  height: 45px;
+  padding-left: 50px;
+  padding-right: 150px;
+  font-size: 1rem;
+}
+
+.custom-file-btn {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  background-color: #fbb03b;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 6px 20px;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.custom-file-btn:hover {
+  background-color: #e29a24;
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.error small {
+  color: red;
+  font-size: 10px;
+}
+
+
+
+
+
+@media (max-width: 992px) {
+  .handyman-img {
+    height: auto;
+    max-height: 350px;
+  }
+
+  .stats-bar-container {
+    margin-top: 20px;
+  }
+
+  .app-card {
+    width: 90%;
+    padding: 20px;
+  }
+
+  .form-card {
+    max-width: 100%;
+    padding: 20px;
+  }
+
+  .btn-submit {
+    font-size: 0.95rem;
+    padding: 10px;
+  }
+
+  .custom-file-btn {
+    padding: 6px 14px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-control,
+  .upload-input {
+    height: 42px;
+    font-size: 0.95rem;
+    padding-left: 40px;
+    padding-right: 110px;
+  }
+
+  .custom-file-btn {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+
+  .btn-submit {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+
+  .handyman-img {
+    max-height: 280px;
+    margin-top: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-control,
+  .upload-input {
+    height: 40px;
+    font-size: 0.9rem;
+    padding-left: 35px;
+    padding-right: 100px;
+  }
+
+  .custom-file-btn {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+
+  .btn-submit {
+    font-size: 0.85rem;
+    padding: 9px;
+  }
+
+  .handyman-img {
+    max-height: 220px;
+    margin-top: 30px;
+  }
+}
+
+
+
+
+
+  
+
+
