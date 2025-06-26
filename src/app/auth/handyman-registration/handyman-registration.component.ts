@@ -60,7 +60,7 @@ export class HandymanRegistrationComponent implements OnInit {
       Latitude: [null],
       Longitude: [null],
       NationalId: ['', Validators.required],
-      ExperienceYears: [0, Validators.required],
+      ExperienceYears: [, Validators.required],
       Address: ['', Validators.required],
       City: ['', Validators.required],
       AddressType: ['', Validators.required],

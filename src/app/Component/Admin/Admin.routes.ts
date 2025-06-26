@@ -26,8 +26,8 @@ export const adminRoutes: Routes = [
       {path: 'orderfeedback', component: OrderFeedbackComponent  },
       {path: 'AdminDashboard', component: DashboardComponent},
       {path: 'AdminClient', component: ClientListComponent}, 
-      {path: 'analytics', component: AnalyticsComponent}
-      {path: 'allhandymen', component: HandymanListComponent},
+      {path: 'analytics', component: AnalyticsComponent},
+      {path: 'allhandymen', component: HandymanListComponent}
 
     ]
   }
