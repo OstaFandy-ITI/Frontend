@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { AdminHandyManDTO } from '../../../core/models/Adminhandyman.model';
+import { AdminHandyManDTO } from '../../../../core/models/Adminhandyman.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 

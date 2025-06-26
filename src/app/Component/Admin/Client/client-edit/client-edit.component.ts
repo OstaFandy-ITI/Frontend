@@ -2,8 +2,8 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { ClientService } from '../services/client.service';
-import { AdminDisplayClientDTO, AdminEditClientDTO } from '../../../core/models/client.models';
+import { ClientService } from '../../services/client.service';
+import { AdminDisplayClientDTO, AdminEditClientDTO } from '../../../../core/models/client.models';
 import { CommonModule } from '@angular/common';
 
 @Component({

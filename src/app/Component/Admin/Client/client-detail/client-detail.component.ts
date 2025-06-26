@@ -1,6 +1,6 @@
 // components/client-detail-modal/client-detail-modal.component.ts
 import { Component, Input } from '@angular/core';
-import { AdminDisplayClientDTO } from '../../../core/models/client.models';
+import { AdminDisplayClientDTO } from '../../../../core/models/client.models';
 import { CommonModule } from '@angular/common';
 
 @Component({

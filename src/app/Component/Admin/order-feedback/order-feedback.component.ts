@@ -1,7 +1,7 @@
 // components/order-feedback/order-feedback.component.ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { OrderFeedbackService } from '../../Admin/services/order-feedback.service.service';
+import { OrderFeedbackService } from '../services/order-feedback.service.service';
 import { OrderFeedback, OrderFeedbackResponse, OrderFeedbackFilters } from '../../../core/models/Orderfeedback';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -10,8 +10,8 @@ import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-order-feedback',
-  templateUrl: './order-feedback.component.component.html',
-  styleUrls: ['./order-feedback.component.component.css'],
+  templateUrl: './order-feedback.component.html',
+  styleUrls: ['./order-feedback.component.css'],
   imports: [FormsModule, CommonModule, ReactiveFormsModule]
 })
 export class OrderFeedbackComponent implements OnInit, OnDestroy {

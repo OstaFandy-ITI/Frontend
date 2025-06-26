@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HandymanService } from '../services/handyman.service';
-import { AdminHandyManDTO, PaginatedResponse } from '../../../core/models/Adminhandyman.model';
+import { HandymanService } from '../../services/handyman.service';
+import { AdminHandyManDTO, PaginatedResponse } from '../../../../core/models/Adminhandyman.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HandymanDetailsComponent } from '../handyman-details/handyman-details.component';
