@@ -1,0 +1,67 @@
+
+<section class="container-fluid">
+<h4 class="m-4">Welcome Back!</h4>
+
+<div class="row g-4 mb-4">
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="text-container">
+        <h6>Today's Jobs</h6>
+        <h2 class="fw-bold mb-0">{{todayJobs}}</h2>
+      </div>
+      <div class="icon-circle">
+        <i class="bi bi-calendar-check"></i>
+      </div>
+      <div class="circle-bg"></div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="text-container">
+        <h6>Completed</h6>
+        <h2 class="fw-bold mb-0">{{completedJobs}}</h2>
+      </div>
+      <div class="icon-circle">
+        <i class="bi bi-check2-circle"></i>
+      </div>
+      <div class="circle-bg"></div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="stat-card">
+      <div class="text-container">
+        <h6>Pending Quotes</h6>
+        <h2 class="fw-bold mb-0">{{pendingQuotes}}</h2>
+      </div>
+      <div class="icon-circle">
+        <i class="bi bi-clock-history"></i>
+      </div>
+      <div class="circle-bg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- calender -->
+ <!-- Container for header + calendar -->
+<div class="calendar-container">
+  <div id="calendar"></div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="eventModalLabel">Appointment Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Details will be dynamically inserted here -->
+     
+      </div>
+    </div>
+  </div>
+</div>
+</section>
