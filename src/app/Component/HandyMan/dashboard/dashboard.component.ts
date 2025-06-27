@@ -10,7 +10,6 @@ import interactionPlugin from '@fullcalendar/interaction';
 declare var bootstrap: any;
 import * as L from 'leaflet';
 
-
 @Component({
   selector: 'app-dashboard',
   imports: [],
@@ -22,14 +21,14 @@ export class DashboardComponent implements OnInit {
   todayJobs!: number;
   completedJobs!: number;
   pendingQuotes!: number;
-  bookings:BookingViewModel[]=[];
+  bookings: BookingViewModel[] = [];
 
   router: any;
 
   constructor(
     private handymanService: HandyManService,
     private authService: AuthService,
-    private bookingService:BookingService,
+    private bookingService: BookingService
   ) {
     this.authService.CurrentUser$.subscribe((user) => {
       this.HandyId = Number(user?.NameIdentifier);
@@ -51,7 +50,7 @@ export class DashboardComponent implements OnInit {
         console.log(this.todayJobs, this.completedJobs, this.pendingQuotes);
       },
       error: (err) => {
-        console.log(err);   
+        console.log(err);
       },
     });
   }
@@ -89,7 +88,7 @@ export class DashboardComponent implements OnInit {
               startDate.getTime() + (booking.estimatedMinutes ?? 0) * 60000
             )
           : undefined;
-      
+
         return {
           title: `${booking.categoryName} - ${booking.handymanName}`,
           start: startDate,
@@ -100,13 +99,16 @@ export class DashboardComponent implements OnInit {
             serviceNames: booking.serviceNames?.join(', '),
             note: booking.note,
             status: booking.status,
+            latitude: booking.latitude,
+            longitude: booking.longitude,
           },
         };
       }),
       eventClick: (info) => {
-        const props= info.event.extendedProps;
-        const modalBody=document.getElementById('modalBody');
-        
+        const props = info.event.extendedProps;
+        const modalBody = document.getElementById('modalBody');
+        console.log(props);
+
         if (modalBody) {
           modalBody.innerHTML = `
             <p><strong>Client Name:</strong> ${props['clientName']}</p>
@@ -115,20 +117,20 @@ export class DashboardComponent implements OnInit {
             <p><strong>Services:</strong> ${props['serviceNames']}</p>
             <p><strong>Note:</strong> ${props['note']}</p>
             <p><strong>Status:</strong> ${props['status']}</p>
+            <iframe
+      src="https://maps.google.com/maps?q=${props['latitude']},${props['longitude']}&z=13&output=embed"
+      width="100%" height="300" frameborder="0" style="border:0;" allowfullscreen>
+    </iframe>
           `;
         }
-         const modalElement = document.getElementById('eventModal');
+        const modalElement = document.getElementById('eventModal');
         if (modalElement) {
           const modal = new bootstrap.Modal(modalElement);
           modal.show();
         }
-        
-      }
+      },
     });
 
-
     calendar.render();
-    
-
   }
 }
