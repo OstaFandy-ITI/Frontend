@@ -23,10 +23,10 @@ export class UserLoginDto {
 
 export class LoggedInUser {
     constructor(
-        public nameidentifier?: string,
-        public emailaddress?: string,
-        public givenname?: string,
-        public surname?: string,
+        public NameIdentifier?: string,
+        public Email?: string,
+        public GivenName?: string,
+        public Surname?: string,
         public UserType?: string,
         public exp?: string
     ){}

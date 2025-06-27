@@ -2,12 +2,12 @@
 <header class="top-bar d-flex justify-content-between align-items-center px-3 shadow-sm bg-white fixed-top"
   [class.sidebar-collapsed-header]="!sidebarOpen">
   <!--  toggle button -->
-  <button class="btn btn-outline-primary" (click)="toggleSidebar()" aria-label="Toggle sidebar">
-    <i class="bi" [ngClass]="sidebarOpen ? 'bi-list' : 'bi-x-lg'"></i>
+   <button class="toogle-btn" (click)="toggleSidebar()" aria-label="Toggle sidebar">
+    <i class="bi-list"></i>
   </button>
 
   <div class="d-flex align-items-center gap-3">
-    <!-- إشعارات -->
+    <!-- Notifications -->
     <div class="dropdown">
       <button class="btn btn-light position-relative dropdown-toggle" type="button" data-bs-toggle="dropdown"
         aria-expanded="false">

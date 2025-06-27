@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './side-nav.component.css'
 })
 export class SideNavComponent {
- sidebarOpen = true;
+  sidebarOpen = true;
   handymanDropdownOpen = false;
 
   constructor(private router: Router, private authService: AuthService) {}
