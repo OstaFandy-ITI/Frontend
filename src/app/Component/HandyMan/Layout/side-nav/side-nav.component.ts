@@ -1,3 +1,4 @@
+import { AdminHandyManDTO } from './../../../../core/models/Adminhandyman.model';
 import { ChangeDetectorRef, Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -15,7 +16,7 @@ import { UserType } from '../../../../core/Shared/Enum';
 export class SideNavComponent implements OnInit {
   sidebarOpen = true;
   userId?: number;
-  handyman: HandymanApplication= new HandymanApplication();
+  handyman?: AdminHandyManDTO;
   imgsrc?: string;
 
   constructor(
