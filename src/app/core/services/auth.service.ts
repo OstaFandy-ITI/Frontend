@@ -27,7 +27,7 @@ export class AuthService {
   private authStatus=new BehaviorSubject<boolean>(this.hasToken());
   private UserLoggedIn = new BehaviorSubject<LoggedInUser | null>(this.getUserData());
   public isAuthenticated$ = this.authStatus.asObservable();
-public CurrentUser$ = this.UserLoggedIn.asObservable();
+  public CurrentUser$ = this.UserLoggedIn.asObservable();
 
 
 
@@ -93,5 +93,35 @@ private getUserData(): LoggedInUser | null {
     decodedToken.exp
   );
 }
+
+
+// private getUserData(): LoggedInUser | null {
+//   const decodedToken = this.getDecodedToken();
+
+//   if (!decodedToken || this.isTokenExpired(decodedToken)) {
+//     return null;
+//   }
+
+//   console.log('✅ Decoded Token:', decodedToken);
+
+//   // Flexible fallback mapping
+//   const userId = decodedToken.nameidentifier || decodedToken.sub || decodedToken.userId || '0';
+//   const email = decodedToken.emailaddress || decodedToken.email || '';
+//   const firstName = decodedToken.givenname || decodedToken.firstName || '';
+//   const lastName = decodedToken.surname || decodedToken.lastName || '';
+//   const role = decodedToken.UserType || decodedToken.role || 'Customer';
+
+//   return new LoggedInUser(
+//     userId,
+//     email,
+//     firstName,
+//     lastName,
+//     role,
+//     decodedToken.exp
+//   );
+// }
+
+
+
 }
 

@@ -3,6 +3,8 @@ import { LoginComponent } from './auth/login/login.component';
 import{adminRoutes} from './Component/Admin/Admin.routes';
 import { adminGuard } from './core/guards/admin.guard';
 import { HandymanRegistrationComponent } from './auth/handyman-registration/handyman-registration.component';
+import { BookingWizardComponent } from './Component/Customer/booking-wizard/booking-wizard.component';
+import { ChatComponent } from './Component/Customer/chat/chat.component';
 
 export const routes: Routes = [
 
@@ -13,4 +15,8 @@ export const routes: Routes = [
     canActivate: [adminGuard],
     children: adminRoutes
   },
+
+  { path: 'booking', component: BookingWizardComponent },
+
+  { path: 'chat', component: ChatComponent },
 ];
