@@ -4,49 +4,46 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { LoggedInUser } from '../models/user.model';
 import { jwtDecode } from 'jwt-decode';
 
-
-
 export interface DecodedToken {
-   nameidentifier: string,
-   emailaddress: string,
-   givenname: string,
-   surname: string,
-   UserType: string,
-   exp: number
+  NameIdentifier?: string;
+  Email?: string;
+  GivenName?: string;
+  Surname?: string;
+  UserType?: string;
+  exp?: string;
 }
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
-
-  constructor(private http:HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   private tokenKey = 'Token';
-  private authStatus=new BehaviorSubject<boolean>(this.hasToken());
-  private UserLoggedIn = new BehaviorSubject<LoggedInUser | null>(this.getUserData());
+  private authStatus = new BehaviorSubject<boolean>(this.hasToken());
+  private UserLoggedIn = new BehaviorSubject<LoggedInUser | null>(
+    this.getUserData()
+  );
   public isAuthenticated$ = this.authStatus.asObservable();
   public CurrentUser$ = this.UserLoggedIn.asObservable();
 
 
+  public CurrentUser$ = this.UserLoggedIn.asObservable();
 
-//login user
-  Login(token:string): void {
+  //login user
+  Login(token: string): void {
     localStorage.setItem(this.tokenKey, token);
     this.UserLoggedIn.next(this.getUserData());
     this.authStatus.next(true);
   }
-
 
   //logout user
   Logout(): void {
     localStorage.removeItem(this.tokenKey);
     this.UserLoggedIn.next(null);
     this.authStatus.next(false);
-
   }
-  
+
   //get token
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
@@ -66,62 +63,30 @@ export class AuthService {
   }
 
   private isTokenExpired(token: DecodedToken): boolean {
-    const decode=this.getDecodedToken();
-    if (!decode ) {
-      return true; 
+    const decode = this.getDecodedToken();
+    if (!decode) {
+      return true;
     }
-    const now=Math.floor(Date.now() / 1000); 
-    return decode.exp < now; 
-
+    const now = Math.floor(Date.now() / 1000);
+    return decode.exp < now;
   }
 
   private hasToken(): boolean {
     return this.getToken() !== null;
-}
-
-private getUserData(): LoggedInUser | null {
-  const decodedToken = this.getDecodedToken();
-  if (!decodedToken || this.isTokenExpired(decodedToken)) {
-    return null; 
   }
-  return new LoggedInUser(
-    decodedToken.nameidentifier,
-    decodedToken.emailaddress,
-    decodedToken.givenname,
-    decodedToken.surname,
-    decodedToken.UserType,
-    decodedToken.exp
-  );
+
+  private getUserData(): LoggedInUser | null {
+    const decodedToken = this.getDecodedToken();
+    if (!decodedToken || this.isTokenExpired(decodedToken)) {
+      return null;
+    }
+    return new LoggedInUser(
+      decodedToken.NameIdentifier,
+      decodedToken.Email,
+      decodedToken.GivenName,
+      decodedToken.Surname,
+      decodedToken.UserType,
+      decodedToken.exp
+    );
+  }
 }
-
-
-// private getUserData(): LoggedInUser | null {
-//   const decodedToken = this.getDecodedToken();
-
-//   if (!decodedToken || this.isTokenExpired(decodedToken)) {
-//     return null;
-//   }
-
-//   console.log('✅ Decoded Token:', decodedToken);
-
-//   // Flexible fallback mapping
-//   const userId = decodedToken.nameidentifier || decodedToken.sub || decodedToken.userId || '0';
-//   const email = decodedToken.emailaddress || decodedToken.email || '';
-//   const firstName = decodedToken.givenname || decodedToken.firstName || '';
-//   const lastName = decodedToken.surname || decodedToken.lastName || '';
-//   const role = decodedToken.UserType || decodedToken.role || 'Customer';
-
-//   return new LoggedInUser(
-//     userId,
-//     email,
-//     firstName,
-//     lastName,
-//     role,
-//     decodedToken.exp
-//   );
-// }
-
-
-
-}
-

@@ -62,11 +62,11 @@ export class LoginComponent {
             if (user) {
                 this.toastr.success(response.message);
                 if (user.UserType === UserType.Admin) {
-                  this.router.navigate(['/admin']);
+                  this.router.navigate(['/admin/AdminDashboard']);
                 } else if (user.UserType === UserType.Customer) {
                   //this.router.navigate(['/Home']);
                 } else if (user.UserType === UserType.Handyman) {
-                 // this.router.navigate(['/Handyman']);
+                 this.router.navigate(['/handyman']);
                 }
             }
           });

@@ -8,6 +8,8 @@ export class BookingViewModel {
         public note?: string,
         public preferredDate?: string,
         public estimatedMinutes?: number,
-        public status?: string
+        public status?: string,
+        public latitude?: number,
+        public longitude?: number,
     ) {}
 }

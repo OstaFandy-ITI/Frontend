@@ -122,3 +122,29 @@
   border-radius: 10px;
   border: 1px solid transparent;
 }
+
+.toogle-btn {
+  border: none;
+  color: var(--blue-medium);
+  cursor: pointer;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.25s ease, transform 0.2s ease;
+  padding: 0;
+}
+
+.toogle-btn i {
+  font-size: 1.5rem; 
+}
+
+.toogle-btn:hover {
+  background-color: var(--blue-medium);
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.toogle-btn:active {
+  transform: scale(0.90);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
