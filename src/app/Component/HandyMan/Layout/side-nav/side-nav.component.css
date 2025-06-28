@@ -148,3 +148,69 @@
   transform: scale(0.90);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
+
+
+/* Icon Button Base */
+.icon-btn {
+  margin-right: 2px;
+  position: relative;
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+/* Icon Size & Default Transition */
+.icon-btn i {
+  font-size: 1.5rem;
+  transition: color 0.3s ease;
+}
+
+
+
+/* CHAT Icon */
+.icon-btn.chat i {
+  color: var(--blue-medium);
+}
+
+/* NOTIFICATION Icon */
+.icon-btn.notification i {
+  color: #ffc107; /* Bootstrap yellow for bell */
+}
+
+/* Hover Shake Effect */
+@keyframes shake {
+  0% { transform: rotate(0); }
+  20% { transform: rotate(6deg); }
+  40% { transform: rotate(-6deg); }
+  60% { transform: rotate(4deg); }
+  80% { transform: rotate(-4deg); }
+  100% { transform: rotate(0); }
+}
+
+.icon-btn:hover i {
+  animation: shake 0.5s ease-in-out;
+}
+
+
+/* Notification Badge Styling */
+.icon-btn .badge {
+  font-size: 0.65rem;
+  width: 18px;
+  height: 18px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  background-color: var(--bs-danger);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  line-height: 1;
+  padding: 0;
+}

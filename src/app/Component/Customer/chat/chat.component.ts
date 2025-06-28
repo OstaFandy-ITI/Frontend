@@ -42,30 +42,36 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
   }
 
-  sendMessage(): void {
-    if (!this.newMessage.trim()) return;
+sendMessage(): void {
+  if (!this.newMessage.trim()) return;
 
-    const msg = {
-      chatId: this.chatId,
-      content: this.newMessage.trim()
-    };
+  const msg: MessageDTO = {
+    chatId: this.chatId,
+    senderId: this.userId, // ✅ this must be set
+    content: this.newMessage.trim()
+  };
 
-    this.chatService.sendMessageREST(msg).subscribe({
-      next: () => {
-        this.messages.push({
-          chatId: this.chatId,
-          content: msg.content,
-          senderId: this.userId, // for local UI only
-          sentAt: new Date().toISOString()
-        });
-        this.newMessage = '';
-        setTimeout(() => this.scrollToBottom(), 100);
-      },
-      error: (err) => {
-        console.error('❌ Failed to send message', err);
-      }
-    });
+  this.chatService.sendMessageREST(msg).subscribe({
+    next: () => {
+      this.messages.push({
+        chatId: this.chatId,
+        content: msg.content,
+        senderId: this.userId,
+        sentAt: new Date().toISOString()
+      });
+      this.newMessage = '';
+      setTimeout(() => this.scrollToBottom(), 100);
+    },
+  error: (err) => {
+  console.error('❌ Failed to send message', err);
+
+  // Prevent token loss: log the error, do not logout
+  if (err.status === 401 || err.status === 403) {
+    console.warn('Chat unauthorized, but not logging out');
   }
+}
+  });
+}
 
   scrollToBottom() {
     const el = this.scrollContainer?.nativeElement;

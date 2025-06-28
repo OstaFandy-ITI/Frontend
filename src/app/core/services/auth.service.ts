@@ -28,7 +28,6 @@ export class AuthService {
   public CurrentUser$ = this.UserLoggedIn.asObservable();
 
 
-  public CurrentUser$ = this.UserLoggedIn.asObservable();
 
   //login user
   Login(token: string): void {

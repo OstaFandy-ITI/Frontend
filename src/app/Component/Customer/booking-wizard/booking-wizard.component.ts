@@ -19,38 +19,27 @@ export class BookingWizardComponent implements OnInit {
   bookingChatId = 1;
   selectedPayment = 'card';
   services = [{ category: '', type: '', description: '' }];
-
+  userId!: number;
   currentUser!: LoggedInUser | null;
- get userId(): number {
-    return +(this.currentUser?.nameidentifier ?? 0);
-  }
+
 constructor(private authService: AuthService, private BookingService:BookingService) {}
 
 ngOnInit(): void {
-  this.authService.CurrentUser$.subscribe(user => {
-    console.log('CurrentUser:', user); 
-
+  this.authService.CurrentUser$.subscribe((user) => {
     this.currentUser = user;
+    this.userId = Number(user?.NameIdentifier); 
+    console.log('✅ userId:', this.userId);
+console.log('✅ currentUser:', this.currentUser);
+    this.BookingService.setBooking({
+      id: 5, 
+      chat: { id: 1 } 
+    });
 
-    if (user?.nameidentifier) {
-      const userId = +user.nameidentifier;
-      console.log(' User ID:', userId);
-
-      const booking = this.BookingService.getCurrentBooking();
-      console.log(' Booking:', booking);
-
-      if (booking?.chat?.id) {
-        this.bookingChatId = booking.chat.id;
-        console.log(' Chat ID:', this.bookingChatId);
-      } else {
-        console.log('No chat ID found in booking');
-      }
-    } else {
-      console.log(' User not logged in or no ID in token');
-    }
+    const booking = this.BookingService.getCurrentBooking();
+    this.bookingChatId = booking?.chat?.id ?? 0;
+    console.log('✅ bookingChatId:', this.bookingChatId);
   });
 }
-
 
 
   addService() {
@@ -100,6 +89,10 @@ ngOnInit(): void {
     this.selectedPayment = method;
   }
 
+// toggleChat() {
+//   this.chatVisible = !this.chatVisible;
+//   console.log('Chat toggled:', this.chatVisible, 'User ID:', this.userId, 'Chat ID:', this.bookingChatId);
+// }
 
   
 }

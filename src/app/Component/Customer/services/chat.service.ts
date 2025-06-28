@@ -42,10 +42,9 @@ export class ChatService {
   }
 
   // Send message via REST (fallback or persistence)
-  sendMessageREST(msg: MessageDTO): Observable<any> {
-    return this.http.post(`${URL.apiUrl}/Chat/send`, msg);
-  }
-
+sendMessageREST(msg: MessageDTO): Observable<any> {
+  return this.http.post(`${URL.apiUrl}/Chat/send`, msg); // ⬅️ Should include token automatically via interceptor
+}
   // Get all previous messages in a chat
   getMessages(chatId: number): Observable<MessageDTO[]> {
     return this.http.get<MessageDTO[]>(`${URL.apiUrl}/Chat/history/${chatId}`);
