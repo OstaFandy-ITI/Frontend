@@ -7,6 +7,7 @@ import { BookingService } from '../services/Booking.service';
 import { ChatComponent } from '../chat/chat.component';
 import { ServiceService } from '../../Customer/services/service.service';
 import { ServiceItem } from '../../../core/models/service.models';
+import { CreateBookingVM } from '../../../core/models/Booking.model';
 
 @Component({
   selector: 'app-booking-wizard',
@@ -49,10 +50,20 @@ export class BookingWizardComponent implements OnInit {
 
     //step1
     this.Getservices(4); //  ==> take catogery id later
+    const saved = localStorage.getItem('selectedServices');
+    if (saved) {
+      this.SelectedItem = JSON.parse(saved);
+    }
+    //booking
+    const savedBooking = localStorage.getItem('bookingData');
+    if (savedBooking) {
+      this.bookingData = JSON.parse(savedBooking);
+    }
   }
 
   //#region Navigation
   goToStep(step: number): void {
+    this.updateStepData(this.currentStep);
     if (step >= 1 && step <= 5) {
       this.currentStep = step;
       window.scrollTo(0, 0);
@@ -60,6 +71,7 @@ export class BookingWizardComponent implements OnInit {
   }
 
   next(): void {
+    this.updateStepData(this.currentStep);
     if (this.currentStep < 5) {
       this.currentStep++;
       window.scrollTo(0, 0);
@@ -67,6 +79,7 @@ export class BookingWizardComponent implements OnInit {
   }
 
   back(): void {
+    this.updateStepData(this.currentStep);
     if (this.currentStep > 1) {
       this.currentStep--;
       window.scrollTo(0, 0);
@@ -122,10 +135,55 @@ export class BookingWizardComponent implements OnInit {
         quantity: 1,
       });
     }
+    this.saveSelectedItems();
   }
 
   removeService(id: number) {
     this.SelectedItem = this.SelectedItem.filter((item) => item.id !== id);
+    this.saveSelectedItems();
+  }
+
+  saveSelectedItems() {
+    localStorage.setItem('selectedServices', JSON.stringify(this.SelectedItem));
+  }
+
+  //#endregion
+  //#region Booking
+  bookingData: CreateBookingVM = new CreateBookingVM();
+
+  updateStepData(step: number): void {
+    // Step 1: Services
+    if (step === 1) {
+      this.bookingData.clientId = this.userId;
+      this.bookingData.serviceDto = this.SelectedItem.map((item) => ({
+        serviceId: item.id,
+        quantity: item.quantity,
+      }));
+      this.bookingData.totalPrice = this.SelectedItem.reduce(
+        (sum, item) => sum + (item.fixedPrice || 0) * item.quantity,
+        0
+      );
+
+      this.bookingData.estimatedMinutes = this.SelectedItem.reduce(
+        (sum, item) => sum + (item.estimatedMinutes || 0) * item.quantity,
+        0
+      );
+    }
+
+    // Step 2: Location
+    if (step === 2) {
+    }
+
+    // Step 3: Schedule
+    if (step === 3) {
+    }
+
+    // Step 4: Payment
+    if (step === 4) {
+    }
+
+    //Step 5: Save Data
+    localStorage.setItem('bookingData', JSON.stringify(this.bookingData));
   }
 
   //#endregion
