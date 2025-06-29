@@ -8,7 +8,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 declare var bootstrap: any;
-import * as L from 'leaflet';
+// import * as L from 'leaflet';
 
 @Component({
   selector: 'app-dashboard',
@@ -85,8 +85,8 @@ export class DashboardComponent implements OnInit {
           : undefined;
         const endDate = startDate
           ? new Date(
-              startDate.getTime() + (booking.estimatedMinutes ?? 0) * 60000
-            )
+            startDate.getTime() + (booking.estimatedMinutes ?? 0) * 60000
+          )
           : undefined;
 
         return {

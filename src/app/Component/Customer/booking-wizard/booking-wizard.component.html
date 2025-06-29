@@ -1,0 +1,218 @@
+<div class="bookingwizard">
+  <div class="container py-5">
+
+    <!-- Step Tracker -->
+    <div class="step-tracker d-flex justify-content-between align-items-center mb-3">
+      <div *ngFor="let step of [1, 2, 3, 4, 5]" class="step text-center"
+        [ngClass]="{ active: currentStep === step, done: currentStep > step }" (click)="goToStep(step)"
+        style="cursor: pointer;">
+        <div class="icon d-flex align-items-center justify-content-center">
+          <i [ngClass]="getStepIcon(step)"></i>
+        </div>
+        <small>{{ getStepLabel(step) }}</small>
+      </div>
+    </div>
+
+    <!-- Step 1: Services -->
+    <div *ngIf="currentStep === 1">
+      <h3 class="mb-4 text-blue">Select Services</h3>
+      <form id="serviceForm">
+        <div *ngFor="let service of services; let i = index"
+          class="service-block mb-4 p-4 rounded shadow-lg position-relative">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label text-blue">Category</label>
+              <select class="form-select" required [(ngModel)]="service.category" name="category{{i}}">
+                <option selected disabled>Choose Category</option>
+                <option>Plumbing</option>
+                <option>Electrical</option>
+                <option>Painting</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-blue">Service Type</label>
+              <select class="form-select" required [(ngModel)]="service.type" name="type{{i}}">
+                <option selected disabled>Choose Service</option>
+                <option>Leak Repair</option>
+                <option>Fan Installation</option>
+                <option>Wall Painting</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label text-blue">Problem Description</label>
+              <input type="text" class="form-control" [(ngModel)]="service.description" name="desc{{i}}"
+                placeholder="Describe your issue" required />
+            </div>
+          </div>
+          <i *ngIf="services.length > 1" class="bi bi-trash delete-service text-danger" (click)="removeService(i)"></i>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <button type="button" class="btn btn-outline-primary" (click)="addService()">+ Add Another Service</button>
+          <button type="button" class="btn btn-primary" (click)="next()">Next</button>
+        </div>
+
+      </form>
+
+
+    </div>
+
+    <!-- Step 2: Location -->
+    <div *ngIf="currentStep === 2">
+      <h3 class="mb-4 text-blue">Select Location</h3>
+      <form>
+        <div class="mb-4 rounded shadow-sm overflow-hidden" style="height: 300px;">
+          <iframe src="https://maps.google.com/maps?q=Cairo&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%"
+            height="100%" frameborder="0"></iframe>
+        </div>
+        <div class="row g-3 mb-4">
+          <div class="col-md-8">
+            <label class="form-label">Full Address</label>
+            <input type="text" class="form-control" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">City</label>
+            <select class="form-select">
+              <option>Cairo</option>
+              <option>Giza</option>
+            </select>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between">
+          <button type="button" class="btn btn-outline-primary" (click)="back()">← Back</button>
+          <button type="button" class="btn btn-primary" (click)="next()">Next</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Step 3: Schedule -->
+    <div *ngIf="currentStep === 3">
+      <h3 class="mb-4 text-blue">Choose Date & Time</h3>
+      <form>
+        <div class="row g-4 rounded shadow-lg p-4 mb-4 bg-white mt-0">
+          <div class="col-md-6">
+            <label class="form-label text-blue">Preferred Date</label>
+            <input type="date" class="form-control" />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label text-blue">Preferred Time</label>
+            <select class="form-select">
+              <option selected disabled>Select time slot</option>
+              <option>08:00 AM - 10:00 AM</option>
+              <option>10:00 AM - 12:00 PM</option>
+              <option>12:00 PM - 02:00 PM</option>
+              <option>02:00 PM - 04:00 PM</option>
+              <option>04:00 PM - 06:00 PM</option>
+            </select>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between mt-5">
+          <button type="button" class="btn btn-outline-primary" (click)="back()">Back</button>
+          <button type="button" class="btn btn-primary" (click)="next()">Next</button>
+        </div>
+      </form>
+    </div>
+
+
+    <!-- Step 4: Checkout -->
+    <div *ngIf="currentStep === 4">
+      <h3 class="mb-4 text-blue">Checkout</h3>
+      <div class="row g-4">
+        <!-- Left Side -->
+        <div class="col-md-6">
+          <div class="checkout-card p-4">
+            <h2 class="price-tag mb-4">89.99 EGP</h2>
+            <p class="text-muted mb-2">Features Included:</p>
+            <ul class="feature-list mb-4">
+              <li><i class="bi bi-check2-circle text-success"></i> Plumbing Fix</li>
+              <li><i class="bi bi-check2-circle text-success"></i> Painting Repair</li>
+              <li><i class="bi bi-check2-circle text-success"></i> Electrical Check</li>
+            </ul>
+
+            <p class="mb-2 text-muted">Select Payment Method:</p>
+            <div class="d-flex gap-3">
+              <div class="payment-method active" (click)="selectPayment('card')">
+                <i class="bi bi-credit-card-2-front"></i> Card
+              </div>
+              <div class="payment-method" (click)="selectPayment('cash')">
+                <i class="bi bi-cash"></i> Cash
+              </div>
+            </div>
+          </div>
+          <div class="text-start mt-4">
+            <button type="button" class="btn btn-outline-primary" (click)="back()">Back</button>
+          </div>
+        </div>
+
+        <!-- Right Side -->
+        <div class="col-md-6">
+          <div class="checkout-card p-4">
+            <!-- Card Payment Form -->
+            <div *ngIf="selectedPayment === 'card'">
+              <div class="d-flex justify-content-between mb-4">
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Old_Visa_Logo.svg/250px-Old_Visa_Logo.svg.png"
+                  height="20" />
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1200px-Mastercard-logo.svg.png"
+                  height="20" />
+              </div>
+              <input type="text" class="form-control mb-3" placeholder="Name on Card" />
+              <input type="text" class="form-control mb-3" placeholder="Card Number" />
+              <div class="row">
+                <div class="col"><input type="text" class="form-control mb-3" placeholder="MM/YY" /></div>
+                <div class="col"><input type="text" class="form-control mb-3" placeholder="CVV" /></div>
+              </div>
+            </div>
+
+            <!-- Cash Info -->
+            <div *ngIf="selectedPayment === 'cash'">
+              <p class="text-muted mb-3"><i class="bi bi-info-circle"></i> You will pay in cash upon service completion.
+              </p>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="cashConfirm" />
+                <label class="form-check-label" for="cashConfirm">
+                  I confirm I will pay in cash to the handyman
+                </label>
+              </div>
+            </div>
+
+            <hr />
+            <div class="order-summary">
+              <h6>Order Summary</h6>
+              <div class="d-flex justify-content-between"><span>Subtotal</span><span>89.99 EGP</span></div>
+              <div class="d-flex justify-content-between fw-bold"><span>Total</span><span>89.99 EGP</span></div>
+            </div>
+
+            <div class="text-end mt-4">
+              <button type="button" class="btn btn-primary px-4" (click)="next()">Confirm</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+    <!-- Step 5: Confirmation -->
+    <div *ngIf="currentStep === 5">
+      <div class="handyman-card text-center mx-auto p-4 shadow-sm">
+        <!-- <img src="https://via.placeholder.com/100" class="rounded-circle handyman-img mb-3" /> -->
+        <h5 class="text-blue">Mohamed Hamed</h5>
+        <p class="text-muted">Electrician</p>
+        <p><i class="bi bi-telephone"></i> 01012345678</p>
+        <button class="btn btn-outline-primary" (click)="chatVisible = !chatVisible">
+          <i class="bi bi-chat-dots"></i> Chat with Handyman
+        </button>
+      </div>
+<app-chat
+  *ngIf="chatVisible && bookingChatId && userId"
+  [chatId]="bookingChatId"
+  [userId]="userId">
+</app-chat>
+
+       
+    </div>
+  </div>
+</div>
