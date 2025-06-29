@@ -1,0 +1,368 @@
+<div class="container-fluid mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title mb-0">All Jobs</h4>
+        </div>
+        <div class="card-body">
+          
+          <!-- Filters Section -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <label for="statusFilter" class="form-label">Filter by Status</label>
+              <select 
+                id="statusFilter"
+                class="form-select" 
+                [(ngModel)]="selectedStatus" 
+                (change)="onStatusFilterChange()">
+                <option value="">All Status</option>
+                <option *ngFor="let status of statusOptions" [value]="status">
+                  {{status}}
+                </option>
+              </select>
+            </div>
+            
+            <div class="col-md-6">
+              <label for="searchInput" class="form-label">Search by Client Name</label>
+              <input 
+                type="text" 
+                id="searchInput"
+                class="form-control" 
+                placeholder="Enter client name..."
+                [(ngModel)]="searchTerm"
+                (input)="onSearchChange()">
+            </div>
+          </div>
+
+          <!-- Loading Spinner -->
+          <div *ngIf="isLoading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading jobs...</p>
+          </div>
+
+          <!-- Table Section -->
+          <div *ngIf="!isLoading" class="table-responsive">
+            <table class="table table-striped" >
+              <thead >
+                <tr style="background-color: red;" >
+                  <th scope="col">Job Id</th>
+                  <th scope="col">Client Name</th>
+                  <th scope="col">Client Number</th>
+                  <th scope="col">Address</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Add Quote</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let job of jobs; let i = index">
+                  <td>{{ job.jobAssignmentId }}</td>
+                  <td>{{ job.clientName }}</td>
+                  <td>
+                      {{ job.clientNumber }}
+                  </td>
+                  <td>{{ job.address }}</td>
+                  <td>
+                    <select 
+                      class="form-select form-select-sm"
+                      [ngModel]="job.status"
+                      (ngModelChange)="onStatusChange(job, $event)"
+                      [attr.data-job-id]="job.jobAssignmentId">
+                      
+                      <!-- Current Status as first option (always visible) -->
+                      <option [value]="job.status">{{ job.status }}</option>
+                      
+                      <!-- Available next statuses (if any) -->
+                      <option 
+                        *ngFor="let nextStatus of getAvailableStatuses(job.status)" 
+                        [value]="nextStatus">
+                        {{ nextStatus }}
+                      </option>
+                    </select>
+                  </td>
+                  <td>
+                    <button 
+                      type="button" 
+                      class="btn  btn-sm"
+                      style="background-color: #3b6ea5; color: white;"
+                      (click)="openAddQuoteModal(job)">
+                      <i class="fas fa-plus me-1"></i>
+                      Add Quote
+                    </button>
+                  </td>
+                </tr>
+                
+                <!-- Empty State -->
+                <tr *ngIf="jobs.length === 0">
+                  <td colspan="6" class="text-center py-4">
+                    <div class="text-muted">
+                      <i class="fas fa-inbox fa-3x mb-3"></i>
+                      <p class="mb-0">No jobs found</p>
+                      <small>Try adjusting your filters or search term</small>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination Section -->
+          <div *ngIf="!isLoading" class="row mt-4">
+            <div class="col-12">
+              <!-- <p class="text-muted mb-2 text-center">
+                Showing {{ (currentPage - 1) * pageSize + 1 }} to 
+                {{ Math.min(currentPage * pageSize, totalCount) }} of 
+                {{ totalCount }} results
+              </p> -->
+            </div>
+            <div class="col-12">
+              <nav aria-label="Jobs pagination">
+                <ul class="pagination justify-content-center mb-0">
+                  
+                  <!-- Previous Button -->
+                  <li class="page-item" [class.disabled]="currentPage === 1">
+                    <button 
+                      class="page-link" 
+                      (click)="previousPage()"
+                      [disabled]="currentPage === 1">
+                      Previous
+                    </button>
+                  </li>
+
+                  <!-- First Page -->
+                  <li *ngIf="getPageNumbers()[0] > 1" class="page-item">
+                    <button class="page-link" (click)="goToPage(1)">1</button>
+                  </li>
+                  <li *ngIf="getPageNumbers()[0] > 2" class="page-item disabled">
+                    <span class="page-link">...</span>
+                  </li>
+
+                  <!-- Page Numbers -->
+                  <li 
+                    *ngFor="let page of getPageNumbers()" 
+                    class="page-item" 
+                    [class.active]="page === currentPage">
+                    <button
+                      style="color: white; background-color: #3a6ea5;" 
+                      class="page-link" 
+                      (click)="goToPage(page)"
+                      [class.active]="page === currentPage">
+                      {{ page }}
+                    </button>
+                  </li>
+
+                  <!-- Last Page -->
+                  <li *ngIf="getPageNumbers()[getPageNumbers().length - 1] < totalPages - 1" class="page-item disabled">
+                    <span class="page-link">...</span>
+                  </li>
+                  <li *ngIf="getPageNumbers()[getPageNumbers().length - 1] < totalPages" class="page-item">
+                    <button class="page-link" (click)="goToPage(totalPages)">{{ totalPages }}</button>
+                  </li>
+
+                  <!-- Next Button -->
+                  <li class="page-item" [class.disabled]="currentPage === totalPages">
+                    <button 
+                      class="page-link" 
+                      (click)="nextPage()"
+                      [disabled]="currentPage === totalPages">
+                      Next
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Quote Modal -->
+<div class="modal fade show" 
+     *ngIf="showAddQuoteModal" 
+     style="display: block; background-color: rgba(0,0,0,0.5);" 
+     tabindex="-1" 
+     role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Quote</h5>
+        <button 
+          type="button" 
+          class="btn-close" 
+          (click)="closeAddQuoteModal()"
+          [disabled]="isSubmittingQuote">
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <!-- Job ID (Read Only) -->
+          <div class="mb-3">
+            <label for="jobId" class="form-label">Job ID</label>
+            <input 
+              type="text" 
+              id="jobId"
+              class="form-control" 
+              [value]="quoteForm.jobId"
+              readonly
+              style="background-color: #f8f9fa;">
+          </div>
+
+          <!-- Quote Amount -->
+          <div class="mb-3">
+            <label for="quoteAmount" class="form-label">Quote Amount (EGP)</label>
+            <input 
+              type="number" 
+              id="quoteAmount"
+              class="form-control" 
+              placeholder="Enter amount"
+              [(ngModel)]="quoteForm.price"
+              name="price"
+              min="1"
+              step="0.01"
+              [disabled]="isSubmittingQuote">
+          </div>
+
+          <!-- Notes -->
+          <div class="mb-3">
+            <label for="notes" class="form-label">Notes</label>
+            <textarea 
+              id="notes"
+              class="form-control" 
+              rows="4"
+              placeholder="Any additional details"
+              [(ngModel)]="quoteForm.notes"
+              name="notes"
+              [disabled]="isSubmittingQuote">
+            </textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button 
+          type="button" 
+          class="btn btn-primary"
+          (click)="submitQuote()"
+          [disabled]="isSubmittingQuote">
+          <span *ngIf="isSubmittingQuote" class="spinner-border me-2" style="width: 1rem; height: 1rem;"></span>
+          <i *ngIf="!isSubmittingQuote" class="fas fa-paper-plane me-1"></i>
+          {{ isSubmittingQuote ? 'Submitting...' : 'Submit Quote' }}
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-secondary"
+          (click)="closeAddQuoteModal()"
+          [disabled]="isSubmittingQuote">
+          <i class="fas fa-times me-1"></i>
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Dialog Modal -->
+<div class="modal fade show" 
+     *ngIf="showConfirmationDialog" 
+     style="display: block; background-color: rgba(0,0,0,0.5);" 
+     tabindex="-1" 
+     role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Change</h5>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <i class="fas fa-question-circle fa-3x text-warning mb-3"></i>
+          <p class="mb-0">{{ confirmationMessage }}</p>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button 
+          type="button" 
+          class="btn btn-success me-2" 
+          (click)="confirmStatusChange()">
+          <i class="fas fa-check me-1"></i>
+          Yes, Confirm
+        </button>
+        <button 
+          type="button" 
+          class="btn btn-secondary" 
+          (click)="cancelStatusChange()">
+          <i class="fas fa-times me-1"></i>
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Success Dialog Modal -->
+<div class="modal fade show" 
+     *ngIf="showSuccessDialog" 
+     style="display: block; background-color: rgba(0,0,0,0.5);" 
+     tabindex="-1" 
+     role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content border-primary">
+      <div class="modal-header  text-white" style="background-color: #3a6ea5;">
+        <h5 class="modal-title">
+          <i class="fas fa-check-circle me-2"></i>
+          Success
+        </h5>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <i class="fas fa-check-circle fa-4x  mb-3" style="color: #3a6ea5;"></i>
+          <p class="mb-0  fw-bold" style="color: #3a6ea5;">{{ successMessage }}</p>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button 
+          type="button" 
+          class="btn" 
+          style="background-color: #3a6ea5; color: white;"
+          (click)="closeSuccessDialog()">
+          <i class="fas fa-check me-1"></i>
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Alert Dialog Modal -->
+<div class="modal fade show" 
+     *ngIf="showAlertDialog" 
+     style="display: block; background-color: rgba(0,0,0,0.5);" 
+     tabindex="-1" 
+     role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" style="color: red;">Alert</h5>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+          <p class="mb-0" >{{ alertMessage }}</p>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button 
+          type="button" 
+          class="btn"
+          style="background-color: red;color: #ffffff;" 
+          (click)="closeAlertDialog()">
+          <i class="fas fa-check me-1"></i>
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
