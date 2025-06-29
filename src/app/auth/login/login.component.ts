@@ -55,9 +55,9 @@ export class LoginComponent {
     this._JwtService.Login(loginData).subscribe({
       
       next: (response: ResponseDto<string>) => {
-        if (response && response.data) {
+        if (response.isSuccess && response.data) {
           this._AuthService.Login(response.data);
-
+          console.log('Login function called22');
           this._AuthService.CurrentUser$.subscribe(user => {
             if (user) {
                 this.toastr.success(response.message);
@@ -75,7 +75,7 @@ export class LoginComponent {
         }
       },
       error: (error) => {
-        console.error('Login error:', error);
+        this.toastr.error(error.error.message);
       },
     });
   }
@@ -99,7 +99,7 @@ export class LoginComponent {
         }
       },
       error: (error) => {
-        console.error('Registration error:', error);
+        this.toastr.error(error.error.message);
       },
     });
   }
