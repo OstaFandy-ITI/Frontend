@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AlljobsService, JobAssignment, AllJobsResponse, AddQuoteRequest } from '../services/alljobs.service';
+import {  JobAssignment, AllJobsResponse, AddQuoteRequest } from '../../../core/models/handyman-alljobs.model';
+import { AlljobsService } from '../services/alljobs.service';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -301,8 +302,19 @@ export class AllJobsComponent implements OnInit {
 
   // ========== ADD QUOTE METHODS ==========
 
+  // Check if job allows adding quotes
+  canAddQuote(job: JobAssignment): boolean {
+    return job.status !== 'Completed' && job.status !== 'Cancelled';
+  }
+
   // Open Add Quote Modal
   openAddQuoteModal(job: JobAssignment): void {
+    // Check if quote can be added for this job status
+    if (!this.canAddQuote(job)) {
+      this.showAlert(`Cannot add quote for ${job.status} jobs. Only jobs with status "Assigned" or "InProgress" can have quotes added.`);
+      return;
+    }
+
     this.selectedJobForQuote = job;
     this.quoteForm = {
       jobId: job.jobAssignmentId,

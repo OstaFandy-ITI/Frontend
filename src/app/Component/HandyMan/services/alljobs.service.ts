@@ -1,42 +1,22 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { URL } from '../../../core/Shared/URL';
+import {
+  AllJobsResponse,
+  UpdateStatusResponse,
+  AddQuoteRequest,
+  AddQuoteResponse,
+  JobAssignment
+} from '../../../core/models/handyman-alljobs.model';
 
-export interface JobAssignment {
-  jobAssignmentId: number;
-  clientName: string;
-  clientNumber: string;
-  address: string;
-  status: string;
-}
-
-export interface AllJobsResponse {
-  data: JobAssignment[];
-  currentPage: number;
-  totalPages: number;
-  totalCount: number;
-  searchString: string;
-}
-
-export interface UpdateStatusResponse {
-  message: string;
-}
-
-export interface AddQuoteRequest {
-  jobId: number;
-  price: number;
-  notes: string;
-}
-
-export interface AddQuoteResponse {
-  message: string;
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlljobsService {
-  private baseUrl = 'https://localhost:7187/api';
+  // private baseUrl = 'https://localhost:7187/api';
+  private baseUrl = `${URL.apiUrl}`; 
 
   constructor(private http: HttpClient) { }
 
