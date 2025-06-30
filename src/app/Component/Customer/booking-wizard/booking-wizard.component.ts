@@ -15,7 +15,7 @@ import { BookingService } from '../services/Booking.service';
 import { ChatComponent } from '../chat/chat.component';
 import { ServiceService } from '../../Customer/services/service.service';
 import { ServiceItem } from '../../../core/models/service.models';
-import { CreateBookingVM } from '../../../core/models/Booking.model';
+import { CreateBookingVM, slots } from '../../../core/models/Booking.model';
 import { AddressDTO } from '../../../core/models/Address.model';
 import { ToastrService } from 'ngx-toastr';
 import { AddressTypes } from '../../../core/Shared/Enum';
@@ -36,6 +36,7 @@ export class BookingWizardComponent implements OnInit {
   services = [{ category: '', type: '', description: '' }];
   userId!: number;
   currentUser!: LoggedInUser | null;
+  today!: string;
 
   constructor(
     private authService: AuthService,
@@ -80,6 +81,10 @@ export class BookingWizardComponent implements OnInit {
 
     //step2
     this.GetAddressesByUserId();
+
+    //step3
+    const now = new Date();
+    this.today = now.toISOString().split('T')[0];
 
     //booking
     const savedBooking = localStorage.getItem('bookingData');
@@ -185,13 +190,15 @@ export class BookingWizardComponent implements OnInit {
   GetAddressesByUserId() {
     this.addressService.GetAddressesByUserId(this.userId).subscribe({
       next: (response) => {
-         this.userAddresses = response;
-        const defaultAddress = this.userAddresses.find((a) => a.isDefault==true);
+        this.userAddresses = response;
+        const defaultAddress = this.userAddresses.find(
+          (a) => a.isDefault == true
+        );
         if (defaultAddress) {
           this.selectedAddressId = defaultAddress.id;
           this.bookingData.addressId = defaultAddress.id;
         }
-       
+
         console.log(this.userAddresses);
       },
       error: (err) => {
@@ -255,7 +262,6 @@ export class BookingWizardComponent implements OnInit {
           addressType: 'Home',
           isDefault: false,
         });
-
       },
       error: (err) => {
         this.toastr.error(err.error.message || 'Error adding address');
@@ -266,6 +272,43 @@ export class BookingWizardComponent implements OnInit {
   //#endregion
 
   //#region step3
+  preferredDate: string = '';
+  availableSlots: slots[] = [];
+  selectedSlot!: slots;
+
+  
+  onDateChange() {
+    const selectedAddress = this.userAddresses.find(
+      (a) => a.id === this.selectedAddressId
+    );
+
+    const estimatedMinutes = this.bookingData.estimatedMinutes;
+    const day = new Date(this.preferredDate).toISOString();
+
+    // temp
+    const categoryId = 4;
+
+    this.BookingService.getFreeSlot(
+      categoryId,
+      day,
+      selectedAddress!.latitude!,
+      selectedAddress!.longitude!,
+      estimatedMinutes!
+    ).subscribe({
+      next: (slots) => {
+        if (slots.data) {
+          this.availableSlots = slots.data;
+        } else {
+          this.availableSlots;
+          this.toastr.warning('No slots available for this date.');
+        }
+      },
+      error: (err) => {
+        this.toastr.error(err.error.message || 'Error fetching slots');
+      },
+    });
+  }
+
   //#endregion
   //#region Booking
   bookingData: CreateBookingVM = new CreateBookingVM();
@@ -295,6 +338,13 @@ export class BookingWizardComponent implements OnInit {
 
     // Step 3: Schedule
     if (step === 3) {
+      if (!this.selectedSlot) {
+        this.toastr.warning(
+          'Please select a preferred time slot before proceeding.'
+        );
+      }
+      this.bookingData.handymanId = this.selectedSlot.userId;
+      this.bookingData.preferredDate = this.selectedSlot.startTime;
     }
 
     // Step 4: Payment
@@ -303,7 +353,7 @@ export class BookingWizardComponent implements OnInit {
 
     //Step 5: Save Data
     localStorage.setItem('bookingData', JSON.stringify(this.bookingData));
-    console.log(this.bookingData)
+    console.log(this.bookingData);
   }
 
   //#endregion
