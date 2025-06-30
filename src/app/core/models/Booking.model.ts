@@ -37,3 +37,13 @@ export class CreateBookingVM {
     public receiptUrl?: string,
   ) {}
 }
+
+export class slots{
+  constructor(
+    public userId?:number,
+    public startTime?:Date,
+    public endTime?:Date,
+    public slotLength?:number
+  )
+  {}
+}
