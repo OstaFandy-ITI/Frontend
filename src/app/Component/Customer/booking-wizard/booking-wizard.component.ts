@@ -7,48 +7,57 @@ import { BookingService } from '../services/Booking.service';
 import { ChatComponent } from '../chat/chat.component';
 import { ServiceService } from '../../Customer/services/service.service';
 import { ServiceItem } from '../../../core/models/service.models';
+import { ChatService } from '../../Customer/services/chat.service'; // ✅
+import { ChatThread } from '../../../core/models/message.model';
 
 @Component({
   selector: 'app-booking-wizard',
   templateUrl: './booking-wizard.component.html',
   styleUrls: ['./booking-wizard.component.css'],
   standalone: true,
-
   imports: [FormsModule, CommonModule, ChatComponent],
 })
 export class BookingWizardComponent implements OnInit {
   currentStep = 1;
   chatVisible = false;
-  bookingChatId = 1;
   selectedPayment = 'card';
   services = [{ category: '', type: '', description: '' }];
   userId!: number;
   currentUser!: LoggedInUser | null;
+  bookingChatId: number | undefined;
 
   constructor(
     private authService: AuthService,
     private BookingService: BookingService,
-    private serviceService: ServiceService
+    private serviceService: ServiceService,
+    private chatService: ChatService // ✅
   ) {}
 
   ngOnInit(): void {
     this.authService.CurrentUser$.subscribe((user) => {
+      if (!user) return;
       this.currentUser = user;
       this.userId = Number(user?.NameIdentifier);
-      console.log('✅ userId:', this.userId);
-      console.log('✅ currentUser:', this.currentUser);
-      this.BookingService.setBooking({
-        id: 5,
-        chat: { id: 1 },
-      });
 
-      const booking = this.BookingService.getCurrentBooking();
-      this.bookingChatId = booking?.chat?.id ?? 0;
-      console.log('✅ bookingChatId:', this.bookingChatId);
+      // ✅ Dynamically fetch client's chat thread
+this.chatService.getClientThreads().subscribe({
+  next: (threads: ChatThread[]) => {
+    const chat = threads[0]; // use the first available chat always
+    if (chat?.chatId) {
+      this.bookingChatId = chat.chatId;
+      this.chatVisible = true;
+      console.log('✅ Found chat:', this.bookingChatId);
+    } else {
+      console.warn('❌ No chat found. Consider ensuring one exists for this user.');
+    }
+  },
+  error: (err) => console.error('❌ Failed to fetch chat threads', err),
+});
+
+
     });
 
-    //step1
-    this.Getservices(4); //  ==> take catogery id later
+    this.Getservices(4);
   }
 
   //#region Navigation
@@ -74,9 +83,7 @@ export class BookingWizardComponent implements OnInit {
   }
 
   getStepLabel(step: number): string {
-    return ['Services', 'Location', 'Schedule', 'Checkout', 'Confirm'][
-      step - 1
-    ];
+    return ['Services', 'Location', 'Schedule', 'Checkout', 'Confirm'][step - 1];
   }
 
   getStepIcon(step: number): string {
@@ -93,10 +100,6 @@ export class BookingWizardComponent implements OnInit {
     this.selectedPayment = method;
   }
 
-  // toggleChat() {
-  //   this.chatVisible = !this.chatVisible;
-  //   console.log('Chat toggled:', this.chatVisible, 'User ID:', this.userId, 'Chat ID:', this.bookingChatId);
-  // }
   //#endregion
 
   //#region step 1

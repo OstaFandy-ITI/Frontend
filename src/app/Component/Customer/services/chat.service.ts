@@ -58,5 +58,7 @@ sendMessageREST(msg: MessageDTO): Observable<any> {
 getHandymanThreads(): Observable<ChatThread[]> {
   return this.http.get<ChatThread[]>(`${URL.apiUrl}/Chat/handyman/threads`);
 }
-
+getClientThreads(): Observable<ChatThread[]> {
+  return this.http.get<ChatThread[]>(`${URL.apiUrl}/Chat/threads`);
+}
 }

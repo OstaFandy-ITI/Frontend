@@ -10,7 +10,9 @@ export const handymanRoutes: Routes = [{
          children: [
              { path: 'dashboard',component:DashboardComponent},
              {path:'chatlist' , component: ChatListComponent},
-{ path: 'handyman/chat/:chatId', component: ChatComponent }
-        ]
+  { path: 'chat/:chatId', component: ChatComponent }     ,
+  // { path: 'handyman/chat/:chatId', component: ChatComponent }
+
+    ]
     
 }]
