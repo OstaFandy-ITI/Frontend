@@ -7,6 +7,7 @@ import { AuthService } from '../services/auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
+  const router = inject(Router);
   const token = authService.getToken();
 
 
@@ -21,11 +22,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 401 || error.status === 403) {
         
         authService.Logout();
-        location.reload();  
+        router.navigate(['/login'])  
       }
       return throwError(() => error);
     })
   );
 
-  return next(req);
+
 };

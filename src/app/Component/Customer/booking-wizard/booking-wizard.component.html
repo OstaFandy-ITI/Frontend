@@ -2,6 +2,7 @@
   <div class="container py-5">
 
     <!-- Step Tracker -->
+
     <div class="step-tracker d-flex justify-content-between align-items-center mb-3">
       <div *ngFor="let step of [1, 2, 3, 4, 5]" class="step text-center"
         [ngClass]="{ active: currentStep === step, done: currentStep > step }" (click)="goToStep(step)"
@@ -14,83 +15,54 @@
     </div>
 
     <!-- Step 1: Services -->
- <div class="container">
-    <div class="services-container">
-      <!-- Left Panel: Available Services -->
-      <div class="available-services">
-        <h4>Available Services</h4>
-        <div class="service-card">
-          <div>
-            <strong>Leak Repair</strong>
-            <p class="text-muted small mb-0">Fix dripping pipes and faucets.</p>
+    <div *ngIf="currentStep === 1">
+      <div class="container">
+        <div class="services-container">
+          <!-- Left Panel: Available Services -->
+          <div class="available-services">
+            <h4>Available Services</h4>
+            @for (item of ServicesItem; track $index) {
+            <div
+              class="service-card d-flex justify-content-between align-items-center p-3 border rounded shadow-sm mb-3">
+              <div>
+                <strong>{{ item.name }}</strong>
+                <p class="text-muted small mb-1">{{ item.description }}</p>
+                <span style="color: #ff6600; font-weight: 600;">
+                  {{ item.fixedPrice | currency:'EGP' }}
+                </span>
+              </div>
+              <button class="btn btn-sm btn-outline-primary" (click)="addService(item)">Add</button>
+            </div>
+            }
           </div>
-          <button class="btn btn-sm btn-outline-primary">Add</button>
-        </div>
-        <div class="service-card">
-          <div>
-            <strong>Pipe Installation</strong>
-            <p class="text-muted small mb-0">Install new piping systems.</p>
-          </div>
-          <button class="btn btn-sm btn-outline-primary">Add</button>
-        </div>
-        <div class="service-card">
-          <div>
-            <strong>Drain Cleaning</strong>
-            <p class="text-muted small mb-0">Unclog slow or blocked drains.</p>
-          </div>
-          <button class="btn btn-sm btn-outline-primary">Add</button>
-        </div>
 
-         <div class="service-card">
-          <div>
-            <strong>Drain Cleaning</strong>
-            <p class="text-muted small mb-0">Unclog slow or blocked drains.</p>
+          <!-- Right Panel: Selected Services -->
+          <div class="selected-services">
+            <h4>Selected Services</h4>
+            <div class="selected-list">
+              <!-- Dynamically added selected cards -->
+              @for (item of SelectedItem; track $index)
+              {
+              <div class="selected-card d-flex align-items-center justify-content-between p-2 mb-2 border rounded">
+                <strong class="service-name">{{ item.name }}</strong>
+                <div class="right-group d-flex align-items-center">
+                  <span class="quantity-simple">{{ item.quantity }}</span>
+                  <i class="bi bi-trash remove ms-2" (click)="removeService(item.id)"></i>
+                </div>
+              </div>
+              }
+            </div>
+            <div class="note-box">
+              <label for="note" class="form-label">Additional Note</label>
+              <textarea id="note" placeholder="Write any additional info..." class="form-control"></textarea>
+            </div>
+            <div class="text-end mt-3">
+              <button class="btn btn-primary">Next</button>
+            </div>
           </div>
-          <button class="btn btn-sm btn-outline-primary">Add</button>
-        </div>
-
-         <div class="service-card">
-          <div>
-            <strong>Drain Cleaning</strong>
-            <p class="text-muted small mb-0">Unclog slow or blocked drains.</p>
-          </div>
-          <button class="btn btn-sm btn-outline-primary">Add</button>
-        </div>
-
-         <div class="service-card">
-          <div>
-            <strong>Drain Cleaning</strong>
-            <p class="text-muted small mb-0">Unclog slow or blocked drains.</p>
-          </div>
-          <button class="btn btn-sm btn-outline-primary">Add</button>
-        </div>
-        <!-- Add more services as needed -->
-      </div>
-
-      <!-- Right Panel: Selected Services -->
-      <div class="selected-services">
-        <h4>Selected Services</h4>
-        <div class="selected-list">
-          <div class="selected-card">
-            <strong>Leak Repair</strong>
-            <i class="bi bi-trash remove"></i>
-          </div>
-          <div class="selected-card">
-            <strong>Drain Cleaning</strong>
-            <i class="bi bi-trash remove"></i>
-          </div>
-          <!-- Dynamically added selected cards -->
-        </div>
-        <div class="note-box">
-          <label for="note" class="form-label">Additional Note</label>
-          <textarea id="note" placeholder="Write any additional info..." class="form-control"></textarea>
-        </div>
-        <div class="text-end mt-3">
-          <button class="btn btn-primary">Next</button>
         </div>
       </div>
     </div>
-  </div>
 
     <!-- Step 2: Location -->
     <div *ngIf="currentStep === 2">
@@ -202,7 +174,8 @@
 
             <!-- Cash Info -->
             <div *ngIf="selectedPayment === 'cash'">
-              <p class="text-muted mb-3"><i class="bi bi-info-circle"></i> You will pay in cash upon service completion.
+              <p class="text-muted mb-3"><i class="bi bi-info-circle"></i> You will pay in cash upon service
+                completion.
               </p>
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="cashConfirm" />
@@ -244,7 +217,7 @@
 <app-chat *ngIf="chatVisible"></app-chat>
 
 
-       
+
     </div>
   </div>
 </div>
