@@ -54,10 +54,10 @@
             </div>
             <div class="note-box">
               <label for="note" class="form-label">Additional Note</label>
-              <textarea id="note" placeholder="Write any additional info..." class="form-control"></textarea>
+              <textarea id="note" placeholder="Write any additional info..." class="form-control" [(ngModel)]="bookingData.note"></textarea>
             </div>
             <div class="text-end mt-3">
-              <button class="btn btn-primary">Next</button>
+              <button class="btn btn-primary" (click)="next()">Next</button>
             </div>
           </div>
         </div>
@@ -67,29 +67,111 @@
     <!-- Step 2: Location -->
     <div *ngIf="currentStep === 2">
       <h3 class="mb-4 text-blue">Select Location</h3>
-      <form>
-        <div class="mb-4 rounded shadow-sm overflow-hidden" style="height: 300px;">
-          <iframe src="https://maps.google.com/maps?q=Cairo&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%"
-            height="100%" frameborder="0"></iframe>
-        </div>
-        <div class="row g-3 mb-4">
-          <div class="col-md-8">
-            <label class="form-label">Full Address</label>
-            <input type="text" class="form-control" />
+
+      <!-- Addresses List Vertical -->
+      <div class="address-list mb-4">
+        <!-- Address Card 1 -->
+        @for (item of userAddresses; track $index)
+        {
+        @if (item.isDefault)
+        {
+        <div class="card address-card shadow-sm mb-3 p-3" [class.selected]="item.id === selectedAddressId"
+          (click)="selectedAdddress(item.id)">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h6 class="mb-1 text-dark">
+                <i class="bi bi-geo-alt me-2 text-primary"></i>{{item.address1}}
+              </h6>
+              <p class="mb-0 text-muted small">Type: {{item.addressType}}</p>
+              <p class="mb-0 text-muted small">City: {{item.city}} - <span
+                  class="badge bg-info text-dark">Default</span></p>
+            </div>
+            @if(selectedAddressId == item.id){
+            <i class="bi bi-check-circle-fill text-success fs-5 mt-1"></i>
+            }
           </div>
-          <div class="col-md-4">
-            <label class="form-label">City</label>
-            <select class="form-select">
-              <option>Cairo</option>
-              <option>Giza</option>
-            </select>
+        </div>
+        }@else{
+        <div class="card address-card shadow-sm mb-3 p-3" [class.selected]="item.id === selectedAddressId"
+          (click)="selectedAdddress(item.id)">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h6 class="mb-1 text-dark">
+                <i class="bi bi-geo-alt me-2 text-primary"></i> {{item.address1}}
+              </h6>
+              <p class="mb-0 text-muted small">Type: {{item.addressType}}</p>
+              <p class="mb-0 text-muted small">City: {{item.city}}</p>
+            </div>
+            @if(selectedAddressId == item.id){
+            <i class="bi bi-check-circle-fill text-success fs-5 mt-1"></i>
+            }
           </div>
         </div>
-        <div class="d-flex justify-content-between">
-          <button type="button" class="btn btn-outline-primary" (click)="back()">← Back</button>
-          <button type="button" class="btn btn-primary" (click)="next()">Next</button>
+        }
+
+        }
+
+
+        <!-- Add New Address (Triggers Modal) -->
+        <div class="card dashed-card text-center p-4" style="cursor: pointer;" data-bs-toggle="modal"
+          data-bs-target="#addAddressModal" (click)="getLocationCoordinates()">
+          <i class="bi bi-plus-circle fs-2 mb-2 text-muted"></i>
+          <p class="mb-0 text-muted">Add New Address</p>
         </div>
-      </form>
+        <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+              <form [formGroup]="addressForm" (ngSubmit)="submitNewAddress()">
+                <div class="modal-header">
+                  <h5 class="modal-title">Add New Address</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body row g-3">
+                  <div class="col-md-6">
+                    <label>Full Address</label>
+                    <input type="text" class="form-control" formControlName="address1">
+                  </div>
+                  <div class="col-md-6">
+                    <label>City</label>
+                    <select class="form-select" formControlName="city">
+                      <option *ngFor="let type of cites" [value]="type">{{ type }}</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label>Address Type</label>
+                    <select class="form-select" formControlName="addressType">
+                      <option *ngFor="let type of AddressTypes" [value]="type">{{ type }}</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6 d-flex align-items-center gap-3">
+                    <div class="form-check">
+                      <input type="checkbox" class="form-check-input" formControlName="isDefault">
+                      <label class="form-check-label">Default</label>
+                    </div>
+                  </div>
+
+
+                </div>
+
+                <div class="modal-footer">
+                  <button type="submit" class="btn btn-primary" [disabled]="addressForm.invalid" data-bs-dismiss="modal">Save</button>
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="d-flex justify-content-between mt-4">
+        <button type="button" class="btn btn-outline-primary" (click)="back()">← Back</button>
+        <button type="button" class="btn btn-primary" (click)="next()">Next</button>
+      </div>
+
     </div>
 
     <!-- Step 3: Schedule -->

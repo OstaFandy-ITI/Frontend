@@ -1,12 +1,24 @@
+import { CreateAddressDTO } from './../../../core/models/Address.model';
+import { AddressService } from './../services/address.service';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { LoggedInUser } from '../../../core/models/user.model';
-import { FormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { BookingService } from '../services/Booking.service';
 import { ChatComponent } from '../chat/chat.component';
 import { ServiceService } from '../../Customer/services/service.service';
 import { ServiceItem } from '../../../core/models/service.models';
+import { CreateBookingVM } from '../../../core/models/Booking.model';
+import { AddressDTO } from '../../../core/models/Address.model';
+import { ToastrService } from 'ngx-toastr';
+import { AddressTypes } from '../../../core/Shared/Enum';
 
 @Component({
   selector: 'app-booking-wizard',
@@ -14,7 +26,7 @@ import { ServiceItem } from '../../../core/models/service.models';
   styleUrls: ['./booking-wizard.component.css'],
   standalone: true,
 
-  imports: [FormsModule, CommonModule, ChatComponent],
+  imports: [FormsModule, CommonModule, ChatComponent, ReactiveFormsModule],
 })
 export class BookingWizardComponent implements OnInit {
   currentStep = 1;
@@ -28,8 +40,20 @@ export class BookingWizardComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private BookingService: BookingService,
-    private serviceService: ServiceService
-  ) {}
+    private serviceService: ServiceService,
+    private addressService: AddressService,
+    private toastr: ToastrService,
+    private fb: FormBuilder
+  ) {
+    this.addressForm = this.fb.group({
+      address1: ['', Validators.required],
+      city: ['', Validators.required],
+      addressType: ['Home', Validators.required],
+      isDefault: [false],
+      latitude: [null],
+      longitude: [null],
+    });
+  }
 
   ngOnInit(): void {
     this.authService.CurrentUser$.subscribe((user) => {
@@ -49,10 +73,24 @@ export class BookingWizardComponent implements OnInit {
 
     //step1
     this.Getservices(4); //  ==> take catogery id later
+    const saved = localStorage.getItem('selectedServices');
+    if (saved) {
+      this.SelectedItem = JSON.parse(saved);
+    }
+
+    //step2
+    this.GetAddressesByUserId();
+
+    //booking
+    const savedBooking = localStorage.getItem('bookingData');
+    if (savedBooking) {
+      this.bookingData = JSON.parse(savedBooking);
+    }
   }
 
   //#region Navigation
   goToStep(step: number): void {
+    this.updateStepData(this.currentStep);
     if (step >= 1 && step <= 5) {
       this.currentStep = step;
       window.scrollTo(0, 0);
@@ -60,6 +98,7 @@ export class BookingWizardComponent implements OnInit {
   }
 
   next(): void {
+    this.updateStepData(this.currentStep);
     if (this.currentStep < 5) {
       this.currentStep++;
       window.scrollTo(0, 0);
@@ -67,6 +106,7 @@ export class BookingWizardComponent implements OnInit {
   }
 
   back(): void {
+    this.updateStepData(this.currentStep);
     if (this.currentStep > 1) {
       this.currentStep--;
       window.scrollTo(0, 0);
@@ -122,10 +162,148 @@ export class BookingWizardComponent implements OnInit {
         quantity: 1,
       });
     }
+    this.saveSelectedItems();
   }
 
   removeService(id: number) {
     this.SelectedItem = this.SelectedItem.filter((item) => item.id !== id);
+    this.saveSelectedItems();
+  }
+
+  saveSelectedItems() {
+    localStorage.setItem('selectedServices', JSON.stringify(this.SelectedItem));
+  }
+
+  //#endregion
+  //#region step2
+  userAddresses: AddressDTO[] = [];
+  AddressTypes = Object.values(AddressTypes);
+  addressForm!: FormGroup;
+  cites: string[] = ['Cairo', 'Alexandria', 'Mansoura'];
+
+  selectedAddressId!: number;
+  GetAddressesByUserId() {
+    this.addressService.GetAddressesByUserId(this.userId).subscribe({
+      next: (response) => {
+         this.userAddresses = response;
+        const defaultAddress = this.userAddresses.find((a) => a.isDefault==true);
+        if (defaultAddress) {
+          this.selectedAddressId = defaultAddress.id;
+          this.bookingData.addressId = defaultAddress.id;
+        }
+       
+        console.log(this.userAddresses);
+      },
+      error: (err) => {
+        this.toastr.error(err.error.message);
+      },
+    });
+  }
+
+  selectedAdddress(AddressId: number) {
+    this.selectedAddressId = AddressId;
+    this.bookingData.addressId = AddressId;
+  }
+
+  //add address
+
+  //get location coordinates
+  getLocationCoordinates() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          this.addressForm.patchValue({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+          this.toastr.success('Location coordinates fetched successfully.');
+        },
+        () => {
+          this.toastr.error('Failed to fetch location coordinates.');
+        }
+      );
+    } else {
+      this.toastr.error('Geolocation is not supported by this browser.');
+    }
+  }
+
+  submitNewAddress() {
+    if (this.addressForm.invalid) {
+      this.toastr.error('Please fill the required fields');
+      return;
+    }
+
+    const newAddress: CreateAddressDTO = {
+      userId: this.userId,
+      address1: this.addressForm.value.address1,
+      city: this.addressForm.value.city,
+      addressType: this.addressForm.value.addressType,
+      isDefault: this.addressForm.value.isDefault,
+      latitude: this.addressForm.value.latitude,
+      longitude: this.addressForm.value.longitude,
+      isActive: true,
+      createdAt: new Date(),
+    };
+
+    this.addressService.CreateAddress(newAddress).subscribe({
+      next: (res) => {
+        this.toastr.success(res.message || 'Address added');
+
+        this.GetAddressesByUserId();
+
+        this.addressForm.reset({
+          addressType: 'Home',
+          isDefault: false,
+        });
+
+      },
+      error: (err) => {
+        this.toastr.error(err.error.message || 'Error adding address');
+      },
+    });
+  }
+
+  //#endregion
+
+  //#region step3
+  //#endregion
+  //#region Booking
+  bookingData: CreateBookingVM = new CreateBookingVM();
+
+  updateStepData(step: number): void {
+    // Step 1: Services
+    if (step === 1) {
+      this.bookingData.clientId = this.userId;
+      this.bookingData.serviceDto = this.SelectedItem.map((item) => ({
+        serviceId: item.id,
+        quantity: item.quantity,
+      }));
+      this.bookingData.totalPrice = this.SelectedItem.reduce(
+        (sum, item) => sum + (item.fixedPrice || 0) * item.quantity,
+        0
+      );
+
+      this.bookingData.estimatedMinutes = this.SelectedItem.reduce(
+        (sum, item) => sum + (item.estimatedMinutes || 0) * item.quantity,
+        0
+      );
+    }
+
+    // Step 2: Location
+    // if (step === 2) {
+    // }
+
+    // Step 3: Schedule
+    if (step === 3) {
+    }
+
+    // Step 4: Payment
+    if (step === 4) {
+    }
+
+    //Step 5: Save Data
+    localStorage.setItem('bookingData', JSON.stringify(this.bookingData));
+    console.log(this.bookingData)
   }
 
   //#endregion
