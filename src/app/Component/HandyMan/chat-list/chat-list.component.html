@@ -1,0 +1,20 @@
+<div class="chat-list-container">
+  <div class="chat-header">
+    <h5>Chats</h5>
+  </div>
+
+  <div class="chat-entry" *ngFor="let chat of chats">
+    <div class="chat-entry-inner">
+      <img [src]="chat.avatar" class="chat-avatar" alt="User" />
+      <div class="chat-details">
+        <div class="chat-top">
+          <span class="chat-name">{{ chat.name }}</span>
+          <span class="chat-time">{{ chat.time }}</span>
+        </div>
+        <div class="chat-last-message text-muted">
+          {{ chat.lastMessage }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
