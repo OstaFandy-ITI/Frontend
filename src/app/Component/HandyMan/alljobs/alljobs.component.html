@@ -286,21 +286,23 @@
       </div>
       <div class="modal-body">
         <div class="text-center">
-          <i class="fas fa-question-circle fa-3x text-warning mb-3"></i>
+          <i class="fas fa-question-circle fa-3x  mb-3" style="color: #ffa94d;" ></i>
           <p class="mb-0">{{ confirmationMessage }}</p>
         </div>
       </div>
       <div class="modal-footer justify-content-center">
         <button 
           type="button" 
-          class="btn btn-success me-2" 
+          class="btn  me-2" 
+          style="background-color: #3a6ea5; color: white;"
           (click)="confirmStatusChange()">
           <i class="fas fa-check me-1"></i>
           Yes, Confirm
         </button>
         <button 
           type="button" 
-          class="btn btn-secondary" 
+          class="btn " 
+          style="background-color: #ffa94d; color: white;"
           (click)="cancelStatusChange()">
           <i class="fas fa-times me-1"></i>
           Cancel
@@ -352,20 +354,20 @@
      role="dialog">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" style="color: red;">Alert</h5>
+      <div class="modal-header" style="background-color: #ffa94d;">
+        <h5 class="modal-title" style="color: white;">Alert</h5>
       </div>
       <div class="modal-body">
         <div class="text-center">
-          <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-          <p class="mb-0" >{{ alertMessage }}</p>
+          <i class="fas fa-exclamation-triangle fa-3x  mb-3" style="color: #ffa94d;" ></i>
+          <p class="mb-0" style="color: #ffa94d;" >{{ alertMessage }}</p>
         </div>
       </div>
       <div class="modal-footer justify-content-center">
         <button 
           type="button" 
           class="btn"
-          style="background-color: red;color: #ffffff;" 
+          style="background-color: #ffa94d;color: #ffffff;" 
           (click)="closeAlertDialog()">
           <i class="fas fa-check me-1"></i>
           OK
