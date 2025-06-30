@@ -14,48 +14,83 @@
     </div>
 
     <!-- Step 1: Services -->
-    <div *ngIf="currentStep === 1">
-      <h3 class="mb-4 text-blue">Select Services</h3>
-      <form id="serviceForm">
-        <div *ngFor="let service of services; let i = index"
-          class="service-block mb-4 p-4 rounded shadow-lg position-relative">
-          <div class="row g-3">
-            <div class="col-md-4">
-              <label class="form-label text-blue">Category</label>
-              <select class="form-select" required [(ngModel)]="service.category" name="category{{i}}">
-                <option selected disabled>Choose Category</option>
-                <option>Plumbing</option>
-                <option>Electrical</option>
-                <option>Painting</option>
-              </select>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label text-blue">Service Type</label>
-              <select class="form-select" required [(ngModel)]="service.type" name="type{{i}}">
-                <option selected disabled>Choose Service</option>
-                <option>Leak Repair</option>
-                <option>Fan Installation</option>
-                <option>Wall Painting</option>
-              </select>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label text-blue">Problem Description</label>
-              <input type="text" class="form-control" [(ngModel)]="service.description" name="desc{{i}}"
-                placeholder="Describe your issue" required />
-            </div>
+ <div class="container">
+    <div class="services-container">
+      <!-- Left Panel: Available Services -->
+      <div class="available-services">
+        <h4>Available Services</h4>
+        <div class="service-card">
+          <div>
+            <strong>Leak Repair</strong>
+            <p class="text-muted small mb-0">Fix dripping pipes and faucets.</p>
           </div>
-          <i *ngIf="services.length > 1" class="bi bi-trash delete-service text-danger" (click)="removeService(i)"></i>
+          <button class="btn btn-sm btn-outline-primary">Add</button>
+        </div>
+        <div class="service-card">
+          <div>
+            <strong>Pipe Installation</strong>
+            <p class="text-muted small mb-0">Install new piping systems.</p>
+          </div>
+          <button class="btn btn-sm btn-outline-primary">Add</button>
+        </div>
+        <div class="service-card">
+          <div>
+            <strong>Drain Cleaning</strong>
+            <p class="text-muted small mb-0">Unclog slow or blocked drains.</p>
+          </div>
+          <button class="btn btn-sm btn-outline-primary">Add</button>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center mt-3">
-          <button type="button" class="btn btn-outline-primary" (click)="addService()">+ Add Another Service</button>
-          <button type="button" class="btn btn-primary" (click)="next()">Next</button>
+         <div class="service-card">
+          <div>
+            <strong>Drain Cleaning</strong>
+            <p class="text-muted small mb-0">Unclog slow or blocked drains.</p>
+          </div>
+          <button class="btn btn-sm btn-outline-primary">Add</button>
         </div>
 
-      </form>
+         <div class="service-card">
+          <div>
+            <strong>Drain Cleaning</strong>
+            <p class="text-muted small mb-0">Unclog slow or blocked drains.</p>
+          </div>
+          <button class="btn btn-sm btn-outline-primary">Add</button>
+        </div>
 
+         <div class="service-card">
+          <div>
+            <strong>Drain Cleaning</strong>
+            <p class="text-muted small mb-0">Unclog slow or blocked drains.</p>
+          </div>
+          <button class="btn btn-sm btn-outline-primary">Add</button>
+        </div>
+        <!-- Add more services as needed -->
+      </div>
 
+      <!-- Right Panel: Selected Services -->
+      <div class="selected-services">
+        <h4>Selected Services</h4>
+        <div class="selected-list">
+          <div class="selected-card">
+            <strong>Leak Repair</strong>
+            <i class="bi bi-trash remove"></i>
+          </div>
+          <div class="selected-card">
+            <strong>Drain Cleaning</strong>
+            <i class="bi bi-trash remove"></i>
+          </div>
+          <!-- Dynamically added selected cards -->
+        </div>
+        <div class="note-box">
+          <label for="note" class="form-label">Additional Note</label>
+          <textarea id="note" placeholder="Write any additional info..." class="form-control"></textarea>
+        </div>
+        <div class="text-end mt-3">
+          <button class="btn btn-primary">Next</button>
+        </div>
+      </div>
     </div>
+  </div>
 
     <!-- Step 2: Location -->
     <div *ngIf="currentStep === 2">
@@ -206,11 +241,8 @@
           <i class="bi bi-chat-dots"></i> Chat with Handyman
         </button>
       </div>
-<app-chat
-  *ngIf="chatVisible && bookingChatId && userId"
-  [chatId]="bookingChatId"
-  [userId]="userId">
-</app-chat>
+<app-chat *ngIf="chatVisible"></app-chat>
+
 
        
     </div>

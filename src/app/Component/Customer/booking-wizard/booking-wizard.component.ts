@@ -9,7 +9,7 @@ import { ChatComponent } from '../chat/chat.component';
   selector: 'app-booking-wizard',
   templateUrl: './booking-wizard.component.html',
   styleUrls: ['./booking-wizard.component.css'],
-    standalone: true,
+   standalone: true,
 
   imports: [FormsModule,CommonModule,ChatComponent]
 })
