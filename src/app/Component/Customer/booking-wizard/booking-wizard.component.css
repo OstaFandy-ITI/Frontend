@@ -261,3 +261,22 @@
     align-self: flex-end;
   }
 }
+
+
+.address-card {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background: #fff;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.address-card:hover {
+  border-color: #004e98;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.address-card.selected {
+  border: 2px solid #004e98;
+  box-shadow: 0 0 0 2px rgba(0, 78, 152, 0.2);
+}
