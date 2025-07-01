@@ -8,6 +8,7 @@ import { BookingWizardComponent } from './Component/Customer/booking-wizard/book
 import { ChatComponent } from './Component/Customer/chat/chat.component';
 import { handymanGuard } from './core/guards/handyman.guard';
 import { ChatListComponent } from './Component/HandyMan/chat-list/chat-list.component';
+import { customerRoutes } from './Component/Customer/Customer.routes';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -19,4 +20,5 @@ export const routes: Routes = [
 
   { path: 'chat', component: ChatComponent },
   { path: 'handyman', canActivate: [handymanGuard],children: handymanRoutes},
+  {path: 'customer', children: customerRoutes}
 ];
