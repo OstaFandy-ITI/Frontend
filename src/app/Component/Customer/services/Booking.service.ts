@@ -24,8 +24,6 @@ export class BookingService {
     return this.currentBookingData?.chat?.id ?? null;
   }
 
-
-
   ///api/Booking/FreeSlot
   getFreeSlot(categoryId: number,day: string,userLatitude: number,userLongitude: number,estimatedMinutes: number):Observable<ResponseDto<slots[]>>
    {

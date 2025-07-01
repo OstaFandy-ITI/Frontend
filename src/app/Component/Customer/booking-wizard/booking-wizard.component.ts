@@ -62,14 +62,8 @@ export class BookingWizardComponent implements OnInit {
       this.userId = Number(user?.NameIdentifier);
       console.log('✅ userId:', this.userId);
       console.log('✅ currentUser:', this.currentUser);
-      this.BookingService.setBooking({
-        id: 5,
-        chat: { id: 1 },
-      });
+   
 
-      const booking = this.BookingService.getCurrentBooking();
-      this.bookingChatId = booking?.chat?.id ?? 0;
-      console.log('✅ bookingChatId:', this.bookingChatId);
     });
 
     //step1
