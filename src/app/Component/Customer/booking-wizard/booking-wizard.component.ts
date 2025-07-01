@@ -40,6 +40,7 @@ export class BookingWizardComponent implements OnInit {
   userId!: number;
   currentUser!: LoggedInUser | null;
   today!: string;
+  cashConfirmed: boolean = false;
 
   constructor(
     private authService: AuthService,
@@ -49,7 +50,7 @@ export class BookingWizardComponent implements OnInit {
     private toastr: ToastrService,
     private fb: FormBuilder,
     private paymentService: PaymentService,
-    private handyManService:HandymanService
+    private handyManService: HandymanService
   ) {
     this.addressForm = this.fb.group({
       address1: ['', Validators.required],
@@ -68,8 +69,6 @@ export class BookingWizardComponent implements OnInit {
       this.userId = Number(user?.NameIdentifier);
       console.log('✅ userId:', this.userId);
       console.log('✅ currentUser:', this.currentUser);
-   
-
     });
 
     //step1
@@ -125,7 +124,9 @@ export class BookingWizardComponent implements OnInit {
   }
 
   getStepLabel(step: number): string {
-    return ['Services', 'Location', 'Schedule', 'Checkout', 'Confirm'][step - 1];
+    return ['Services', 'Location', 'Schedule', 'Checkout', 'Confirm'][
+      step - 1
+    ];
   }
 
   getStepIcon(step: number): string {
@@ -200,8 +201,6 @@ export class BookingWizardComponent implements OnInit {
           this.selectedAddressId = defaultAddress.id;
           this.bookingData.addressId = defaultAddress.id;
         }
-
-        console.log(this.userAddresses);
       },
       error: (err) => {
         this.toastr.error(err.error.message);
@@ -377,6 +376,7 @@ export class BookingWizardComponent implements OnInit {
 
   //confirm payment
   async confirmCardPayment() {
+    this.isLoading = true;
     if (this.selectedPayment === 'card') {
       if (!this.stripe || !this.cardNumberElement) {
         this.toastr.error('Stripe is not initialized.');
@@ -401,6 +401,7 @@ export class BookingWizardComponent implements OnInit {
 
           if (error) {
             this.toastr.error(error.message || 'Payment failed.');
+            this.isLoading = false;
           } else if (paymentIntent && paymentIntent.status === 'succeeded') {
             this.bookingData.paymentStatus = 'Paid';
             this.bookingData.amount = amount;
@@ -411,12 +412,12 @@ export class BookingWizardComponent implements OnInit {
             console.log(this.bookingData);
 
             this.creatBooking();
-            this.GetHandymandata()
+            this.GetHandymandata();
             this.next();
           }
         },
         error: (err) => {
-          console.log('HTTP error:', err);
+          this.isLoading = false;
           this.toastr.error('Failed to initiate payment.' + (err.error || ''));
         },
       });
@@ -426,6 +427,7 @@ export class BookingWizardComponent implements OnInit {
       this.bookingData.paymentStatus = 'Pending';
 
       this.creatBooking();
+      this.GetHandymandata();
       this.next();
     }
   }
@@ -434,7 +436,8 @@ export class BookingWizardComponent implements OnInit {
   bookingData: CreateBookingVM = new CreateBookingVM();
   chatId!: number;
   bookingId!: number;
-  handydata!:AdminHandyManDTO;
+  handydata!: AdminHandyManDTO;
+  isLoading: boolean = false;
 
   updateStepData(step: number): void {
     // Step 1: Services
@@ -483,27 +486,31 @@ export class BookingWizardComponent implements OnInit {
         this.toastr.success(res.message);
         this.chatId = res.data.chatId;
         this.bookingId = res.data.bookingId;
-        console.log(res.data);
+
+        this.isLoading = false;
+
+        localStorage.removeItem('selectedServices');
+        localStorage.removeItem('bookingData');
       },
       error: (err) => {
         this.toastr.error(err.error.message);
+        this.isLoading = false;
       },
     });
   }
 
-  GetHandymandata()
-  {
-    this.handyManService.getHandymanById(this.bookingData.handymanId!).subscribe({
-      next:(res)=>{
-        this.handydata=res;
-      },
-      error:(err)=>
-      {
-        this.toastr.error("error retriving handy data")
-      }
-    })
+  GetHandymandata() {
+    this.handyManService
+      .getHandymanById(this.bookingData.handymanId!)
+      .subscribe({
+        next: (res) => {
+          this.handydata = res;
+        },
+        error: (err) => {
+          this.toastr.error('error retriving handy data');
+        },
+      });
   }
-
 
   //#endregion
 }
