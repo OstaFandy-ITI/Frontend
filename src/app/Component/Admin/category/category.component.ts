@@ -32,6 +32,8 @@ export class CategoryComponent implements OnInit {
   searchTerm: string = '';
   filterStatus: string = 'All';
 
+  addImg?: File;
+editImg?: File;
   @ViewChild('addCloseBtn') addCloseBtn!: ElementRef;
   @ViewChild('editCloseBtn') editCloseBtn!: ElementRef;
   @ViewChild('deleteCloseBtn') deleteCloseBtn!: ElementRef;
@@ -82,45 +84,65 @@ export class CategoryComponent implements OnInit {
     this.addForm.reset({ isActive: true });
   }
 
-  addCategory() {
-    if (this.addForm.valid) {
-      const formData = {
-        name: this.addForm.value.name,
-        description: this.addForm.value.description || '',
-        isActive: this.addForm.value.isActive,
-      };
+addCategory() {
+  if (this.addForm.valid) {
+    const formData = new FormData();
+    formData.append('name', this.addForm.value.name);
+    formData.append('description', this.addForm.value.description || '');
+    formData.append('isActive', this.addForm.value.isActive ? 'true' : 'false');
 
-      this.categoryService.add(formData).subscribe({
-        next: () => {
-          this.getCategories();
-          this.addForm.reset({ isActive: true });
-          this.addCloseBtn.nativeElement.click();
-          this.toastr.success('Category added successfully!', 'Success');
-        },
-        error: (err) => {
-          console.error('Add failed:', err);
-          this.toastr.error('Failed to add category.', 'Error');
-        },
-      });
+    if (this.addImg) {
+      formData.append('iconImg', this.addImg);
     }
+
+    this.categoryService.add(formData).subscribe({
+      next: () => {
+        this.getCategories();
+        this.addForm.reset({ isActive: true });
+        this.addImg = undefined;
+        this.addCloseBtn.nativeElement.click();
+        this.toastr.success('Category added successfully!', 'Success');
+      },
+      error: (err) => {
+        console.error('Add failed:', err);
+        this.toastr.error('Failed to add category.', 'Error');
+      }
+    });
   }
+}
 
   openEditModal(category: Category) {
     this.selectedCategory = category;
     this.editForm.patchValue(category);
   }
 
-  editCategory() {
-    if (this.editForm.valid) {
-      this.categoryService.update(this.editForm.value).subscribe({
-        next: () => {
-          this.getCategories();
-          this.editCloseBtn.nativeElement.click();
-        },
-        error: (err) => alert('Edit failed: ' + err.message),
-      });
+editCategory() {
+  if (this.editForm.valid && this.selectedCategory) {
+    const formData = new FormData();
+    formData.append('id', this.editForm.value.id);
+    formData.append('name', this.editForm.value.name);
+    formData.append('description', this.editForm.value.description || '');
+
+    if (this.editImg) {
+      formData.append('iconImg', this.editImg);
     }
+
+    this.categoryService.update(this.editForm.value.id, formData).subscribe({
+      next: () => {
+        this.getCategories();
+        this.editForm.reset();
+        this.editImg = undefined;
+        this.editCloseBtn.nativeElement.click();
+        this.toastr.success('Category updated successfully!', 'Success');
+      },
+      error: (err) => {
+        console.error('Edit failed:', err);
+        this.toastr.error('Failed to update category.', 'Error');
+      }
+    });
   }
+}
+
 
   openDeleteModal(category: Category) {
     this.selectedCategory = category;
@@ -171,6 +193,12 @@ toggleStatus(): void {
     }
   });
 }
+onAddImgSelected(event: any) {
+  this.addImg = event.target.files[0];
+}
 
+onEditImgSelected(event: any) {
+  this.editImg = event.target.files[0];
+}
 
 }

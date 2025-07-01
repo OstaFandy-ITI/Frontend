@@ -5,21 +5,40 @@
   --blue-medium: #3A6EA5;
   --blue-dark: #004E98;
   --red: #dc3545;
+  --ostafandy-blue:#3f63c8;
 }
 
-/* Top Info Bar */
 .top-info-bar {
   background-color: #3f63c8;
   color: white;
   font-size: 0.9rem;
-  border-bottom: 1px solid var(--blue-medium);
+  white-space: nowrap;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
 }
-.top-info-bar a {
-  color: white;
-  transition: color 0.2s ease;
+
+.ticker-content {
+  display: inline-flex;
+  gap: 2rem;
+  align-items: center;
+  animation: scroll-left 25s linear infinite;
+  padding-left: 100%;
 }
-.top-info-bar a:hover {
-  color: var(--orange);
+
+.ticker-content:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
 }
 
 /* Navbar Base */
@@ -36,7 +55,7 @@
   margin-bottom: 0;
 }
 .navbar-custom .nav-link {
-  color: var(--blue-medium);
+  color: black;
   font-weight: 500;
   margin: 0 12px;
   transition: all 0.3s ease;
@@ -52,33 +71,7 @@
   color: #3f63c8;
 }
 
-/* User Info Section */
-.user-info {
-  text-align: right;
-  margin-right: 10px;
-}
 
-/* Logout Button */
-.logout-btn {
-  background-color: #3f63c8;
-  color: white;
-  font-size: 0.85rem;
-  font-weight: 500;
-  padding: 6px 14px;
-  border: none;
-  border-radius: 20px;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-.logout-btn:hover {
-  background-color: var(--orange);
-  color: var(--blue-dark);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-.logout-btn i {
-  font-size: 1rem;
-  margin-right: 4px;
-}
 
 /* Icon Buttons: Notification + Profile */
 .icon-btn {
