@@ -1,4 +1,3 @@
-import { Subject, Subscription } from 'rxjs';
 import { CreateAddressDTO } from './../../../core/models/Address.model';
 import { AddressService } from './../services/address.service';
 import { Component, OnInit } from '@angular/core';
@@ -22,6 +21,8 @@ import { ToastrService } from 'ngx-toastr';
 import { AddressTypes } from '../../../core/Shared/Enum';
 import { Stripe } from '@stripe/stripe-js';
 import { PaymentService } from '../services/payment.service';
+import { HandymanService } from '../../Admin/services/handyman.service';
+import { AdminHandyManDTO } from '../../../core/models/Adminhandyman.model';
 
 @Component({
   selector: 'app-booking-wizard',
@@ -48,7 +49,8 @@ export class BookingWizardComponent implements OnInit {
     private addressService: AddressService,
     private toastr: ToastrService,
     private fb: FormBuilder,
-    private paymentService: PaymentService
+    private paymentService: PaymentService,
+    private handyManService:HandymanService
   ) {
     this.addressForm = this.fb.group({
       address1: ['', Validators.required],
@@ -421,6 +423,7 @@ export class BookingWizardComponent implements OnInit {
             console.log(this.bookingData);
 
             this.creatBooking();
+            this.GetHandymandata()
             this.next();
           }
         },
@@ -443,6 +446,7 @@ export class BookingWizardComponent implements OnInit {
   bookingData: CreateBookingVM = new CreateBookingVM();
   chatId!: number;
   bookingId!: number;
+  handydata!:AdminHandyManDTO;
 
   updateStepData(step: number): void {
     // Step 1: Services
@@ -499,7 +503,19 @@ export class BookingWizardComponent implements OnInit {
     });
   }
 
-  
+  GetHandymandata()
+  {
+    this.handyManService.getHandymanById(this.bookingData.handymanId!).subscribe({
+      next:(res)=>{
+        this.handydata=res;
+      },
+      error:(err)=>
+      {
+        this.toastr.error("error retriving handy data")
+      }
+    })
+  }
+
 
   //#endregion
 }
