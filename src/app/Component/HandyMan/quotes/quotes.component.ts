@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { Subject, takeUntil } from 'rxjs';
 import { QuotesService } from '../services/quotes.service'; 
-import { AllQuotes } from '../../../core/models/handyman-quotes.model';
+import { AllQuotes } from '../../../core/models/Handyman.model';
 import { AuthService } from '../../../core/services/auth.service'; 
 
 @Component({

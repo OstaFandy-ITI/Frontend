@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {  JobAssignment, AllJobsResponse, AddQuoteRequest } from '../../../core/models/handyman-alljobs.model';
+import {  JobAssignment, AllJobsResponse, AddQuoteRequest } from '../../../core/models/Handyman.model';
 import { AlljobsService } from '../services/alljobs.service';
 import { AuthService } from '../../../core/services/auth.service';
 
