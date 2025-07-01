@@ -25,7 +25,7 @@ export class ChatService {
         console.log('✅ SignalR connected');
         this.hubConnection.invoke('JoinChat', chatId.toString());
       })
-      .catch(err => console.error('❌ SignalR error:', err));
+      .catch((err: any) => console.error('❌ SignalR error:', err));
 
     this.hubConnection.on('ReceiveMessage', (msg: MessageDTO) => {
       this.messageReceived.next(msg);
@@ -36,7 +36,7 @@ export class ChatService {
   stopConnection(chatId: number): void {
     if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
       this.hubConnection.invoke('LeaveChat', chatId.toString()).finally(() => {
-        this.hubConnection.stop().catch(err => console.error('SignalR stop error:', err));
+        this.hubConnection.stop().catch((err: any) => console.error('SignalR stop error:', err));
       });
     }
   }
