@@ -13,3 +13,37 @@ export class BookingViewModel {
         public longitude?: number,
     ) {}
 }
+
+export class BookingServiceDTO {
+  constructor(
+    public serviceId: number,
+    public quantity: number
+  ) {}
+}
+
+export class CreateBookingVM {
+  constructor(
+    public clientId?: number,
+    public addressId?: number,
+    public preferredDate?: Date, 
+    public estimatedMinutes?: number,
+    public totalPrice?: number,
+    public note?: string,
+    public serviceDto?: BookingServiceDTO[],
+    public handymanId?: number,
+    public amount?: number,
+    public method?: string,
+    public paymentStatus?: string,
+    public receiptUrl?: string,
+  ) {}
+}
+
+export class slots{
+  constructor(
+    public userId?:number,
+    public startTime?:Date,
+    public endTime?:Date,
+    public slotLength?:number
+  )
+  {}
+}
