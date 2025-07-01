@@ -242,21 +242,17 @@
         <div class="col-md-6">
           <div class="checkout-card p-4">
             <!-- Card Payment Form -->
-            <div *ngIf="selectedPayment === 'card'">
-              <div class="d-flex justify-content-between mb-4">
-                <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/Old_Visa_Logo.svg/250px-Old_Visa_Logo.svg.png"
-                  height="20" />
-                <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1200px-Mastercard-logo.svg.png"
-                  height="20" />
-              </div>
-              <input type="text" class="form-control mb-3" placeholder="Name on Card" />
-              <input type="text" class="form-control mb-3" placeholder="Card Number" />
-              <div class="row">
-                <div class="col"><input type="text" class="form-control mb-3" placeholder="MM/YY" /></div>
-                <div class="col"><input type="text" class="form-control mb-3" placeholder="CVV" /></div>
-              </div>
+            <div *ngIf="selectedPayment === 'card'" class="stripe-form">
+              <label class="form-label">Card Number</label>
+              <div id="card-number-element" class="stripe-input mb-3"></div>
+
+              <label class="form-label">Expiry Date</label>
+              <div id="card-expiry-element" class="stripe-input mb-3"></div>
+
+              <label class="form-label">CVC</label>
+              <div id="card-cvc-element" class="stripe-input mb-3"></div>
+
+              <div id="card-errors" class="text-danger small mt-2"></div>
             </div>
 
             <!-- Cash Info -->
@@ -270,10 +266,10 @@
                   I confirm I will pay in cash to the handyman
                 </label>
               </div>
-            </div>      
+            </div>
 
             <div class="text-end mt-4">
-              <button type="button" class="btn btn-primary px-4" (click)="next()">Confirm</button>
+              <button type="button" class="btn btn-primary px-4" (click)="confirmCardPayment()">Confirm</button>
             </div>
           </div>
         </div>

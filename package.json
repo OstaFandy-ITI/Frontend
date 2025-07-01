@@ -23,6 +23,7 @@
     "@fullcalendar/interaction": "^6.1.17",
     "@fullcalendar/timegrid": "^6.1.17",
     "@microsoft/signalr": "^8.0.7",
+    "@stripe/stripe-js": "^7.4.0",
     "bootstrap": "^5.3.6",
     "bootstrap-icons": "^1.13.1",
     "chart.js": "^4.5.0",
