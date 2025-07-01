@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as signalR from '@microsoft/signalr';
 import { Observable, Subject } from 'rxjs';
-import { MessageDTO } from '../../../core/models/message.model';
+import { ChatThread, MessageDTO } from '../../../core/models/message.model';
 import { URL } from '../../../core/Shared/URL';
 
 @Injectable({ providedIn: 'root' })
@@ -54,4 +54,11 @@ sendMessageREST(msg: MessageDTO): Observable<any> {
   onNewMessage(): Observable<MessageDTO> {
     return this.messageReceived.asObservable();
   }
+
+getHandymanThreads(): Observable<ChatThread[]> {
+  return this.http.get<ChatThread[]>(`${URL.apiUrl}/Chat/handyman/threads`);
+}
+getClientThreads(): Observable<ChatThread[]> {
+  return this.http.get<ChatThread[]>(`${URL.apiUrl}/Chat/threads`);
+}
 }

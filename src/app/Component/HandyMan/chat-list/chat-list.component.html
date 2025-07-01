@@ -1,19 +1,17 @@
-<div class="chat-list-container">
-  <div class="chat-header">
-    <h5>Chats</h5>
-  </div>
+<div class="chat-list p-3">
+  <h5 class="mb-3">Active Chats</h5>
 
-  <div class="chat-entry" *ngFor="let chat of chats">
-    <div class="chat-entry-inner">
-      <img [src]="chat.avatar" class="chat-avatar" alt="User" />
-      <div class="chat-details">
-        <div class="chat-top">
-          <span class="chat-name">{{ chat.name }}</span>
-          <span class="chat-time">{{ chat.time }}</span>
-        </div>
-        <div class="chat-last-message text-muted">
-          {{ chat.lastMessage }}
-        </div>
+  <div *ngIf="threads.length === 0" class="text-muted">No active chats.</div>
+
+  <div *ngFor="let thread of threads" class="chat-item border-bottom py-2" (click)="openChat(thread)" style="cursor: pointer;">
+    <div class="d-flex align-items-center gap-2">
+      <img src="https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740" class="rounded-circle" width="40" height="40" />
+      <div>
+        <div class="fw-bold">{{ thread.clientName }}</div>
+        <div class="text-muted small">{{ thread.lastMessage || 'No messages yet' }}</div>
+      </div>
+      <div class="ms-auto text-muted small">
+        {{ thread.lastMessageTime | date: 'shortTime' }}
       </div>
     </div>
   </div>

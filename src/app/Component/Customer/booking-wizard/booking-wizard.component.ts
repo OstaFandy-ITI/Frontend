@@ -35,7 +35,6 @@ import { AdminHandyManDTO } from '../../../core/models/Adminhandyman.model';
 export class BookingWizardComponent implements OnInit {
   currentStep = 1;
   chatVisible = false;
-  bookingChatId = 1;
   selectedPayment = 'card';
   services = [{ category: '', type: '', description: '' }];
   userId!: number;
@@ -64,18 +63,13 @@ export class BookingWizardComponent implements OnInit {
 
   ngOnInit(): void {
     this.authService.CurrentUser$.subscribe((user) => {
+      if (!user) return;
       this.currentUser = user;
       this.userId = Number(user?.NameIdentifier);
       console.log('✅ userId:', this.userId);
       console.log('✅ currentUser:', this.currentUser);
-      this.BookingService.setBooking({
-        id: 5,
-        chat: { id: 1 },
-      });
+   
 
-      const booking = this.BookingService.getCurrentBooking();
-      this.bookingChatId = booking?.chat?.id ?? 0;
-      console.log('✅ bookingChatId:', this.bookingChatId);
     });
 
     //step1
@@ -131,9 +125,7 @@ export class BookingWizardComponent implements OnInit {
   }
 
   getStepLabel(step: number): string {
-    return ['Services', 'Location', 'Schedule', 'Checkout', 'Confirm'][
-      step - 1
-    ];
+    return ['Services', 'Location', 'Schedule', 'Checkout', 'Confirm'][step - 1];
   }
 
   getStepIcon(step: number): string {
@@ -152,10 +144,6 @@ export class BookingWizardComponent implements OnInit {
     this.initializeStripeIfNeeded();
   }
 
-  // toggleChat() {
-  //   this.chatVisible = !this.chatVisible;
-  //   console.log('Chat toggled:', this.chatVisible, 'User ID:', this.userId, 'Chat ID:', this.bookingChatId);
-  // }
   //#endregion
 
   //#region step 1
