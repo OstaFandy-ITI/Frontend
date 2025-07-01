@@ -8,7 +8,7 @@ import {
   AddQuoteRequest,
   AddQuoteResponse,
   JobAssignment
-} from '../../../core/models/handyman-alljobs.model';
+} from '../../../core/models/Handyman.model';
 
 
 @Injectable({

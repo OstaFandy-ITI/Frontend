@@ -2,7 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { QuotesResponse } from '../../../core/models/handyman-quotes.model';
+import { QuotesResponse } from '../../../core/models/Handyman.model';
 import { URL } from '../../../core/Shared/URL';
 
 @Injectable({
