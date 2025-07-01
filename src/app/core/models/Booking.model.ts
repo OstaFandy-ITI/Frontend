@@ -34,7 +34,7 @@ export class CreateBookingVM {
     public amount?: number,
     public method?: string,
     public paymentStatus?: string,
-    public receiptUrl?: string,
+    public paymentIntentId?: string,
   ) {}
 }
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as signalR from '@microsoft/signalr';
 import { Observable, Subject } from 'rxjs';
-import { MessageDTO } from '../../../core/models/message.model';
+import { ChatThread, MessageDTO } from '../../../core/models/message.model';
 import { URL } from '../../../core/Shared/URL';
 
 @Injectable({ providedIn: 'root' })
@@ -25,7 +25,7 @@ export class ChatService {
         console.log('✅ SignalR connected');
         this.hubConnection.invoke('JoinChat', chatId.toString());
       })
-      .catch(err => console.error('❌ SignalR error:', err));
+      .catch((err: any) => console.error('❌ SignalR error:', err));
 
     this.hubConnection.on('ReceiveMessage', (msg: MessageDTO) => {
       this.messageReceived.next(msg);
@@ -36,7 +36,7 @@ export class ChatService {
   stopConnection(chatId: number): void {
     if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
       this.hubConnection.invoke('LeaveChat', chatId.toString()).finally(() => {
-        this.hubConnection.stop().catch(err => console.error('SignalR stop error:', err));
+        this.hubConnection.stop().catch((err: any) => console.error('SignalR stop error:', err));
       });
     }
   }
@@ -54,4 +54,11 @@ sendMessageREST(msg: MessageDTO): Observable<any> {
   onNewMessage(): Observable<MessageDTO> {
     return this.messageReceived.asObservable();
   }
+
+getHandymanThreads(): Observable<ChatThread[]> {
+  return this.http.get<ChatThread[]>(`${URL.apiUrl}/Chat/handyman/threads`);
+}
+getClientThreads(): Observable<ChatThread[]> {
+  return this.http.get<ChatThread[]>(`${URL.apiUrl}/Chat/threads`);
+}
 }
