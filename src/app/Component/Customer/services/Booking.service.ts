@@ -1,3 +1,4 @@
+import { CreateBookingVM } from './../../../core/models/Booking.model';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { URL } from '../../../core/Shared/URL';
@@ -25,8 +26,13 @@ export class BookingService {
   }
 
   ///api/Booking/FreeSlot
-  getFreeSlot(categoryId: number,day: string,userLatitude: number,userLongitude: number,estimatedMinutes: number):Observable<ResponseDto<slots[]>>
-   {
+  getFreeSlot(
+    categoryId: number,
+    day: string,
+    userLatitude: number,
+    userLongitude: number,
+    estimatedMinutes: number
+  ): Observable<ResponseDto<slots[]>> {
     const params = {
       categoryId,
       day,
@@ -35,6 +41,13 @@ export class BookingService {
       estimatedMinutes,
     };
 
-    return this.http.get<ResponseDto<slots[]>>(`${this.BaseUrl}/FreeSlot`, {params});
+    return this.http.get<ResponseDto<slots[]>>(`${this.BaseUrl}/FreeSlot`, {
+      params,
+    });
+  }
+
+  ///api/Booking/createbooking
+  createBooking(booking: CreateBookingVM):Observable<ResponseDto<any>> {
+    return this.http.post<ResponseDto<any>>(`${this.BaseUrl}/createbooking`, booking);
   }
 }
