@@ -15,6 +15,6 @@ export const handymanRoutes: Routes = [{
            { path: 'quotes',component:QuotesComponent},
            {path:'chatlist' , component: ChatListComponent}
 
-        ]
+    ]
     
 }]
