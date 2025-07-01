@@ -1,16 +1,14 @@
-<div
-  class="top-info-bar d-flex justify-content-between align-items-center px-4 py-2"
->
+<!-- Top Info Bar -->
+<div class="top-info-bar d-flex justify-content-between align-items-center px-4 py-2">
   <div class="contact-info d-flex align-items-center gap-3">
     <span class="text-white">Need Any Help?</span>
-    <span class="text-white"
-      ><i class="bi bi-telephone-fill me-1"></i> +123 456 789</span
-    >
-    <span class="text-white"
-      ><i class="bi bi-envelope-fill me-1"></i> infoostafandy.com</span
-    >
+    <span class="text-white">
+      <i class="bi bi-telephone-fill me-1"></i> +123 456 789
+    </span>
+    <span class="text-white">
+      <i class="bi bi-envelope-fill me-1"></i> infoostafandy.com
+    </span>
   </div>
-
   <div class="social-icons d-flex align-items-center gap-3">
     <span class="text-white me-2">Follow Us:</span>
     <a href="#" class="text-white"><i class="bi bi-facebook"></i></a>
@@ -20,59 +18,39 @@
   </div>
 </div>
 
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-custom shadow-sm">
-  <div class="container">
-    <a class="navbar-brand d-flex align-items-center" href="#">
-      <img
-        src="logo.png"
-        alt="OstaFandy Logo"
-        width="45"
-        height="45"
-        class="me-2"
-      />
-      <span class="fw-bold fs-4 Name">OstaFandy</span>
-    </a>
+  <div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center w-100">
 
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
+      <!-- Logo Left -->
+      <a class="navbar-brand d-flex align-items-center me-4" href="#">
+        <img src="logo.png" alt="OstaFandy Logo" width="45" height="45" class="me-2" />
+        <span class="fw-bold fs-4 Name">OstaFandy</span>
+      </a>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav mx-auto text-center">
-        <li class="nav-item">
-          <a class="nav-link" href="#hero-section">Book a Task</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="contact.html">Contact Us</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">About Us</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="join.html">Join Us</a>
-        </li>
-      </ul>
+      <!-- Nav Links Centered -->
+      <div class="flex-grow-1 d-flex justify-content-center">
+        <ul class="navbar-nav flex-row gap-2 text-center">
+          <li class="nav-item"><a class="nav-link" href="#hero-section">Book a Task</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="join.html">Join Us</a></li>
+        </ul>
+      </div>
 
-      <div class="d-flex align-items-center ms-auto gap-3 user-info">
+      <!-- User Info Right -->
+      <div class="d-flex align-items-center gap-3 ms-4 user-info">
         <span class="fw-semibold Name">Welcome, yumyum</span>
 
         <!-- Notification Bell -->
-        <div class="position-relative icon-wrapper">
-          <i class="bi bi-bell-fill notif-icon"></i>
+        <button class="icon-btn notification" title="Notifications">
+          <i class="bi bi-bell-fill"></i>
           <span class="notif-badge">3</span>
-        </div>
+        </button>
 
         <!-- Profile Icon -->
-        <a
-          href="profile.html"
-          class="position-relative icon-wrapper profile-icon"
-          title="Profile"
-        >
+        <a href="profile.html" class="icon-btn profile" title="Profile">
           <i class="bi bi-person-circle"></i>
         </a>
 
@@ -81,6 +59,7 @@
           <i class="bi bi-box-arrow-right me-1"></i> Logout
         </button>
       </div>
+
     </div>
   </div>
 </nav>

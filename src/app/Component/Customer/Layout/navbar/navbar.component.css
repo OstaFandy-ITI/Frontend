@@ -14,40 +14,40 @@
   font-size: 0.9rem;
   border-bottom: 1px solid var(--blue-medium);
 }
-
 .top-info-bar a {
   color: white;
   transition: color 0.2s ease;
 }
-
 .top-info-bar a:hover {
   color: var(--orange);
 }
 
-/* General Icons */
-.bi {
-  font-size: 1rem;
-}
-
-/* Navbar */
+/* Navbar Base */
 .navbar-custom {
   background: var(--light-gray);
   padding: 0.75rem 1rem;
 }
-
+.navbar-custom .navbar-brand {
+  margin-left: -12px;
+}
+.navbar-nav.flex-row {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 0;
+}
 .navbar-custom .nav-link {
   color: var(--blue-medium);
   font-weight: 500;
   margin: 0 12px;
   transition: all 0.3s ease;
 }
-
 .navbar-custom .nav-link:hover,
 .navbar-custom .nav-link.active {
   color: var(--orange);
   text-shadow: 0 0 5px rgba(247, 199, 67, 0.7);
 }
 
+/* Branding */
 .Name {
   color: #3f63c8;
 }
@@ -55,56 +55,89 @@
 /* User Info Section */
 .user-info {
   text-align: right;
+  margin-right: 10px;
 }
 
+/* Logout Button */
 .logout-btn {
-  background-color: var(--blue-medium);
+  background-color: #3f63c8;
   color: white;
   font-size: 0.85rem;
   font-weight: 500;
-  padding: 6px 12px;
+  padding: 6px 14px;
   border: none;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+  border-radius: 20px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
-
 .logout-btn:hover {
-  background-color: var(--blue-dark);
-  color: var(--orange);
+  background-color: var(--orange);
+  color: var(--blue-dark);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+.logout-btn i {
+  font-size: 1rem;
+  margin-right: 4px;
 }
 
-/* Notification Bell */
-.notification {
-  cursor: pointer;
+/* Icon Buttons: Notification + Profile */
+.icon-btn {
   position: relative;
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, color 0.2s ease;
+  padding: 0;
+  cursor: pointer;
+}
+.icon-btn i {
+  font-size: 1.5rem;
+  transition: color 0.3s ease;
 }
 
-.notif-icon {
-  font-size: 1.3rem;
+/* Notification Icon */
+.icon-btn.notification i {
   color: var(--orange);
 }
+.icon-btn.notification:hover i {
+  animation: shake 0.5s ease-in-out;
+}
 
+/* Notification Badge */
 .notif-badge {
   position: absolute;
-  top: -6px;
-  right: -8px;
-  background-color: red; /* changed from orange to red */
+  top: -4px;
+  right: -4px;
+  background-color: #ff4b5c;
   color: white;
   font-size: 0.65rem;
   font-weight: bold;
-  padding: 2px 6px;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
+  line-height: 1;
   box-shadow: 0 0 0 2px var(--light-gray);
 }
 
-/* Profile Icon Link */
-.profile-link {
-  font-size: 0.85rem;
-  color: var(--blue-medium);
-  text-decoration: none;
+/* Profile Icon */
+.icon-btn.profile i {
+  color: #3f63c8;
+  font-size: 2rem;
 }
 
-.profile-link:hover {
-  color: var(--orange);
-  text-decoration: underline;
+
+/* Bell Hover Animation */
+@keyframes shake {
+  0% { transform: rotate(0); }
+  20% { transform: rotate(6deg); }
+  40% { transform: rotate(-6deg); }
+  60% { transform: rotate(4deg); }
+  80% { transform: rotate(-4deg); }
+  100% { transform: rotate(0); }
 }
