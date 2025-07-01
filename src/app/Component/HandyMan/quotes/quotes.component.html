@@ -1,0 +1,66 @@
+<!-- handyman-quotes.component.html -->
+<div class="quotes-container">
+  <div class="header">
+    <h2>Jobs Requiring Quotes</h2>
+    <button class="refresh-btn" (click)="refreshQuotes()" [disabled]="isLoading" style="background-color: #3a6ea5;">
+      <i class="fas fa-sync-alt" [class.spinning]="isLoading"></i>
+      Refresh
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Loading quotes...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-container">
+    <i class="fas fa-exclamation-triangle"></i>
+    <p>{{ error }}</p>
+    <button class="retry-btn" (click)="refreshQuotes()">Try Again</button>
+  </div>
+
+  <!-- No Data State -->
+  <div *ngIf="!isLoading && !error && quotes.length === 0" class="no-data-container">
+    <i class="fas fa-clipboard-list"></i>
+    <p>{{ noDataMessage || 'No quotes available at the moment' }}</p>
+  </div>
+
+  <!-- Quotes Grid -->
+  <div *ngIf="!isLoading && !error && quotes.length > 0" class="quotes-grid">
+    <div *ngFor="let quote of quotes" class="quote-card">
+      <div class="card-header">
+        <h3>Job #{{ quote.jobAssignmentId }}</h3>
+        <!-- <span class="status-badge" [ngClass]="getStatusClass(quote.status)"> -->
+        <span class="status-badge" [ngClass]="getStatusClass(quote.status)">
+          {{ getStatusText(quote.status) }}
+        </span>
+      </div>
+
+      <div class="card-content">
+        <div class="quote-details">
+          <div class="detail-row">
+            <label>Price:</label>
+            <span >${{ quote.price | number:'1.2-2' }}</span> <!-- class="price"  -->
+          </div>
+          
+          <div class="detail-row" *ngIf="quote.estimatedMinutes">
+            <label>Estimated Time:</label>
+            <span>{{ quote.estimatedMinutes }} minutes</span>
+          </div>
+          
+          <div class="detail-row">
+            <label>Created:</label>
+            <span>{{ formatDate(quote.createdAt) }}</span>
+          </div>
+          
+          <div class="notes-section" *ngIf="quote.notes">
+            <label>Notes:</label>
+            <p class="notes-text">{{ quote.notes }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
