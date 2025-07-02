@@ -42,6 +42,7 @@ export class BookingWizardComponent implements OnInit {
   currentUser!: LoggedInUser | null;
   today!: string;
   cashConfirmed: boolean = false;
+  categoryId:any;
 
   constructor(
     private authService: AuthService,
@@ -82,8 +83,8 @@ this.route.queryParams.subscribe((params: { categoryId?: string }) => {
     this.router.navigate(['/']); // or redirect to homepage
     return;
   }
-  const categoryId = +params['categoryId'];
-  this.Getservices(categoryId);
+  this.categoryId = +params['categoryId'];
+  this.Getservices(this.categoryId);
 });
   // Step 1.5: Load selected services from localStorage
   const saved = localStorage.getItem('selectedServices');
@@ -295,8 +296,8 @@ this.route.queryParams.subscribe((params: { categoryId?: string }) => {
     const estimatedMinutes = this.bookingData.estimatedMinutes;
     const day = new Date(this.preferredDate).toISOString();
 
-    // temp
-    const categoryId = 4;
+    
+    const categoryId = this.categoryId;
 
     this.BookingService.getFreeSlot(
       categoryId,
