@@ -8,7 +8,9 @@ export interface ChatThread {
 
 export interface MessageDTO {
   chatId: number;
-  senderId: number;
+  senderId?: number;
   content: string;
   sentAt?: string;
+  senderName?: string;         
+  senderRole?: string;     
 }

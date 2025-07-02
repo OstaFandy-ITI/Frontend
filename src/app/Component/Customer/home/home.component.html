@@ -1,3 +1,32 @@
 <app-navbar></app-navbar>
+<router-outlet></router-outlet>
+<section class="hero-section bg-light py-5">
+    <div class="container">
+        <div class="row align-items-center">
 
+            <!-- Left Text & CTA -->
+            <div class="col-md-6 text-center text-md-start mb-4 mb-md-0">
+                <h1 class="display-5 fw-bold">Skilled Help..Trusted Hands.</h1>
+                <p class="lead text-muted">
+                    Find expert handymen for plumbing, carpentry, repairs, and more — all in one place.
+                </p>
+                <a routerLink="/registerHamdyMan" class="btn Join-btn me-2">Join as Handyman</a>
+                <a routerLink="/services" class="btn Explore-btn ">Explore Services</a>
 
+                <!-- Category Icons -->
+                <div class="d-flex flex-wrap gap-3 mt-4 justify-content-center justify-content-md-start">
+                    <div *ngFor="let cat of categories" class="text-center" style="width: 70px; cursor: pointer;"
+                        (click)="goToBooking(cat.id)">
+                        <img [src]="cat.iconImg" [alt]="cat.name" class="img-fluid rounded icon-shadow" />
+                        <small class="d-block text-muted mt-1">{{ cat.name }}</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Handyman Image -->
+            <div class="col-md-6 text-center">
+                <img src="assets/handyhero.png" alt="Handyman" class="img-fluid hero-img" />
+            </div>
+        </div>
+    </div>
+</section>

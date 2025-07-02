@@ -102,6 +102,7 @@
   padding: 0.9rem 1rem;
   font-size: 0.875rem;
 }
+.category-img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; }
 
 .table tbody tr:hover {
   background-color: rgba(58, 110, 165, 0.05);

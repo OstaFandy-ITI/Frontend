@@ -29,14 +29,21 @@ export class CategoryService {
     return this.http.get<Category>(`${this.apiUrl}/${id}`);
   }
 
-  add(category: CategoryCreate): Observable<any> {
-    return this.http.post(this.apiUrl, category, this.getAuthHeaders());
-  }
+add(categoryData: FormData): Observable<any> {
+  return this.http.post(`${this.apiUrl}`, categoryData, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token') || ''}`
+    }
+  });
+}
 
-  update(category: Category): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${category.id}`, category, this.getAuthHeaders());
-  }
-
+update(id: number, categoryData: FormData): Observable<any> {
+  return this.http.put(`${this.apiUrl}/${id}`, categoryData, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token') || ''}`
+    }
+  });
+}
   delete(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`, this.getAuthHeaders());
   }
