@@ -73,6 +73,13 @@ export class AuthService {
   private hasToken(): boolean {
     return this.getToken() !== null;
   }
+  public getCurrentUserId(): number | null {
+  const user = this.getUserData();
+  return user && user.NameIdentifier !== undefined
+    ? parseInt(user.NameIdentifier, 10)
+    : null;
+}
+  
 
   private getUserData(): LoggedInUser | null {
     const decodedToken = this.getDecodedToken();
@@ -88,4 +95,5 @@ export class AuthService {
       decodedToken.exp
     );
   }
+
 }
