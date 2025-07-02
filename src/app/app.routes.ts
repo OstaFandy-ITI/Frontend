@@ -21,7 +21,7 @@ export const routes: Routes = [
   {
     path: 'admin', canActivate: [adminGuard], children: adminRoutes },
 
-  { path: 'booking', component: BookingWizardComponent },
+  { path: 'booking', component: BookingWizardComponent,canActivate:[customerGuard] },
 
   { path: 'chat', component: ChatComponent },
   { path: 'handyman', canActivate: [handymanGuard],children: handymanRoutes},

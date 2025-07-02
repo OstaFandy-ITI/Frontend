@@ -1,22 +1,26 @@
-<!-- Top Info Bar -->
-<div class="top-info-bar d-flex justify-content-between align-items-center px-4 py-2">
-  <div class="contact-info d-flex align-items-center gap-3">
+<!-- Top Info Bar (Marquee Style) -->
+<div class="top-info-bar position-relative overflow-hidden px-4 py-2">
+  <div class="ticker-content d-flex align-items-center gap-4">
     <span class="text-white">Need Any Help?</span>
     <span class="text-white">
       <i class="bi bi-telephone-fill me-1"></i> +123 456 789
     </span>
     <span class="text-white">
-      <i class="bi bi-envelope-fill me-1"></i> infoostafandy.com
+      <i class="bi bi-envelope-fill me-1"></i> info&#64;ostafandy.com
     </span>
-  </div>
-  <div class="social-icons d-flex align-items-center gap-3">
-    <span class="text-white me-2">Follow Us:</span>
+    <span class="text-white">Follow Us:</span>
     <a href="#" class="text-white"><i class="bi bi-facebook"></i></a>
     <a href="#" class="text-white"><i class="bi bi-twitter-x"></i></a>
     <a href="#" class="text-white"><i class="bi bi-youtube"></i></a>
     <a href="#" class="text-white"><i class="bi bi-instagram"></i></a>
+    
+  <span class="text-white">
+  <i class="bi bi-clock me-1"></i> Sat–Thur: 10 AM – 6 PM
+</span>
   </div>
+
 </div>
+
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-custom shadow-sm">
@@ -25,7 +29,7 @@
 
       <!-- Logo Left -->
       <a class="navbar-brand d-flex align-items-center me-4" href="#">
-        <img src="logo.png" alt="OstaFandy Logo" width="45" height="45" class="me-2" />
+        <img src="assets/logo.png" alt="OstaFandy Logo" width="45" height="45" class="me-2" />
         <span class="fw-bold fs-4 Name">OstaFandy</span>
       </a>
 
@@ -41,26 +45,46 @@
 
       <!-- User Info Right -->
       <div class="d-flex align-items-center gap-3 ms-4 user-info">
-        <span class="fw-semibold Name">Welcome, yumyum</span>
 
         <!-- Notification Bell -->
-        <!-- <button class="icon-btn notification" title="Notifications"> -->
-          <!-- <i class="bi bi-bell-fill"></i>
-          <span class="notif-badge">3</span> -->
-          <!-- <app-notification></app-notification>
-        </button> -->
-<button class="icon-btn notification" title="Notifications">
-  <app-notification></app-notification>
-</button>
-        <!-- Profile Icon -->
-        <a href="profile.html" class="icon-btn profile" title="Profile">
-          <i class="bi bi-person-circle"></i>
-        </a>
+        <button class="icon-btn notification" title="Notifications">
+          <i class="bi bi-bell-fill"> <app-notification></app-notification> </i>
+          <span class="notif-badge">3</span>
+        </button>
+
+      <!-- Profile Dropdown -->
+<div class="dropdown">
+  <button
+    class="icon-btn profile dropdown-toggle"
+    type="button"
+    data-bs-toggle="dropdown"
+    aria-expanded="false"
+    title="Profile"
+  >
+    <i class="bi bi-person-circle"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li>
+      <a class="dropdown-item" routerLink="/profile">
+        <i class="bi bi-person me-2"></i> Profile
+      </a>
+    </li>
+    <li>
+      <hr class="dropdown-divider" />
+    </li>
+    <li>
+      <button class="dropdown-item text-danger" (click)="logout()">
+        <i class="bi bi-box-arrow-right me-2"></i> Logout
+      </button>
+    </li>
+  </ul>
+</div>
+
 
         <!-- Logout Button -->
-        <button class="btn logout-btn d-flex align-items-center">
+        <!-- <button class="btn logout-btn d-flex align-items-center">
           <i class="bi bi-box-arrow-right me-1"></i> Logout
-        </button>
+        </button> -->
       </div>
 
     </div>
