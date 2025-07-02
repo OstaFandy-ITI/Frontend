@@ -28,7 +28,7 @@ export class AllJobsComponent implements OnInit {
   // Filters
   selectedStatus: string = '';
   searchTerm: string = '';
-  statusOptions = ['Assigned', 'InProgress', 'Completed'];
+  statusOptions = ['Assigned', 'Completed'];
 
   // Confirmation dialog properties
   showConfirmationDialog: boolean = false;
@@ -134,8 +134,6 @@ export class AllJobsComponent implements OnInit {
     switch (status) {
       case 'Assigned':
         return 'badge bg-primary';
-      case 'InProgress':
-        return 'badge bg-warning';
       case 'Completed':
         return 'badge bg-success';
       default:
@@ -168,11 +166,9 @@ export class AllJobsComponent implements OnInit {
   getAvailableStatuses(currentStatus: string): string[] {
     switch (currentStatus) {
       case 'Assigned':
-        return ['InProgress', 'Completed'];
-      case 'InProgress':
-        return ['Completed'];
+        return [ 'Completed'];
       case 'Completed':
-        return ['Assigned', 'InProgress']; // Add dummy options to show dropdown
+        return ['Assigned']; // Add dummy options to show dropdown
       default:
         return [];
     }
@@ -301,14 +297,14 @@ export class AllJobsComponent implements OnInit {
 
   // Check if job allows adding quotes
   canAddQuote(job: JobAssignment): boolean {
-    return job.status !== 'Completed' ;
+    return job.status == 'Assigned' ;
   }
 
   // Open Add Quote Modal
   openAddQuoteModal(job: JobAssignment): void {
     // Check if quote can be added for this job status
     if (!this.canAddQuote(job)) {
-      this.showAlert(`Cannot add quote for ${job.status} jobs. Only jobs with status "Assigned" or "InProgress" can have quotes added.`);
+      this.showAlert(`Cannot add quote for ${job.status} jobs. Only jobs with status "Assigned"  can have quotes added.`);
       return;
     }
 
