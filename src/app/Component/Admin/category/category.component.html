@@ -26,6 +26,7 @@
         <tr>
           <th>Name</th>
           <th>Description</th>
+          <th>Image</th>
           <th class="text-center">Status</th>
           <th class="text-center">Action</th>
         </tr>
@@ -36,13 +37,13 @@
           <td>{{ cat.name }}</td>
           <td>{{ cat.description }}</td>
           <td class="text-center">
-           <button class="status-btn" 
-  [ngClass]="cat.isActive ? 'active' : 'inactive'"
-  data-bs-toggle="modal" 
-  data-bs-target="#statusCategoryModal" 
-  (click)="openStatusModal(cat)">
-  {{ cat.isActive ? 'Active' : 'Inactive' }}
-</button>
+            <img [src]="cat.iconImg" class="category-img" *ngIf="cat.iconImg" alt="Icon" />
+          </td>
+          <td class="text-center">
+            <button class="status-btn" [ngClass]="cat.isActive ? 'active' : 'inactive'" data-bs-toggle="modal"
+              data-bs-target="#statusCategoryModal" (click)="openStatusModal(cat)">
+              {{ cat.isActive ? 'Active' : 'Inactive' }}
+            </button>
 
           </td>
           <td class="text-center">
@@ -67,13 +68,16 @@
     <nav>
       <ul class="pagination mb-0">
         <li class="page-item" [class.disabled]="pageNumber === 1">
-          <button class="page-link" (click)="onPageChange(pageNumber - 1)" [disabled]="pageNumber === 1">&laquo;</button>
+          <button class="page-link" (click)="onPageChange(pageNumber - 1)"
+            [disabled]="pageNumber === 1">&laquo;</button>
         </li>
-        <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index" [class.active]="pageNumber === i + 1">
+        <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
+          [class.active]="pageNumber === i + 1">
           <button class="page-link" (click)="onPageChange(i + 1)">{{ i + 1 }}</button>
         </li>
         <li class="page-item" [class.disabled]="pageNumber === totalPages">
-          <button class="page-link" (click)="onPageChange(pageNumber + 1)" [disabled]="pageNumber === totalPages">&raquo;</button>
+          <button class="page-link" (click)="onPageChange(pageNumber + 1)"
+            [disabled]="pageNumber === totalPages">&raquo;</button>
         </li>
       </ul>
     </nav>
@@ -99,6 +103,10 @@
             <textarea class="form-control" formControlName="description" rows="3"
               placeholder="Describe the category..."></textarea>
           </div>
+          <div class="mb-3">
+  <label class="form-label">Icon Image</label>
+  <input type="file" class="form-control" (change)="onAddImgSelected($event)" accept="image/*" />
+</div>
           <div class="form-check form-switch mb-3">
             <input class="form-check-input" type="checkbox" formControlName="isActive" id="featuredToggle" />
             <label class="form-check-label" for="featuredToggle">Active</label>
@@ -114,7 +122,8 @@
 </div>
 
 <!-- Edit Modal -->
-<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
+<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -131,6 +140,10 @@
             <label class="form-label">Description</label>
             <textarea class="form-control" formControlName="description" rows="3"></textarea>
           </div>
+          <div class="mb-3">
+  <label class="form-label">Icon Image</label>
+  <input type="file" class="form-control" (change)="onEditImgSelected($event)" accept="image/*" />
+</div>
           <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-bs-dismiss="modal" #editCloseBtn>Cancel</button>
             <button class="btn btn-primary" type="submit">Save Changes</button>
@@ -142,7 +155,8 @@
 </div>
 
 <!-- Delete Modal -->
-<div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -161,7 +175,8 @@
 </div>
 
 <!-- Status Modal -->
-<div class="modal fade" id="statusCategoryModal" tabindex="-1" aria-labelledby="statusCategoryModalLabel" aria-hidden="true">
+<div class="modal fade" id="statusCategoryModal" tabindex="-1" aria-labelledby="statusCategoryModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
