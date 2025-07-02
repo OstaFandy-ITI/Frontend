@@ -28,7 +28,7 @@ export class AllJobsComponent implements OnInit {
   // Filters
   selectedStatus: string = '';
   searchTerm: string = '';
-  statusOptions = ['Assigned', 'InProgress', 'Completed', 'Cancelled'];
+  statusOptions = ['Assigned', 'InProgress', 'Completed'];
 
   // Confirmation dialog properties
   showConfirmationDialog: boolean = false;
@@ -53,7 +53,8 @@ export class AllJobsComponent implements OnInit {
   quoteForm = {
     jobId: 0,
     price: 0,
-    notes: ''
+    notes: '',
+    estimatedMinutes: 0 
   };
   isSubmittingQuote: boolean = false;
 
@@ -137,8 +138,6 @@ export class AllJobsComponent implements OnInit {
         return 'badge bg-warning';
       case 'Completed':
         return 'badge bg-success';
-      case 'Cancelled':
-        return 'badge bg-danger';
       default:
         return 'badge bg-secondary';
     }
@@ -169,13 +168,11 @@ export class AllJobsComponent implements OnInit {
   getAvailableStatuses(currentStatus: string): string[] {
     switch (currentStatus) {
       case 'Assigned':
-        return ['InProgress', 'Completed', 'Cancelled'];
+        return ['InProgress', 'Completed'];
       case 'InProgress':
-        return ['Completed', 'Cancelled'];
+        return ['Completed'];
       case 'Completed':
-        return ['Assigned', 'InProgress', 'Cancelled']; // Add dummy options to show dropdown
-      case 'Cancelled':
-        return ['Assigned', 'InProgress', 'Completed']; // Add dummy options to show dropdown
+        return ['Assigned', 'InProgress']; // Add dummy options to show dropdown
       default:
         return [];
     }
@@ -188,8 +185,8 @@ export class AllJobsComponent implements OnInit {
       return;
     }
 
-    // Check if trying to change from Completed or Cancelled status
-    if (job.status === 'Completed' || job.status === 'Cancelled') {
+    // Check if trying to change from Completed  status
+    if (job.status === 'Completed' ) {
       this.showAlert(`Cannot change ${job.status} status`);
       // Reset the dropdown to original status
       const selectElement = document.querySelector(`select[data-job-id="${job.jobAssignmentId}"]`) as HTMLSelectElement;
@@ -304,7 +301,7 @@ export class AllJobsComponent implements OnInit {
 
   // Check if job allows adding quotes
   canAddQuote(job: JobAssignment): boolean {
-    return job.status !== 'Completed' && job.status !== 'Cancelled';
+    return job.status !== 'Completed' ;
   }
 
   // Open Add Quote Modal
@@ -319,7 +316,8 @@ export class AllJobsComponent implements OnInit {
     this.quoteForm = {
       jobId: job.jobAssignmentId,
       price: 0,
-      notes: ''
+      notes: '',
+      estimatedMinutes: 0 
     };
     this.showAddQuoteModal = true;
   }
@@ -331,7 +329,8 @@ export class AllJobsComponent implements OnInit {
     this.quoteForm = {
       jobId: 0,
       price: 0,
-      notes: ''
+      notes: '',
+      estimatedMinutes: 0
     };
     this.isSubmittingQuote = false;
   }
@@ -344,17 +343,25 @@ export class AllJobsComponent implements OnInit {
       return;
     }
 
+    if (!this.quoteForm.estimatedMinutes || this.quoteForm.estimatedMinutes <= 0) {
+      this.showAlert('Please enter a valid estimated Minutes.');
+      return;
+    }
+
     if (!this.quoteForm.notes || this.quoteForm.notes.trim() === '') {
       this.showAlert('Please enter notes for the quote.');
       return;
     }
+
+    
 
     this.isSubmittingQuote = true;
 
     const quoteRequest: AddQuoteRequest = {
       jobId: this.quoteForm.jobId,
       price: this.quoteForm.price,
-      notes: this.quoteForm.notes.trim()
+      notes: this.quoteForm.notes.trim(),
+      estimatedMinutes: this.quoteForm.estimatedMinutes 
     };
 
     this.alljobsService.addQuote(quoteRequest).subscribe({

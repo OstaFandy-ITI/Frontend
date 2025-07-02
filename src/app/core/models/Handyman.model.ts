@@ -48,6 +48,7 @@ export interface AddQuoteRequest {
   jobId: number;
   price: number;
   notes: string;
+  estimatedMinutes: number;
 }
 
 export interface AddQuoteResponse {
