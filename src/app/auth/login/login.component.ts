@@ -5,13 +5,18 @@ import { JwtService } from '../../core/services/jwt.service';
 import { UserLoginDto, UserRegisterDto } from '../../core/models/user.model';
 import { ToastrService } from 'ngx-toastr';
 import { ResponseDto } from '../../core/models/Response.model';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserType } from '../../core/Shared/Enum';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule ,ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
@@ -53,21 +58,20 @@ export class LoginComponent {
     if (this.loginForm.invalid) return;
     const loginData = this.loginForm.value as UserLoginDto;
     this._JwtService.Login(loginData).subscribe({
-      
       next: (response: ResponseDto<string>) => {
         if (response.isSuccess && response.data) {
           this._AuthService.Login(response.data);
           console.log('Login function called22');
-          this._AuthService.CurrentUser$.subscribe(user => {
+          this._AuthService.CurrentUser$.subscribe((user) => {
             if (user) {
-                this.toastr.success(response.message);
-                if (user.UserType === UserType.Admin) {
-                  this.router.navigate(['/admin/AdminDashboard']);
-                } else if (user.UserType === UserType.Customer) {
-                  //this.router.navigate(['/Home']);
-                } else if (user.UserType === UserType.Handyman) {
-                 this.router.navigate(['/handyman']);
-                }
+              this.toastr.success(response.message);
+              if (user.UserType === UserType.Admin) {
+                this.router.navigate(['/admin/AdminDashboard']);
+              } else if (user.UserType === UserType.Customer) {
+                this.router.navigate(['/']);
+              } else if (user.UserType === UserType.Handyman) {
+                this.router.navigate(['/handyman']);
+              }
             }
           });
         } else {
@@ -80,19 +84,17 @@ export class LoginComponent {
     });
   }
 
-
   //register subscription
   register() {
     if (this.registerForm.invalid) return;
-    const registerData =  this.registerForm.value as UserRegisterDto;
+    const registerData = this.registerForm.value as UserRegisterDto;
     console.log('Register data:', registerData);
 
     this._JwtService.Register(registerData).subscribe({
       next: (response: ResponseDto<string>) => {
         if (response && response.data) {
-          
           this._AuthService.Login(response.data);
-          
+
           this.toastr.success(response.message);
         } else {
           this.toastr.error(response.message);
@@ -103,5 +105,4 @@ export class LoginComponent {
       },
     });
   }
-
 }
