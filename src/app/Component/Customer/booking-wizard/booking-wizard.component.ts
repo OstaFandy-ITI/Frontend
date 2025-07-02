@@ -42,6 +42,7 @@ export class BookingWizardComponent implements OnInit {
   currentUser!: LoggedInUser | null;
   today!: string;
   cashConfirmed: boolean = false;
+  categoryId:any;
 
   constructor(
     private authService: AuthService,
@@ -311,8 +312,8 @@ export class BookingWizardComponent implements OnInit {
     const estimatedMinutes = this.bookingData.estimatedMinutes;
     const day = new Date(this.preferredDate).toISOString();
 
-    // temp
-    const categoryId = 4;
+    
+    const categoryId = this.categoryId;
 
     this.BookingService.getFreeSlot(
       categoryId,

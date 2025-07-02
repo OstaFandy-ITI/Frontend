@@ -96,37 +96,21 @@
   transition: color 0.3s ease;
 }
 
-/* Notification Icon */
-.icon-btn.notification i {
-  color: var(--orange);
-}
-.icon-btn.notification:hover i {
-  animation: shake 0.5s ease-in-out;
+.dismiss-btn:hover {
+    background: #c82333;
 }
 
-/* Notification Badge */
-.notif-badge {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  background-color: #ff4b5c;
-  color: white;
-  font-size: 0.65rem;
-  font-weight: bold;
-  width: 16px;
-  height: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  line-height: 1;
-  box-shadow: 0 0 0 2px var(--light-gray);
+.action-result {
+    margin-top: 10px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 600;
 }
 
-/* Profile Icon */
-.icon-btn.profile i {
-  color: #3f63c8;
-  font-size: 2rem;
+.action-result.approved {
+    background: #d4edda;
+    color: #155724;
 }
 
 /* Bell Hover Animation */

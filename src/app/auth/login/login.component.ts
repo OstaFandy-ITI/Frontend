@@ -80,6 +80,7 @@ export class LoginComponent {
       },
       error: (error) => {
         this.toastr.error(error.error.message);
+        console.log(error.error.message);
       },
     });
   }
