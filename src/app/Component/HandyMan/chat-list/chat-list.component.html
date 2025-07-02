@@ -15,4 +15,9 @@
       </div>
     </div>
   </div>
+  <app-chat
+  *ngIf="selectedChatId"
+  [chatId]="selectedChatId"
+  [userId]="userId">
+</app-chat>
 </div>

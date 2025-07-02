@@ -13,38 +13,67 @@ export class ChatService {
   constructor(private http: HttpClient) {}
 
   // Start SignalR connection and join chat group
-  startConnection(chatId: number): void {
-    this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${URL.apiUrl.replace('/api', '')}/chatHub`)
-      .withAutomaticReconnect()
-      .build();
+ startConnection(chatId: number): Promise<void> {
+  this.hubConnection = new signalR.HubConnectionBuilder()
+    .withUrl("https://localhost:7187/chatHub", {
+      
+    })
+    .withAutomaticReconnect()
+    .build();
 
-    this.hubConnection
-      .start()
-      .then(() => {
-        console.log('✅ SignalR connected');
-        this.hubConnection.invoke('JoinChat', chatId.toString());
-      })
-      .catch((err: any) => console.error('❌ SignalR error:', err));
+  this.hubConnection.onclose(error => {
+    console.warn("❌ SignalR disconnected", error);
+  });
 
-    this.hubConnection.on('ReceiveMessage', (msg: MessageDTO) => {
-      this.messageReceived.next(msg);
+  this.hubConnection.onreconnected(() => {
+    console.log("🔄 SignalR reconnected");
+  });
+
+  this.hubConnection.on('ReceiveMessage', (msg: MessageDTO) => {
+    console.log('📥 SignalR message received:', msg);
+    this.messageReceived.next(msg);
+  });
+
+  return this.hubConnection
+    .start()
+    .then(() => {
+      console.log('✅ SignalR connected');
+      return this.hubConnection.invoke('JoinChat', `chat-${chatId}`);
+    })
+    .catch(err => {
+      console.error('❌ SignalR connection error:', err);
+      throw err;
     });
-  }
+}
 
   // Stop SignalR connection and leave chat group
   stopConnection(chatId: number): void {
-    if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected) {
-      this.hubConnection.invoke('LeaveChat', chatId.toString()).finally(() => {
-        this.hubConnection.stop().catch((err: any) => console.error('SignalR stop error:', err));
+    if (
+      this.hubConnection &&
+      this.hubConnection.state === signalR.HubConnectionState.Connected
+    ) {
+      this.hubConnection.invoke('LeaveChat', `chat-${chatId}`).finally(() => {
+        this.hubConnection
+          .stop()
+          .catch((err: any) => console.error('SignalR stop error:', err));
       });
     }
   }
 
   // Send message via REST (fallback or persistence)
-sendMessageREST(msg: MessageDTO): Observable<any> {
-  return this.http.post(`${URL.apiUrl}/Chat/send`, msg); 
-}
+  sendMessageREST(msg: MessageDTO): Observable<any> {
+    return this.http.post(`${URL.apiUrl}/Chat/send`, msg);
+  }
+
+  sendSignalRMessage(msg: MessageDTO): void {
+    if (this.hubConnection?.state === signalR.HubConnectionState.Connected) {
+      this.hubConnection.invoke('SendMessage', msg).catch((err) => {
+        console.error('❌ SignalR send failed', err);
+      });
+    } else {
+      console.warn('⚠️ SignalR not connected');
+    }
+  }
   // Get all previous messages in a chat
   getMessages(chatId: number): Observable<MessageDTO[]> {
     return this.http.get<MessageDTO[]>(`${URL.apiUrl}/Chat/history/${chatId}`);
@@ -55,10 +84,10 @@ sendMessageREST(msg: MessageDTO): Observable<any> {
     return this.messageReceived.asObservable();
   }
 
-getHandymanThreads(): Observable<ChatThread[]> {
-  return this.http.get<ChatThread[]>(`${URL.apiUrl}/Chat/handyman/threads`);
-}
-getClientThreads(): Observable<ChatThread[]> {
-  return this.http.get<ChatThread[]>(`${URL.apiUrl}/Chat/threads`);
-}
+  getHandymanThreads(): Observable<ChatThread[]> {
+    return this.http.get<ChatThread[]>(`${URL.apiUrl}/Chat/handyman/threads`);
+  }
+  getClientThreads(): Observable<ChatThread[]> {
+    return this.http.get<ChatThread[]>(`${URL.apiUrl}/Chat/threads`);
+  }
 }

@@ -11,6 +11,7 @@ import { ChatListComponent } from './Component/HandyMan/chat-list/chat-list.comp
 import { Component } from '@angular/core';
 import { HomeComponent } from './Component/Customer/home/home.component';
 import { customerGuard } from './core/guards/customer.guard';
+import { AboutUsComponent } from './Component/Customer/about-us/about-us.component';
 
 export const routes: Routes = [
 
@@ -24,6 +25,7 @@ export const routes: Routes = [
 
   { path: 'chat', component: ChatComponent },
   { path: 'handyman', canActivate: [handymanGuard],children: handymanRoutes},
+  { path: 'about', component: AboutUsComponent },
 
 
 ];
