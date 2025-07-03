@@ -1,11 +1,7 @@
-<<<<<<< HEAD
-import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
 
-@Component({
-  selector: 'app-chat-list',
-  imports: [CommonModule],
-=======
+
+
+
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChatService } from '../../Customer/services/chat.service';
@@ -16,7 +12,7 @@ import { ChatComponent } from '../../Customer/chat/chat.component';
 @Component({
   selector: 'app-chat-list',
   standalone: true,
->>>>>>> d6fa1b3a1737416a0829403ca22f2ac64461c831
+
   templateUrl: './chat-list.component.html',
   styleUrls: ['./chat-list.component.css'], 
   imports: [CommonModule,] 

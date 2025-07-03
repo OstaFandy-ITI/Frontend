@@ -13,6 +13,7 @@ import { customerRoutes } from './Component/Customer/Customer.routes';
 
 import { Component } from '@angular/core';
 import { HomeComponent } from './Component/Customer/home/home.component';
+import { ClientProfileComponent } from './Component/Customer/client-profile/client-profile.component';
 
 
 export const routes: Routes = [
@@ -28,7 +29,8 @@ export const routes: Routes = [
   { path: 'chat', component: ChatComponent },
   { path: 'handyman', canActivate: [handymanGuard],children: handymanRoutes},
 
-  {path: 'customer', children: customerRoutes}
+  {path: 'customer', children: customerRoutes},
+  {path: 'client-profile', component: ClientProfileComponent},
 
 
 

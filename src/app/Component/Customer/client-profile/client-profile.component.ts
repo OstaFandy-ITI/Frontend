@@ -1,11 +1,23 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-client-profile',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './client-profile.component.html',
-  styleUrl: './client-profile.component.css'
+  styleUrls: ['./client-profile.component.css']
 })
-export class ClientProfileComponent {
-  
+export class ClientProfileComponent  {
+  showProfileScreen: boolean = true;
+
+
+  showChangePassword(): void {
+    this.showProfileScreen = false;
+  }
+
+ 
+  showProfile(): void {
+    this.showProfileScreen = true;
+  }
 }

@@ -6,11 +6,9 @@
     --orange: #ffa94d;
 }
 
-:host {
-    display: block;
+body {
     background-color: var(--lighter-gray);
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    min-height: 100vh;
 }
 
 .navbar {
@@ -18,6 +16,7 @@
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     padding: 0.5rem 1rem;
 }
+
 
 .navbar-brand {
     color: var(--primary-blue) !important;
@@ -60,7 +59,6 @@
     height: 60px;
     border-radius: 50%;
     margin-bottom: 0.5rem;
-    object-fit: cover;
 }
 
 .user-name {
@@ -131,27 +129,30 @@
     height: 80px;
     border-radius: 50%;
     margin-right: 1rem;
-    object-fit: cover;
 }
 
 .btn-primary {
-    background-color: var(--primary-blue);
-    border-color: var(--primary-blue);
+    background-color: #004e98 !important; /* Explicitly set to #004e98 */
+    border-color: #004e98 !important;     /* Explicitly set to #004e98 */
+    color: white !important; /* Ensure text is white on primary buttons */
 }
 
 .btn-primary:hover {
-    background-color: var(--secondary-blue);
-    border-color: var(--secondary-blue);
+    background-color: var(--secondary-blue) !important; /* Changed to secondary blue for hover */
+    border-color: var(--secondary-blue) !important;
 }
 
-.btn-outline-primary {
-    color: var(--primary-blue);
-    border-color: var(--primary-blue);
+/* Custom style for inactive button to also use primary blue background */
+.btn-inactive-custom {
+    background-color: #004e98 !important; /* Explicitly set to #004e98 */
+    color: white !important; /* White text for contrast */
+    border: 1px solid #004e98 !important; /* Border matches background */
 }
 
-.btn-outline-primary:hover {
-    background-color: var(--primary-blue);
-    border-color: var(--primary-blue);
+.btn-inactive-custom:hover {
+    background-color: var(--secondary-blue) !important; /* Changed to secondary blue for hover */
+    border-color: var(--secondary-blue) !important;
+    color: white !important;
 }
 
 .form-label {
@@ -174,66 +175,19 @@
     color: white;
 }
 
+.change-password-modal .modal-header {
+    background-color: var(--primary-blue);
+    color: white;
+}
+
+.change-password-modal .btn-close {
+    filter: invert(1);
+}
+
 .profile-sidebar {
     background-color: white;
     border-radius: 8px;
     padding: 1.5rem;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     margin-right: 1rem;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .sidebar {
-        min-height: auto;
-    }
-    
-    .main-content {
-        margin: 0.5rem;
-        padding: 1rem;
-    }
-    
-    .profile-sidebar {
-        margin-right: 0;
-        margin-bottom: 1rem;
-    }
-}
-
-/* Form validation styles */
-.form-control.ng-invalid.ng-touched {
-    border-color: #dc3545;
-}
-
-.form-control.ng-valid.ng-touched {
-    border-color: #28a745;
-}
-
-.form-select.ng-invalid.ng-touched {
-    border-color: #dc3545;
-}
-
-.form-select.ng-valid.ng-touched {
-    border-color: #28a745;
-}
-
-/* Loading and disabled states */
-.btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-/* Animation for tab switching */
-.main-content {
-    animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }

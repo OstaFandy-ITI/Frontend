@@ -1,0 +1,220 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="logo.png" alt="Logo">
+        </a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" href="#"><i class="fas fa-sun"></i></a>
+            <a class="nav-link position-relative" href="#">
+                <i class="fas fa-bell"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">1</span>
+            </a>
+            <a class="nav-link" href="#"><i class="fas fa-flag-usa"></i></a>
+            <div class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                    <img src="profile.png" class="rounded-circle me-2" width="32" height="32" alt="User Profile">
+                    JOHN DOE
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 p-0">
+            <div class="sidebar">
+                <!-- User Info -->
+                <div class="user-info">
+                    <img src="profile.png" class="user-avatar" alt="User Avatar">
+                    <div class="user-name">John Doe</div>
+                    <!-- <div class="user-email">john@gmail.com</div> -->
+                </div>
+
+                <!-- Main Menu -->
+                <p class="section-title">MAIN</p>
+                <ul class="sidebar-menu">
+                    <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="#"><i class="fas fa-calendar-check"></i> Bookings</a></li>
+                </ul>
+
+                <!-- Transactions -->
+                <p class="section-title">TRANSACTIONS</p>
+                <ul class="sidebar-menu">
+                    <li><a href="#"><i class="fas fa-credit-card"></i> Payments</a></li>
+                    <li><a href="#"><i class="fas fa-money-bill-wave"></i> Cash Payments</a></li>
+                </ul>
+
+                <!-- Promotion -->
+                <p class="section-title">PROMOTION</p>
+                <ul class="sidebar-menu">
+                    <li><a href="#"><i class="fas fa-headset"></i> Help Desk</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+            <div class="row">
+                <!-- Profile Buttons Section -->
+                <div class="col-md-3">
+                    <div class="profile-sidebar">
+                        <div class="mb-4">
+                            <!-- Buttons use ngClass to apply btn-primary or btn-inactive-custom based on showProfileScreen -->
+                            <button class="btn w-100 mb-2"
+                                    [ngClass]="{'btn-primary': showProfileScreen, 'btn-inactive-custom': !showProfileScreen}"
+                                    (click)="showProfile()">PROFILE</button>
+                            <button class="btn w-100"
+                                    [ngClass]="{'btn-primary': !showProfileScreen, 'btn-inactive-custom': showProfileScreen}"
+                                    (click)="showChangePassword()">CHANGE PASSWORD</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-9">
+                    <!-- Profile Screen - Conditionally displayed with *ngIf -->
+                    <div id="profileScreen" class="main-content" *ngIf="showProfileScreen">
+                        <div class="row">
+                            <!-- Profile Image in Form -->
+                            <div class="col-md-3 text-center mb-4">
+                                <img src="profile.png" class="profile-avatar mb-2" style="width: 100px; height: 100px;" alt="Profile Avatar">
+                                <h6 style="color: var(--primary-blue);">John Doe</h6>
+                            </div>
+
+                            <div class="col-md-9">
+                                <form>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">First Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" value="John">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Last Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" value="Doe">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Username <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" value="john_doe">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Select Country</label>
+                                            <select class="form-select">
+                                                <option>Select Country</option>
+                                                <option selected>Egypt</option>
+                                                <option>United States</option>
+                                                <option>United Kingdom</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Select State</label>
+                                            <select class="form-select">
+                                                <option>Select State</option>
+                                                <option>Cairo</option>
+                                                <option>Alexandria</option>
+                                                <option>Giza</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Select City</label>
+                                            <select class="form-select">
+                                                <option>Select City</option>
+                                                <option>Tanta</option>
+                                                <option>Mahalla</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Email <span class="text-danger">*</span></label>
+                                            <input type="email" class="form-control" value="john@gmail.com">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Contact Number <span class="text-danger">*</span></label>
+                                            <div class="input-group">
+                                                <span class="input-group-text">
+                                                    <img src="https://flagcdn.com/w20/eg.png" width="20" alt="Egypt Flag">
+                                                    +20
+                                                </span>
+                                                <input type="tel" class="form-control" value="20106803499">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Status <span class="text-danger">*</span></label>
+                                            <select class="form-select">
+                                                <option value="active" selected>Active</option>
+                                                <option value="inactive">Inactive</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Choose Profile Image</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" value="user.png" readonly>
+                                                <!-- Changed to btn-primary for solid blue look -->
+                                                <button class="btn btn-primary" type="button">Browse</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Address</label>
+                                        <textarea class="form-control" rows="3" placeholder="Address"></textarea>
+                                    </div>
+
+                                    <div class="text-end">
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Change Password Screen - Conditionally displayed with *ngIf -->
+                    <div id="changePasswordScreen" class="main-content" *ngIf="!showProfileScreen">
+                        <h4 class="mb-4 ">Change Password</h4>
+
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label">Old Password <span class="text-danger">*</span></label>
+                                <input type="password" class="form-control" placeholder="Old Password">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">New Password <span class="text-danger">*</span></label>
+                                <input type="password" class="form-control" placeholder="New Password">
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Confirm New Password <span class="text-danger">*</span></label>
+                                <input type="password" class="form-control" placeholder="Confirm New Password">
+                            </div>
+
+                            <div class="text-end">
+                                <!-- Changed to btn-primary for solid blue look -->
+                                <button type="button" class="btn btn-primary me-2" (click)="showProfile()">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

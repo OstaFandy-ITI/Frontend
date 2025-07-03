@@ -1,82 +1,64 @@
-// models/client-profile.model.ts
-
 export interface ClientProfile {
-  userId: number;
+  id: number;
   firstName: string;
   lastName: string;
+  username: string;
   email: string;
-  phone: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  defaultAddress: DefaultAddress;
-  statusCode: number;
-}
-
-export interface DefaultAddress {
-  id: number;
-  address: string;
-  city: string;
-  latitude: number;
-  longitude: number;
-  addressType: string;
+  phoneNumber: string;
+  country?: string;
+  state?: string;
+  city?: string;
+  address?: string;
+  status: 'active' | 'inactive';
+  profileImageUrl?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface UpdateClientProfileRequest {
   firstName: string;
   lastName: string;
   username: string;
-  country: string;
-  state: string;
-  city: string;
   email: string;
-  phone: string;
-  status: 'active' | 'inactive';
+  phoneNumber: string;
+  country?: string;
+  state?: string;
+  city?: string;
   address?: string;
-  profileImage?: string;
+  status: 'active' | 'inactive';
 }
 
 export interface ChangePasswordRequest {
   oldPassword: string;
   newPassword: string;
-  confirmNewPassword: string;
 }
 
 export interface ClientOrderHistory {
-  clientId: number;
-  clientName: string;
-  email: string;
-  phone: string;
+  orders: ClientOrder[];
   totalOrders: number;
-  completedOrders: number;
-  pendingOrders: number;
-  cancelledOrders: number;
   totalSpent: number;
-  orders: Order[];
 }
 
-export interface Order {
-  bookingId: number;
-  orderDate: string;
-  preferredDate: string;
+export interface ClientOrder {
+  id: number;
+  orderNumber: string;
+  orderDate: Date;
   status: string;
-  totalPrice: number;
-  estimatedMinutes: number;
-  note: string;
-  handymanName: string;
-  address: OrderAddress;
+  totalAmount: number;
+  items: OrderItem[];
 }
 
-export interface OrderAddress {
-  fullAddress: string;
-  city: string;
-  latitude: number;
-  longitude: number;
+export interface OrderItem {
+  id: number;
+  productName: string;
+  quantity: number;
+  price: number;
+  totalPrice: number;
 }
 
 export interface ApiResponse<T> {
-  isSuccess: boolean;
+  success: boolean;
   message: string;
   data: T;
-  statusCode: number;
+  errors?: string[];
 }
