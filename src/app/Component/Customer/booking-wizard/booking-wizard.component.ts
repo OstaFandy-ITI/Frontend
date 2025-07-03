@@ -83,8 +83,8 @@ export class BookingWizardComponent implements OnInit {
         this.router.navigate(['/']); // or redirect to homepage
         return;
       }
-      const categoryId = +params['categoryId'];
-      this.Getservices(categoryId);
+      this.categoryId = +params['categoryId'];
+      this.Getservices(this.categoryId);
     });
     // Step 1.5: Load selected services from localStorage
     const saved = localStorage.getItem('selectedServices');
@@ -314,7 +314,8 @@ export class BookingWizardComponent implements OnInit {
 
     
     const categoryId = this.categoryId;
-
+console.log('categoryId:', categoryId);
+console.log(this.categoryId);
     this.BookingService.getFreeSlot(
       categoryId,
       day,
