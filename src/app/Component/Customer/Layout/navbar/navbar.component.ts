@@ -1,4 +1,3 @@
-import { Component } from '@angular/core';
 import { NotificationComponent } from '../../notification/notification.component'; 
 // navbar.component.ts
 import { Component, OnInit } from '@angular/core';
@@ -8,7 +7,6 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
-  imports: [NotificationComponent],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
   imports: [CommonModule],

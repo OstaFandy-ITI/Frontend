@@ -56,11 +56,14 @@ export class ChatComponent implements OnInit, OnDestroy {
     console.log('✅ SignalR connection + group join complete');
 
     // 3. Only now start listening for messages
-    this.messageSub = this.chatService.onNewMessage().subscribe((msg) => {
-      console.log('📬 Received in component:', msg);
-      this.messages.push(msg);
-      setTimeout(() => this.scrollToBottom(), 100);
-    });
+ this.messageSub = this.chatService.onNewMessage().subscribe((msg) => {
+  if (msg) {
+msg.sentAt = msg.sentAt ? new Date(msg.sentAt).toISOString() : '';
+    this.messages.push(msg);
+    setTimeout(() => this.scrollToBottom(), 100);
+  }
+});
+
   });
 }
 
@@ -85,21 +88,21 @@ export class ChatComponent implements OnInit, OnDestroy {
         this.newMessage = '';
         setTimeout(() => this.scrollToBottom(), 100);
 
-        // ✅ Broadcast to others via SignalR
-        setTimeout(() => {
-          this.chatService.sendSignalRMessage(msg);
-        }, 100);
+        console.log('✅ Message sent successfully');
       },
       error: (err) => {
         console.error('❌ Failed to send message', err);
       },
     });
   }
-
-  scrollToBottom() {
+scrollToBottom() {
+  try {
     const el = this.scrollContainer?.nativeElement;
     if (el) el.scrollTop = el.scrollHeight;
+  } catch (e) {
+    console.warn('⚠️ Failed to scroll chat to bottom:', e);
   }
+}
 
   close() {
     this.chatService.stopConnection(this.chatId);
