@@ -38,7 +38,7 @@ export class ChatService {
     .start()
     .then(() => {
       console.log('✅ SignalR connected');
-      return this.hubConnection.invoke('JoinChat', chatId);
+      return this.hubConnection.invoke('JoinChat', chatId.toString());// to string is important 
     })
     .catch(err => {
       console.error('❌ SignalR connection error:', err);
@@ -52,7 +52,7 @@ export class ChatService {
       this.hubConnection &&
       this.hubConnection.state === signalR.HubConnectionState.Connected
     ) {
-      this.hubConnection.invoke('LeaveChat', chatId).finally(() => {
+      this.hubConnection.invoke('LeaveChat', chatId.toString()).finally(() => {
         this.hubConnection
           .stop()
           .catch((err: any) => console.error('SignalR stop error:', err));
@@ -90,4 +90,7 @@ export class ChatService {
   getClientThreads(): Observable<ChatThread[]> {
     return this.http.get<ChatThread[]>(`${URL.apiUrl}/Chat/threads`);
   }
+
+
+
 }

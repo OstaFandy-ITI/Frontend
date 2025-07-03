@@ -15,9 +15,10 @@
       </div>
     </div>
   </div>
-  <app-chat
+<app-chat
   *ngIf="selectedChatId"
   [chatId]="selectedChatId"
-  [userId]="userId">
+  [userId]="userId"
+  (closed)="selectedChatId = null">
 </app-chat>
 </div>

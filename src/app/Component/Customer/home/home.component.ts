@@ -27,7 +27,6 @@ categories: Category[] = [];
       error: (err) => console.error('Failed to load categories', err)
     });
   }
-  
 goToBooking(categoryId: number) {
   this.router.navigate(['/booking'], {
     queryParams: { categoryId }

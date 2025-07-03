@@ -14,6 +14,7 @@ import { ChatService } from '../services/chat.service';
 import { MessageDTO } from '../../../core/models/message.model';
 import { Subscription, take } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
+import { Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-chat',
@@ -25,6 +26,7 @@ import { AuthService } from '../../../core/services/auth.service';
 export class ChatComponent implements OnInit, OnDestroy {
   @Input() chatId!: number;
   @Input() userId!: number;
+@Output() closed = new EventEmitter<void>();
 
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   messages: MessageDTO[] = [];
@@ -77,23 +79,16 @@ msg.sentAt = msg.sentAt ? new Date(msg.sentAt).toISOString() : '';
     };
 
     this.chatService.sendMessageREST(msg).subscribe({
-      next: () => {
-        this.messages.push({
-          chatId: this.chatId,
-          content: msg.content,
-          senderId: this.userId,
-          sentAt: new Date().toISOString(),
-        });
+  next: () => {
+    this.newMessage = '';
+    console.log('✅ Message sent successfully');
+    // No need to push manually — SignalR will push it
+  },
+  error: (err) => {
+    console.error('❌ Failed to send message', err);
+  },
+});
 
-        this.newMessage = '';
-        setTimeout(() => this.scrollToBottom(), 100);
-
-        console.log('✅ Message sent successfully');
-      },
-      error: (err) => {
-        console.error('❌ Failed to send message', err);
-      },
-    });
   }
 scrollToBottom() {
   try {
@@ -106,6 +101,7 @@ scrollToBottom() {
 
   close() {
     this.chatService.stopConnection(this.chatId);
+      this.closed.emit(); // ✅ notify parent
   }
 
   ngOnDestroy(): void {

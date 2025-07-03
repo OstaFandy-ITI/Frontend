@@ -13,6 +13,7 @@ import { HomeComponent } from './Component/Customer/home/home.component';
 import { clientRoutes } from './Component/Customer/Customer.routes';
 import { customerGuard } from './core/guards/customer.guard';
 import { AboutUsComponent } from './Component/Customer/about-us/about-us.component';
+import { CareersComponent } from './Component/Customer/careers/careers.component';
 
 export const routes: Routes = [
 
@@ -27,6 +28,8 @@ export const routes: Routes = [
   { path: 'chat', component: ChatComponent },
   { path: 'handyman', canActivate: [handymanGuard],children: handymanRoutes},
   { path: 'about', component: AboutUsComponent },
+    { path: 'careers', component: CareersComponent },
+
   { path: 'client', canActivate: [customerGuard],children: clientRoutes},
 
 

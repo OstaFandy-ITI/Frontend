@@ -401,3 +401,24 @@
 
 
 
+.floating-cta-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #ffa94d; /* Orange */
+  color: #000000;
+  padding: 12px 20px;
+  border-radius: 50px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  font-weight: 600;
+  text-decoration: none;
+  z-index: 999;
+  transition: all 0.3s ease;
+  font-size: 16px;
+}
+
+.floating-cta-btn:hover {
+  background-color: #ffb866;
+  color: #000;
+  transform: translateY(-4px);
+}
