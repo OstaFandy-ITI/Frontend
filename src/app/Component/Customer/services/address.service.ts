@@ -18,7 +18,9 @@ export class AddressService {
       `${this.BaseUrl}/GetAddressesByUserId/${UserId}`
     );
   }
-
+markNotificationAsRead(notificationId: number): Observable<any> {
+  return this.http.put(`${this.BaseUrl}/MarkAsRead/${notificationId}`, null);
+}
   ///api/Address/CreateAddress
   CreateAddress(address:CreateAddressDTO):Observable<ResponseDto<string>>
   {

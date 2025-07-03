@@ -9,11 +9,16 @@ import { ChatComponent } from './Component/Customer/chat/chat.component';
 import { handymanGuard } from './core/guards/handyman.guard';
 import { ChatListComponent } from './Component/HandyMan/chat-list/chat-list.component';
 
-import { customerRoutes } from './Component/Customer/Customer.routes';
+
 
 import { Component } from '@angular/core';
 import { HomeComponent } from './Component/Customer/home/home.component';
+
 import { ClientProfileComponent } from './Component/Customer/client-profile/client-profile.component';
+
+
+import { clientRoutes } from './Component/Customer/Customer.routes';
+import { customerGuard } from './core/guards/customer.guard';
 
 
 export const routes: Routes = [
@@ -24,12 +29,13 @@ export const routes: Routes = [
   {
     path: 'admin', canActivate: [adminGuard], children: adminRoutes },
 
-  { path: 'booking', component: BookingWizardComponent },
+  { path: 'booking', component: BookingWizardComponent,canActivate:[customerGuard] },
 
   { path: 'chat', component: ChatComponent },
   { path: 'handyman', canActivate: [handymanGuard],children: handymanRoutes},
+  { path: 'client', canActivate: [customerGuard],children: clientRoutes},
 
-  {path: 'customer', children: customerRoutes},
+
   {path: 'client-profile', component: ClientProfileComponent},
 
 

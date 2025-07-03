@@ -5,21 +5,40 @@
   --blue-medium: #3A6EA5;
   --blue-dark: #004E98;
   --red: #dc3545;
+  --ostafandy-blue:#3f63c8;
 }
 
-/* Top Info Bar */
 .top-info-bar {
   background-color: #3f63c8;
   color: white;
   font-size: 0.9rem;
-  border-bottom: 1px solid var(--blue-medium);
+  white-space: nowrap;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
 }
-.top-info-bar a {
-  color: white;
-  transition: color 0.2s ease;
+
+.ticker-content {
+  display: inline-flex;
+  gap: 2rem;
+  align-items: center;
+  animation: scroll-left 25s linear infinite;
+  padding-left: 100%;
 }
-.top-info-bar a:hover {
-  color: var(--orange);
+
+.ticker-content:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
 }
 
 /* Navbar Base */
@@ -36,7 +55,7 @@
   margin-bottom: 0;
 }
 .navbar-custom .nav-link {
-  color: var(--blue-medium);
+  color: black;
   font-weight: 500;
   margin: 0 12px;
   transition: all 0.3s ease;
@@ -52,33 +71,7 @@
   color: #3f63c8;
 }
 
-/* User Info Section */
-.user-info {
-  text-align: right;
-  margin-right: 10px;
-}
 
-/* Logout Button */
-.logout-btn {
-  background-color: #3f63c8;
-  color: white;
-  font-size: 0.85rem;
-  font-weight: 500;
-  padding: 6px 14px;
-  border: none;
-  border-radius: 20px;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-.logout-btn:hover {
-  background-color: var(--orange);
-  color: var(--blue-dark);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-.logout-btn i {
-  font-size: 1rem;
-  margin-right: 4px;
-}
 
 /* Icon Buttons: Notification + Profile */
 .icon-btn {
@@ -98,46 +91,24 @@
   transition: color 0.3s ease;
 }
 
-/* Notification Icon */
-.icon-btn.notification i {
-  color: var(--orange);
-}
-.icon-btn.notification:hover i {
-  animation: shake 0.5s ease-in-out;
+.dismiss-btn:hover {
+    background: #c82333;
 }
 
-/* Notification Badge */
-.notif-badge {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  background-color: #ff4b5c;
-  color: white;
-  font-size: 0.65rem;
-  font-weight: bold;
-  width: 16px;
-  height: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  line-height: 1;
-  box-shadow: 0 0 0 2px var(--light-gray);
+.action-result {
+    margin-top: 10px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 600;
 }
 
-/* Profile Icon */
-.icon-btn.profile i {
-  color: #3f63c8;
-  font-size: 2rem;
+.action-result.approved {
+    background: #d4edda;
+    color: #155724;
 }
 
-
-/* Bell Hover Animation */
-@keyframes shake {
-  0% { transform: rotate(0); }
-  20% { transform: rotate(6deg); }
-  40% { transform: rotate(-6deg); }
-  60% { transform: rotate(4deg); }
-  80% { transform: rotate(-4deg); }
-  100% { transform: rotate(0); }
+.action-result.dismissed {
+    background: #f8d7da;
+    color: #721c24;
 }
