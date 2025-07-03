@@ -15,4 +15,10 @@
       </div>
     </div>
   </div>
+<app-chat
+  *ngIf="selectedChatId"
+  [chatId]="selectedChatId"
+  [userId]="userId"
+  (closed)="selectedChatId = null">
+</app-chat>
 </div>

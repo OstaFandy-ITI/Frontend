@@ -4,9 +4,10 @@ import { Category } from '../../../core/models/category.models';
 import { CommonModule } from '@angular/common';
 import { NavbarComponent } from "../Layout/navbar/navbar.component";
 import { Router, RouterModule } from '@angular/router';
+import { FooterComponent } from "../Layout/footer/footer.component";
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, NavbarComponent, RouterModule],
+  imports: [CommonModule, NavbarComponent, RouterModule, FooterComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
