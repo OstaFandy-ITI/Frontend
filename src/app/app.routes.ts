@@ -8,12 +8,22 @@ import { BookingWizardComponent } from './Component/Customer/booking-wizard/book
 import { ChatComponent } from './Component/Customer/chat/chat.component';
 import { handymanGuard } from './core/guards/handyman.guard';
 import { ChatListComponent } from './Component/HandyMan/chat-list/chat-list.component';
+
+
+
 import { Component } from '@angular/core';
 import { HomeComponent } from './Component/Customer/home/home.component';
+
+import { ClientProfileComponent } from './Component/Customer/client-profile/client-profile.component';
+
+import { SideNavComponent } from './Component/Customer/Layout/side-nav/side-nav.component';
+
+
 import { clientRoutes } from './Component/Customer/Customer.routes';
 import { customerGuard } from './core/guards/customer.guard';
 import { AboutUsComponent } from './Component/Customer/about-us/about-us.component';
 import { CareersComponent } from './Component/Customer/careers/careers.component';
+
 
 export const routes: Routes = [
 
@@ -31,6 +41,11 @@ export const routes: Routes = [
     { path: 'careers', component: CareersComponent },
 
   { path: 'client', canActivate: [customerGuard],children: clientRoutes},
+  {path: 'side-nav', component: SideNavComponent},
+
+
+  {path: 'client-profile', component: ClientProfileComponent},
+
 
 
 ];

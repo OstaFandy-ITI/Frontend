@@ -1,3 +1,7 @@
+
+
+
+
 import { Component, OnInit } from '@angular/core';
 import { ChatService } from '../../Customer/services/chat.service';
 import { ChatThread, MessageDTO } from '../../../core/models/message.model';
@@ -9,6 +13,7 @@ import { interval, Subscription } from 'rxjs';
 @Component({
   selector: 'app-chat-list',
   standalone: true,
+
   templateUrl: './chat-list.component.html',
   styleUrls: ['./chat-list.component.css'],
   imports: [CommonModule, ChatComponent]
