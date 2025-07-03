@@ -232,6 +232,21 @@
               [disabled]="isSubmittingQuote">
           </div>
 
+          <!--  estimatedMinutes-->
+          <div class="mb-3">
+            <label for="estimatedMinutes" class="form-label">estimated Time (Minutes)</label>
+            <input 
+              type="number" 
+              id="estimatedMinutes"
+              class="form-control" 
+              placeholder="Enter amount"
+              [(ngModel)]="quoteForm.estimatedMinutes"
+              name="estimatedMinutes"
+              min="1"
+              step="1"
+              [disabled]="isSubmittingQuote">
+          </div>
+
           <!-- Notes -->
           <div class="mb-3">
             <label for="notes" class="form-label">Notes</label>
@@ -245,6 +260,8 @@
               [disabled]="isSubmittingQuote">
             </textarea>
           </div>
+
+          
         </form>
       </div>
       <div class="modal-footer">

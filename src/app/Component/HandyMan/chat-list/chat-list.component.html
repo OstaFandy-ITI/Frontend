@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-<!-- <div class="chat-list-container">
-  <div class="chat-header">
-    <h5>Chats</h5>
-  </div>
-=======
 <div class="chat-list p-3">
   <h5 class="mb-3">Active Chats</h5>
->>>>>>> d6fa1b3a1737416a0829403ca22f2ac64461c831
+
 
   <div *ngIf="threads.length === 0" class="text-muted">No active chats.</div>
 
@@ -22,4 +16,11 @@
       </div>
     </div>
   </div>
-</div> -->
+
+<app-chat
+  *ngIf="selectedChatId"
+  [chatId]="selectedChatId"
+  [userId]="userId"
+  (closed)="selectedChatId = null">
+</app-chat>
+</div>
