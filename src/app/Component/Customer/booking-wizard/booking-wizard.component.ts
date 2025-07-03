@@ -66,56 +66,72 @@ export class BookingWizardComponent implements OnInit {
     });
   }
 
-ngOnInit(): void {
-  // Step 0: Check logged-in user
-  this.authService.CurrentUser$.subscribe((user) => {
-    if (!user) return;
-    this.currentUser = user;
-    this.userId = Number(user?.NameIdentifier);
-    console.log('✅ userId:', this.userId);
-    console.log('✅ currentUser:', this.currentUser);
-  });
+  ngOnInit(): void {
+    // Step 0: Check logged-in user
+    this.authService.CurrentUser$.subscribe((user) => {
+      if (!user) return;
+      this.currentUser = user;
+      this.userId = Number(user?.NameIdentifier);
+      console.log('✅ userId:', this.userId);
+      console.log('✅ currentUser:', this.currentUser);
+    });
 
-  // Step 1: Load categoryId from query params
-this.route.queryParams.subscribe((params: { categoryId?: string }) => {
-  if (!params['categoryId']) {
-    this.toastr.error('Please select a category to proceed.');
-    this.router.navigate(['/']); // or redirect to homepage
-    return;
+    // Step 1: Load categoryId from query params
+    this.route.queryParams.subscribe((params: { categoryId?: string }) => {
+      if (!params['categoryId']) {
+        this.toastr.error('Please select a category to proceed.');
+        this.router.navigate(['/']); // or redirect to homepage
+        return;
+      }
+      this.categoryId = +params['categoryId'];
+      this.Getservices(this.categoryId);
+    });
+    // Step 1.5: Load selected services from localStorage
+    const saved = localStorage.getItem('selectedServices');
+    if (saved) {
+      this.SelectedItem = JSON.parse(saved);
+    }
+
+    // Step 2: Load user's saved addresses
+    this.GetAddressesByUserId();
+
+    // Step 3: Set today's date for min date selection
+    const now = new Date();
+    this.today = now.toISOString().split('T')[0];
+
+    // Step 4: Load existing booking draft if exists
+    const savedBooking = localStorage.getItem('bookingData');
+    if (savedBooking) {
+      this.bookingData = JSON.parse(savedBooking);
+    }
   }
-  this.categoryId = +params['categoryId'];
-  this.Getservices(this.categoryId);
-});
-  // Step 1.5: Load selected services from localStorage
-  const saved = localStorage.getItem('selectedServices');
-  if (saved) {
-    this.SelectedItem = JSON.parse(saved);
-  }
-
-  // Step 2: Load user's saved addresses
-  this.GetAddressesByUserId();
-
-  // Step 3: Set today's date for min date selection
-  const now = new Date();
-  this.today = now.toISOString().split('T')[0];
-
-  // Step 4: Load existing booking draft if exists
-  const savedBooking = localStorage.getItem('bookingData');
-  if (savedBooking) {
-    this.bookingData = JSON.parse(savedBooking);
-  }
-}
 
   //#region Navigation
+  // goToStep(step: number): void {
+  //   if (step >= 1 && step <= 5) {
+  //     this.updateStepData(this.currentStep);
+  //     this.currentStep = step;
+  //     window.scrollTo(0, 0);
+  //     this.initializeStripeIfNeeded();
+  //   }
+  // }
   goToStep(step: number): void {
+    this.updateStepData(this.currentStep);
+
+    // ✅ Prevent going to step 5 without a valid chatId
+    if (step === 5 && !this.chatId) {
+      this.toastr.error(
+        'Chat session not initialized. Please wait or try again.'
+      );
+      return;
+    }
+
     if (step >= 1 && step <= 5) {
-      this.updateStepData(this.currentStep);
       this.currentStep = step;
       window.scrollTo(0, 0);
       this.initializeStripeIfNeeded();
     }
   }
-
   next(): void {
     this.updateStepData(this.currentStep);
     if (this.currentStep < 5) {
@@ -298,7 +314,8 @@ this.route.queryParams.subscribe((params: { categoryId?: string }) => {
 
     
     const categoryId = this.categoryId;
-
+console.log('categoryId:', categoryId);
+console.log(this.categoryId);
     this.BookingService.getFreeSlot(
       categoryId,
       day,
@@ -496,7 +513,13 @@ this.route.queryParams.subscribe((params: { categoryId?: string }) => {
     this.BookingService.createBooking(this.bookingData).subscribe({
       next: (res) => {
         this.toastr.success(res.message);
+        if (!res.data.chatId) {
+          this.toastr.error('Chat could not be initialized. Please try again.');
+          return;
+        }
+
         this.chatId = res.data.chatId;
+
         this.bookingId = res.data.bookingId;
 
         this.isLoading = false;

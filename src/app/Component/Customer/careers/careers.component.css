@@ -1,0 +1,102 @@
+.careers-hero {
+  background: url('/assets/banner.jpg') center center / cover no-repeat;
+  height: 60vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.careers-hero .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 30px;
+  color: white;
+  text-align: center;
+}
+.careers-hero h1 {
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.careers-hero p {
+  font-size: 1.2rem;
+  margin-top: 10px;
+}
+
+.benefits-section .icon {
+  font-size: 2.5rem;
+  color: #0d6efd;
+  margin-bottom: 15px;
+}
+
+.benefit-box {
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+  transition: transform 0.2s ease;
+}
+
+.benefit-box:hover {
+  transform: translateY(-5px);
+  background-color: #e9f5ff;
+}
+
+.card img {
+  height: 230px;
+  object-fit: cover;
+}
+.benefits-section h2 {
+  font-size: 2.2rem;
+}
+
+.benefit-card {
+  padding: 30px 20px;
+  border-radius: 10px;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  background-color: #ffffff;
+}
+
+.benefit-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.benefit-card .icon {
+  font-size: 2.8rem;
+  margin-bottom: 15px;
+}
+.cta-section {
+  background: url('/assets/cta-handyman.jpg') center center / cover no-repeat;
+  height: 60vh;
+  position: relative;
+  margin-top: 80px;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.cta-overlay {
+  background-color: rgba(0, 78, 152, 0.8); /* dark blue overlay */
+  height: 100%;
+  width: 100%;
+  color: white;
+  padding: 40px;
+}
+
+.cta-section h3 {
+  color: #ffffff;
+}
+
+.cta-section .btn:hover {
+  background-color: #ffc078;
+  color: #000;
+}

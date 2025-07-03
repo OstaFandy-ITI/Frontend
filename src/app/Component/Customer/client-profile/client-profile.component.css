@@ -1,0 +1,19 @@
+:root {
+  --color-dark-blue: #004e98;
+  --color-medium-blue: #3a6ea5;
+  --color-light-gray: #ebebeb; 
+  --color-gray: #c0c0c0; 
+  --color-white: #ffffff; 
+  --color-orange: #ffa94d;
+}
+
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+
+.profile-img-container {
+  width: 128px; 
+  height: 128px; 
+}
