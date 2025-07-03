@@ -44,7 +44,7 @@ export class PaymentsComponent implements OnInit {
     method: '',
     searchTerm: '',
     pageNumber: 1,
-    pageSize: 2    ///////
+    pageSize: 5 
   };
 
   // Options for dropdowns

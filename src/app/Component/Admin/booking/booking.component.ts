@@ -1,26 +1,39 @@
+import { ToastrService } from 'ngx-toastr';
 import { Component, OnInit } from '@angular/core';
 import { BookingService } from '../services/booking.service';
-import { BookingViewModel } from '../../../core/models/Booking.model';
+import {bookingFilterDto,BookingViewModel,} from '../../../core/models/Booking.model';
 import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 declare var bootstrap: any;
-
 
 @Component({
   selector: 'app-booking',
-  imports: [],
+  imports: [CommonModule, FormsModule,MatButtonToggleModule],
   templateUrl: './booking.component.html',
   styleUrl: './booking.component.css',
 })
 export class BookingComponent implements OnInit {
   bookings: BookingViewModel[] = [];
+  currentView: 'table' | 'calendar' = 'calendar';
 
-  constructor(private bookingSerivce: BookingService) {}
+  constructor(private bookingSerivce: BookingService,private sanitizer: DomSanitizer,private toastr:ToastrService) {}
 
   ngOnInit(): void {
     this.getAllBookings();
+    this.getPaginationbooking();
+  }
+
+  toggle() {
+    if (this.currentView == 'calendar') {
+      this.getAllBookings();
+    }
+    this.currentView = this.currentView === 'calendar' ? 'table' : 'calendar';
   }
 
   getAllBookings() {
@@ -56,7 +69,7 @@ export class BookingComponent implements OnInit {
               startDate.getTime() + (booking.estimatedMinutes ?? 0) * 60000
             )
           : undefined;
-      
+
         return {
           title: `${booking.categoryName} - ${booking.handymanName}`,
           start: startDate,
@@ -72,8 +85,8 @@ export class BookingComponent implements OnInit {
         };
       }),
       eventClick: (info) => {
-        const props= info.event.extendedProps;
-        const modalBody=document.getElementById('modalBody');
+        const props = info.event.extendedProps;
+        const modalBody = document.getElementById('modalBody');
         if (modalBody) {
           modalBody.innerHTML = `
             <p><strong>Client Name:</strong> ${props['clientName']}</p>
@@ -84,18 +97,194 @@ export class BookingComponent implements OnInit {
             <p><strong>Status:</strong> ${props['status']}</p>
           `;
         }
-         const modalElement = document.getElementById('eventModal');
+        const modalElement = document.getElementById('eventModal');
         if (modalElement) {
           const modal = new bootstrap.Modal(modalElement);
           modal.show();
         }
-        
-      }
+      },
     });
 
-
     calendar.render();
-    
+  }
+
+  //#region table part
+  pagedbooking: BookingViewModel[] = [];
+  selectedpagedbooking: BookingViewModel | null = null;
+  loading = false;
+  error: string | null = null;
+
+  sortColumn: string = '';
+  sortDirection: 'asc' | 'desc' = 'asc';
+
+  // Pagination
+  totalCount = 0;
+  pageNumber = 1;
+  pageSize = 10;
+  totalPages = 0;
+  hasNextPage = false;
+  hasPreviousPage = false;
+
+  Math = Math;
+
+  filter: bookingFilterDto = {
+    pageNumber: '',
+    pageSize: '',
+    handymanName: '',
+    status: 'Confirmed',
+    isActive: true,
+  };
+  //togel is avtive
+  
+  //list iscompleted
+  statusOptions = [
+    { value: '', label: 'All Status' },
+    { value: 'Confirmed', label: 'Confirmed' },
+    { value: 'Completed', label: 'Completed' },
+    { value: 'Cancelled', label: 'Cancelled' },
+  ];
+  //searchbar
+
+  getPaginationbooking() {
+    this.loading = true;
+    this.error = null;
+
+    this.filter.pageNumber = this.pageNumber.toString();
+    this.filter.pageSize = this.pageSize.toString();
+
+    this.bookingSerivce.getPaginated(this.filter).subscribe({
+      next: (res) => {
+        this.pagedbooking = res.items;
+        this.totalCount = res.totalItems;
+        this.pageNumber = res.pageNumber;
+        this.pageSize = res.pageSize;
+        this.totalPages = Math.ceil(this.totalCount / this.pageSize);
+        this.hasNextPage = this.pageNumber < this.totalPages;
+        this.hasPreviousPage = this.pageNumber > 1;
+        this.loading = false;
+      },
+      error: (err) => {
+        this.error = 'Error loading bookings';
+        this.loading = false;
+        console.error(err);
+      },
+    });
+  }
+
+  // helper function
+  onSort(column: string) {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';
+    }
+    this.applySorting();
+  }
+
+  applySorting() {
+    this.pagedbooking.sort((a, b) => {
+      const valA = (a as any)[this.sortColumn];
+      const valB = (b as any)[this.sortColumn];
+      if (valA == null) return 1;
+      if (valB == null) return -1;
+
+      if (typeof valA === 'string') {
+        return this.sortDirection === 'asc'
+          ? valA.localeCompare(valB)
+          : valB.localeCompare(valA);
+      }
+      return this.sortDirection === 'asc' ? valA - valB : valB - valA;
+    });
+  }
+
+  isColumnSorted(column: string): boolean {
+    return this.sortColumn === column;
+  }
+
+  getSortIcon(column: string): string {
+    if (this.sortColumn !== column) return 'bi bi-arrow-down-up'; // icon neutral
+    return this.sortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down';
+  }
+
+  formatDate(dateStr?: string) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    return d.toLocaleDateString();
+  }
+
+  getStatusBadgeClass(status?: string) {
+    switch (status) {
+      case 'Pending':
+        return 'badge bg-warning text-dark';
+      case 'Confirmed':
+        return 'badge bg-primary';
+      case 'Completed':
+        return 'badge bg-success';
+      case 'Cancelled':
+        return 'badge bg-danger';
+      default:
+        return 'badge bg-secondary';
+    }
+  }
+
+  viewBookingDetails(booking: BookingViewModel) {
+    this.selectedpagedbooking = booking;
+  }
+
+  CancelBooking(bookingId: number)
+  {
+    let confirmed=confirm("Are you sure that u want to cancle that booking?");
+    if(confirmed){
+    this.bookingSerivce.CancelBooking(bookingId).subscribe({
+      next:(res)=>{
+        this.toastr.success(res.message);
+      },error:(err)=>{
+        this.toastr.error(err.error.message);
+      }
+    })}
 
   }
+
+  getMapUrl(lat?: number, lng?: number): SafeResourceUrl {
+  if (lat == null || lng == null) return '';
+  const url = `https://maps.google.com/maps?q=${lat},${lng}&z=13&output=embed`;
+  return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+}
+
+  closeModal() {
+    this.selectedpagedbooking = null;
+  }
+
+  onFilterChange() {
+    this.pageNumber = 1; // ترجع الصفحة الأولى عند تغيير الفلتر
+    this.getPaginationbooking();
+  }
+
+  onSearchChange() {
+    this.pageNumber = 1;
+    this.getPaginationbooking();
+  }
+
+  previousPage() {
+    if (this.hasPreviousPage) {
+      this.pageNumber--;
+      this.getPaginationbooking();
+    }
+  }
+
+  nextPage() {
+    if (this.hasNextPage) {
+      this.pageNumber++;
+      this.getPaginationbooking();
+    }
+  }
+
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.pageNumber = page;
+      this.getPaginationbooking();
+    }
+  }
+  //#endregion
 }

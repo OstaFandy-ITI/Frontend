@@ -47,3 +47,15 @@ export class slots{
   )
   {}
 }
+
+export class bookingFilterDto
+{
+  constructor(
+    public pageNumber: string,
+    public pageSize: string,
+    public handymanName: string = '',
+    public status: string = '',
+    public isActive: boolean | null = null
+  ){}
+
+}
