@@ -1,18 +1,225 @@
-<!-- Container for header + calendar -->
-<div class="calendar-container">
-  <div id="calendar"></div>
+<div class="switch-container" (click)="toggle()">
+  <label class="switch">
+    <input type="checkbox" [checked]="currentView === 'table'" (change)="toggle()" style="display:none" />
+    <span class="slider">
+      <span class="icon calendar-icon" [class.active]="currentView === 'calendar'">
+        <i class="fa-solid fa-calendar-days fa-lg"></i>
+      </span>
+      <span class="icon table-icon" [class.active]="currentView === 'table'">
+        <i class="fa-solid fa-table fa-lg"></i>
+      </span>
+    </span>
+  </label>
+</div>
+<!-- Show calendar if currentView is 'calendar' -->
+<div *ngIf="currentView === 'calendar'">
+  <div class="calendar-container">
+    <div id="calendar"></div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="eventModalLabel">Appointment Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <!-- Details will be dynamically inserted here -->
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="eventModal" tabindex="-1" aria-labelledby="eventModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="eventModalLabel">Appointment Details</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<!-- Show table if currentView is 'table' -->
+<div *ngIf="currentView === 'table'">
+  <div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h4>Bookings</h4>
+    </div>
+
+    <!-- Search and Filter Bar -->
+    <div class="row g-2 mb-3">
+      <!-- Status -->
+      <div class="col-12 col-md">
+        <select class="form-select" [(ngModel)]="filter.status" (change)="onFilterChange()">
+          <option *ngFor="let option of statusOptions" [value]="option.value">
+            {{ option.label }}
+          </option>
+        </select>
       </div>
-      <div class="modal-body" id="modalBody">
-        <!-- Details will be dynamically inserted here -->
+
+      <!-- Handyman Name -->
+      <div class="col-12 col-md">
+        <input type="text" class="form-control" placeholder="Search by handyman name" [(ngModel)]="filter.handymanName"
+          (input)="onSearchChange()" />
+      </div>
+
+      <!-- Active Toggle -->
+      <div class="col-12 col-md">
+        <mat-button-toggle-group [(ngModel)]="filter.isActive" (change)="onFilterChange()" [value]="filter.isActive"
+          exclusive>
+          <mat-button-toggle [value]="true">Active</mat-button-toggle>
+          <mat-button-toggle [value]="''">None</mat-button-toggle>
+          <mat-button-toggle [value]="false">Not Active</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="error" class="alert alert-danger" role="alert">
+      {{ error }}
+    </div>
+
+    <!-- Loading Spinner -->
+    <div *ngIf="loading" class="d-flex justify-content-center py-4">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <!-- Bookings Table -->
+    <div *ngIf="!loading" class="table-responsive custom-table">
+      <table class="table table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th class="sortable-header" [class.sorted]="isColumnSorted('clientName')" (click)="onSort('clientName')">
+              ID
+              <i [class]="getSortIcon('clientName')"></i>
+            </th>
+            <th class="sortable-header" [class.sorted]="isColumnSorted('clientName')" (click)="onSort('clientName')">
+              Client
+              <i [class]="getSortIcon('clientName')"></i>
+            </th>
+            <th class="sortable-header" [class.sorted]="isColumnSorted('handymanName')"
+              (click)="onSort('handymanName')">
+              Handyman
+              <i [class]="getSortIcon('handymanName')"></i>
+            </th>
+            <th>
+              Services
+            </th>
+            <th class="sortable-header" [class.sorted]="isColumnSorted('preferredDate')"
+              (click)="onSort('preferredDate')">
+              Date
+              <i [class]="getSortIcon('preferredDate')"></i>
+            </th>
+            <th class="sortable-header" [class.sorted]="isColumnSorted('status')" (click)="onSort('status')">
+              Status
+              <i [class]="getSortIcon('status')"></i>
+            </th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let booking of pagedbooking">
+            <td>{{ booking.id }}</td>
+            <td>{{ booking.clientName }}</td>
+            <td>{{ booking.handymanName }}</td>
+            <td>{{ booking.serviceNames?.join(', ') }}</td>
+            <td>{{ formatDate(booking.preferredDate) }}</td>
+            <td>
+              <span [class]="getStatusBadgeClass(booking.status)">
+                {{ booking.status }}
+              </span>
+            </td>
+            <td>
+              <button class="bi bi-eye btn btn-outline-info btn-sm" (click)="viewBookingDetails(booking)"
+                title="View Details" data-bs-toggle="modal" data-bs-target="#bookingDetailsModal"></button>
+                <button class="bi bi-calendar-x btn btn-outline-danger btn-sm" (click)="CancelBooking(booking.id!)"></button>
+            </td>
+          </tr>
+          <tr *ngIf="pagedbooking.length === 0">
+            <td colspan="7" class="text-center py-4"><em>No bookings found</em></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <nav *ngIf="!loading && totalPages > 1" aria-label="Bookings pagination">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" [class.disabled]="!hasPreviousPage">
+          <a class="page-link" (click)="previousPage()" [style.cursor]="hasPreviousPage ? 'pointer' : 'not-allowed'">
+            Previous
+          </a>
+        </li>
+
+        <li *ngFor="let page of [].constructor(totalPages); let i = index" class="page-item"
+          [class.active]="pageNumber === i + 1">
+          <a class="page-link" (click)="goToPage(i + 1)" style="cursor: pointer">
+            {{ i + 1 }}
+          </a>
+        </li>
+
+        <li class="page-item" [class.disabled]="!hasNextPage">
+          <a class="page-link" (click)="nextPage()" [style.cursor]="hasNextPage ? 'pointer' : 'not-allowed'">
+            Next
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Pagination Info -->
+    <div *ngIf="!loading && pagedbooking.length > 0" class="text-center mt-2">
+      <small class="text-muted">
+        Showing {{ ((pageNumber - 1) * pageSize) + 1 }} to {{ Math.min(pageNumber * pageSize, totalCount) }} of {{
+        totalCount }} entries
+      </small>
+    </div>
+  </div>
+
+  <!-- Booking Details Modal -->
+  <div class="modal fade" id="bookingDetailsModal" tabindex="-1" aria-labelledby="bookingDetailsModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content shadow-lg rounded-4">
+        <div class="modal-header text-white" style="background-color: #004e98;">
+          <h5 class="modal-title fw-bold fs-4" id="bookingDetailsModalLabel">Booking Details</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"
+            (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body" *ngIf="selectedpagedbooking">
+          <div class="row gy-3">
+            <div class="col-md-6 border-end pe-md-4">
+              <p><strong>Client: </strong> <span class="text-primary">{{ selectedpagedbooking.clientName }}</span></p>
+              <p><strong>Handyman: </strong> <span class="text-primary">{{ selectedpagedbooking.handymanName }}</span>
+              </p>
+              <p><strong>Services: </strong> <span class="text-secondary">{{ selectedpagedbooking.serviceNames?.join(',
+                  ') || 'N/A' }}</span></p>
+              <p><strong>Preferred Date: </strong> <span>{{ formatDate(selectedpagedbooking.preferredDate) || 'N/A'
+                  }}</span></p>
+            </div>
+            <div class="col-md-6 ps-md-4">
+              <p><strong>Status: </strong><span
+                  [class]="getStatusBadgeClass(selectedpagedbooking.status) + ' px-3 py-1 fs-6 rounded'">{{
+                  selectedpagedbooking.status }}</span></p>
+              <p><strong>Note: </strong> <em>{{ selectedpagedbooking.note || 'N/A' }}</em></p>
+              <p><strong>Estimated Minutes: </strong> {{ selectedpagedbooking.estimatedMinutes || 'N/A' }} mins</p>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <p><strong>Location:</strong></p>
+            <div *ngIf="selectedpagedbooking.latitude && selectedpagedbooking.longitude; else noLocation"
+              class="border rounded overflow-hidden" style="height: 200px; width: 100%;">
+              <iframe [src]="getMapUrl(selectedpagedbooking.latitude, selectedpagedbooking.longitude)" width="100%"
+                height="100%" frameborder="0" style="border:0;" allowfullscreen loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+              </iframe>
+            </div>
+            <ng-template #noLocation>
+              <p class="text-muted fst-italic">Location not specified</p>
+            </ng-template>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal"
+            (click)="closeModal()">Close</button>
+        </div>
       </div>
     </div>
   </div>
