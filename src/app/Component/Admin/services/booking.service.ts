@@ -49,7 +49,7 @@ export class BookingService {
   CancelBooking(BookingId: number) {
     return this.http.patch<ResponseDto<string>>(
       `${this.BaseUrl}/CancelBooking?bookingId=${BookingId}`,
-      {}
+      null
     );
   }
 }
