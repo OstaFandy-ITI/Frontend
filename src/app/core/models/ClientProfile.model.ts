@@ -69,6 +69,34 @@ export interface ClientOrderHistory {
   orders: any[];
 }
 
+export interface Booking {
+  bookingId: number;
+  orderDate: string;
+  preferredDate: string;
+  status: string;
+  totalPrice: number;
+  estimatedMinutes: number;
+  note: string | null;
+  handymanName: string;
+  address: {
+    fullAddress: string;
+    city: string;
+  };
+  services: Array<{
+    serviceName: string;
+    categoryName: string;
+    fixedPrice: number;
+    estimatedMinutes: number;
+  }>;
+  payment: {
+    amount: number;
+    method: string;
+    status: string;
+    paymentDate: string;
+  };
+  review: any;
+}
+
 export interface ClientProfileApiResponse extends ClientProfile {}
 export interface ClientProfileResponse extends ApiResponse<ClientProfile> {}
 export interface ClientProfileService {

@@ -1,485 +1,287 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { ClientProfileService } from '../../Customer/services/client-profile.service';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ClientProfileService } from '../services/client-profile.service';
+import { AddressService } from '../services/address.service';
 import {
   ClientProfile,
-  ApiResponse,
   UpdateClientProfileRequest,
-  AddAddressRequest,
-  Address, 
-  AddAddressResponse
-} from '../../../../app/core/models/ClientProfile.model';
-import { ActivatedRoute, Router } from '@angular/router';
+  ApiResponse,
+  Address // Import Address type for defaultAddress mapping
+} from '../../../core/models/ClientProfile.model';
+import { AddressDTO, CreateAddressDTO } from '../../../core/models/Address.model';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-client-profile',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [ CommonModule, ReactiveFormsModule],
   templateUrl: './client-profile.component.html',
   styleUrls: ['./client-profile.component.css']
 })
 export class ClientProfileComponent implements OnInit {
-
-  clientProfile: ClientProfile | null = null;
-  isLoading = false;
-  isUpdating = false;
-  isAddingAddress = false;
-  isEditAddressMode = false; 
-  isSettingDefault = false; 
-  isDeletingAddress = false; 
-  error: string | null = null;
-  successMessage: string | null = null;
-  clientId!: number;
-
-  isEditMode = false;
-  editForm: UpdateClientProfileRequest = {
+  clientProfile: ClientProfile = {
+    userId: 0,
     firstName: '',
     lastName: '',
     email: '',
-    phone: ''
+    phone: '',
+    isActive: false,
+    createdAt: '',
+    updatedAt: '',
+    addresses: [],
+    defaultAddress: null
   };
+  addresses: AddressDTO[] = [];
+  loading = false;
+  error: string | null = null;
+  successMessage: string | null = null;
 
-  showAddressModal = false;
-  addressForm: AddAddressRequest = {
-    userId: 0,
-    address1: '',
-    city: '',
-    latitude: 0,
-    longitude: 0,
-    addressType: 'Home',
-    isDefault: false,
-    isActive: true,
-    createdAt: new Date().toISOString()
-  };
-  currentEditingAddressId: number | null = null; 
+  showUpdateForm = false;
+  showAddressForm = false;
+
+  updateProfileForm!: FormGroup;
+  addAddressForm!: FormGroup;
+
+  clientId: number = 0;
 
   constructor(
     private clientProfileService: ClientProfileService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
+    private addressService: AddressService,
+    private fb: FormBuilder,
+    private authService: AuthService
+  ) {
+    this.initializeForms();
+  }
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('id');
+    const userId = this.authService.getCurrentUserId();
+    if (userId) {
+      this.clientId = userId;
+      this.loadClientProfile();
+      this.getAddresses();
+    } else {
+      this.error = 'Unable to determine logged-in user.';
+    }
+  }
 
-      if (id) {
-        const parsedId = parseInt(id, 10);
+  private initializeForms(): void {
+    this.updateProfileForm = this.fb.group({
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]],
+      phone: ['', [Validators.required, Validators.pattern(/^\d{10,}$/)]]
+    });
 
-        if (!isNaN(parsedId)) {
-          this.clientId = parsedId;
-          localStorage.setItem('clientId', parsedId.toString());
-          this.loadClientProfile();
-        } else {
-          this.clientId = 72;
-          localStorage.setItem('clientId', '72');
-          this.loadClientProfile();
-        }
-      } else {
-        console.log('No client ID found in route parameters');
-
-        const storedId = localStorage.getItem('clientId');
-        if (storedId) {
-          this.clientId = parseInt(storedId, 10);
-        } else {
-          this.clientId = 72;
-          localStorage.setItem('clientId', '72');
-        }
-        this.loadClientProfile();
-      }
+    this.addAddressForm = this.fb.group({
+      address: ['', [Validators.required, Validators.minLength(5)]],
+      city: ['', [Validators.required, Validators.minLength(2)]],
+      latitude: ['', [Validators.required, Validators.min(-90), Validators.max(90)]],
+      longitude: ['', [Validators.required, Validators.min(-180), Validators.max(180)]],
+      addressType: ['Home', Validators.required],
+      isDefault: [false],
+      isActive: [true]
     });
   }
 
   loadClientProfile(): void {
-    this.isLoading = true;
+    this.loading = true;
     this.error = null;
     this.successMessage = null;
 
-    this.clientProfileService.getClientProfile(this.clientId!)
-      .subscribe({
-        next: (response: ApiResponse<ClientProfile>) => {
-          if (response.isSuccess) {
-            this.clientProfile = response.data;
-
-            if (!this.clientProfile.addresses) {
-              this.clientProfile.addresses = []; 
-            }
-
-            
-            if (this.clientProfile.defaultAddress) {
-              const apiDefaultAddress = { ...this.clientProfile.defaultAddress, isDefault: true };
-              const found = this.clientProfile.addresses.some(
-                addr => addr.id === apiDefaultAddress.id
-              );
-
-              if (!found) {
-                this.clientProfile.addresses.push(apiDefaultAddress as Address); 
-              }
-
-              this.clientProfile.addresses.forEach(addr => {
-                if (addr.id === apiDefaultAddress.id) {
-                  addr.isDefault = true;
-                } else {
-                  addr.isDefault = false;
-                }
-              });
-              this.clientProfile.defaultAddress = apiDefaultAddress as Address; 
-            } else {
-                
-                this.clientProfile.addresses.forEach(addr => addr.isDefault = false);
-                this.clientProfile.defaultAddress = null; 
-            }
-
+    this.clientProfileService.getClientProfile(this.clientId).subscribe({
+      next: (response: ApiResponse<ClientProfile>) => {
+        if (response.isSuccess && response.data) {
+          this.clientProfile = response.data;
+          if (!this.clientProfile.addresses) {
+            this.clientProfile.addresses = [];
           }
-          this.isLoading = false;
-        },
-        error: (error) => {
-          this.error = 'Failed to load client profile';
-          this.isLoading = false;
-          console.error('Error loading client profile:', error);
+          this.populateUpdateForm();
+          // Debug: log addresses from profile (may be empty)
+          console.log('Addresses loaded from profile:', this.clientProfile.addresses);
+        } else {
+          this.error = response.message || 'Failed to load client profile';
         }
-      });
+        this.loading = false;
+      },
+      error: (error) => {
+        this.error = 'An error occurred while loading the profile';
+        this.loading = false;
+      }
+    });
   }
 
-  initializeEditForm(): void {
+  getAddresses(): void {
+    this.addressService.GetAddressesByUserId(this.clientId).subscribe({
+      next: (addresses) => {
+        this.addresses = addresses || [];
+        console.log('Addresses loaded from AddressService:', this.addresses);
+      },
+      error: (error) => {
+        this.error = 'Failed to load addresses';
+        this.addresses = [];
+      }
+    });
+  }
+
+  private populateUpdateForm(): void {
     if (this.clientProfile) {
-      this.editForm = {
+      this.updateProfileForm.patchValue({
         firstName: this.clientProfile.firstName,
         lastName: this.clientProfile.lastName,
         email: this.clientProfile.email,
         phone: this.clientProfile.phone
-      };
-    }
-  }
-
-  onEditProfile(): void {
-    this.isEditMode = true;
-    this.error = null;
-    this.successMessage = null;
-    this.initializeEditForm();
-  }
-
-  onCancelEdit(): void {
-    this.isEditMode = false;
-    this.error = null;
-    this.successMessage = null;
-    this.initializeEditForm();
-  }
-
-  onSaveProfile(): void {
-    if (!this.isFormValid()) {
-      this.error = 'Please fill in all required fields';
-      return;
-    }
-
-    this.isUpdating = true;
-    this.error = null;
-    this.successMessage = null;
-
-    this.clientProfileService.updateClientProfile(this.clientId!, this.editForm)
-      .subscribe({
-        next: (response: ApiResponse<null>) => {
-          if (response.isSuccess) {
-            this.successMessage = 'Profile updated successfully!';
-            this.isEditMode = false;
-            this.updateLocalProfile();
-          } else {
-            this.error = response.message || 'Failed to update profile';
-          }
-          this.isUpdating = false;
-        },
-        error: (error) => {
-          this.error = 'Failed to update profile. Please try again.';
-          this.isUpdating = false;
-          console.error('Error updating profile:', error);
-        }
       });
-  }
-
-  private updateLocalProfile(): void {
-    if (this.clientProfile) {
-      this.clientProfile.firstName = this.editForm.firstName || this.clientProfile.firstName;
-      this.clientProfile.lastName = this.editForm.lastName || this.clientProfile.lastName;
-      this.clientProfile.email = this.editForm.email || this.clientProfile.email;
-      this.clientProfile.phone = this.editForm.phone || this.clientProfile.phone;
-      this.clientProfile.fullName = `${this.clientProfile.firstName} ${this.clientProfile.lastName}`;
     }
   }
 
-  private isFormValid(): boolean {
-    return !!(
-      this.editForm.firstName?.trim() &&
-      this.editForm.lastName?.trim() &&
-      this.editForm.email?.trim() &&
-      this.editForm.phone?.trim()
-    );
-  }
-
-  onAddAddress(): void {
-    this.isEditAddressMode = false; 
-    this.showAddressModal = true;
+  toggleUpdateForm(): void {
+    this.showUpdateForm = !this.showUpdateForm;
     this.error = null;
     this.successMessage = null;
-    this.initializeAddressForm();
-  }
 
-  initializeAddressForm(): void {
-    this.addressForm = {
-      userId: this.clientId,
-      address1: '',
-      city: '',
-      latitude: 0,
-      longitude: 0,
-      addressType: 'Home',
-      isDefault: false,
-      isActive: true,
-      createdAt: new Date().toISOString()
-    };
-    this.currentEditingAddressId = null; 
-  }
-
-  onCancelAddAddress(): void {
-    this.showAddressModal = false;
-    this.error = null;
-    this.successMessage = null;
-    this.initializeAddressForm();
-  }
-
-  onSaveAddress(): void {
-    if (!this.isAddressFormValid()) {
-      this.error = 'Please fill in all required address fields';
-      return;
+    if (this.showUpdateForm) {
+      this.populateUpdateForm();
     }
+  }
 
-    this.isAddingAddress = true;
+  toggleAddressForm(): void {
+    this.showAddressForm = !this.showAddressForm;
     this.error = null;
     this.successMessage = null;
 
-    this.clientProfileService.addAddress(this.addressForm)
-      .subscribe({
-        next: (response: ApiResponse<AddAddressResponse>) => { 
-          if (response.isSuccess && response.data && response.data.address) { 
-            this.successMessage = 'Address added successfully!';
-
-            if (this.clientProfile) {
-                const newAddress: Address = response.data.address; 
-
-                if (!this.clientProfile.addresses) {
-                    this.clientProfile.addresses = [];
-                }
-
-                if (newAddress.isDefault) {
-                    this.clientProfile.addresses.forEach(addr => addr.isDefault = false);
-                    this.clientProfile.defaultAddress = newAddress;
-                } else if (!this.clientProfile.defaultAddress && this.clientProfile.addresses.length === 0) {
-                  if (this.clientProfile.addresses.length === 0) {
-                    newAddress.isDefault = true;
-                    this.clientProfile.defaultAddress = newAddress;
-                  }
-                }
-
-                this.clientProfile.addresses.push(newAddress); 
-                this.clientProfile.addresses.sort((a, b) => {
-                  if (a.isDefault && !b.isDefault) return -1;
-                  if (!a.isDefault && b.isDefault) return 1;
-                  return 0;
-                });
-            }
-
-            this.showAddressModal = false;
-            this.initializeAddressForm();
-
-          } else {
-            this.error = response.message || 'Failed to add address';
-          }
-          this.isAddingAddress = false;
-        },
-        error: (error) => {
-          this.error = 'Failed to add address. Please try again.';
-          this.isAddingAddress = false;
-          console.error('Error adding address:', error);
-        }
+    if (!this.showAddressForm) {
+      this.addAddressForm.reset({
+        addressType: 'Home',
+        isDefault: false,
+        isActive: true
       });
-  }
-
-  onEditAddress(address: Address): void {
-    this.isEditAddressMode = true;
-    this.showAddressModal = true;
-    this.error = null;
-    this.successMessage = null;
-    this.currentEditingAddressId = address.id;
-    this.addressForm = {
-      userId: address.userId,
-      address1: address.address,
-      city: address.city,
-      latitude: address.latitude,
-      longitude: address.longitude,
-      addressType: address.addressType,
-      isDefault: address.isDefault,
-      isActive: address.isActive,
-      createdAt: address.createdAt
-    };
-  }
-
-  onUpdateAddress(): void {
-    if (!this.isAddressFormValid()) {
-      this.error = 'Please fill in all required address fields';
-      return;
     }
-    if (this.currentEditingAddressId === null) {
-      this.error = 'No address selected for editing.';
-      return;
-    }
-
-    this.isAddingAddress = true;
-    this.error = null;
-    this.successMessage = null;
-
-    setTimeout(() => {
-      if (this.clientProfile && this.clientProfile.addresses) {
-        const index = this.clientProfile.addresses.findIndex(addr => addr.id === this.currentEditingAddressId);
-        if (index > -1) {
-          const updatedAddress: Address = {
-            ...this.clientProfile.addresses[index],
-            address: this.addressForm.address1,
-            city: this.addressForm.city,
-            latitude: this.addressForm.latitude,
-            longitude: this.addressForm.longitude,
-            addressType: this.addressForm.addressType,
-            isDefault: this.addressForm.isDefault,
-            updatedAt: new Date().toISOString()
-          };
-
-          if (updatedAddress.isDefault) {
-            this.clientProfile.addresses.forEach(addr => {
-              if (addr.id !== updatedAddress.id) {
-                addr.isDefault = false;
-              }
-            });
-            this.clientProfile.defaultAddress = updatedAddress;
-          } else if (this.clientProfile.defaultAddress && this.clientProfile.defaultAddress.id === updatedAddress.id) {
-             this.clientProfile.defaultAddress = null;
-             if (this.clientProfile.addresses.length > 1) {
-                const otherAddresses = this.clientProfile.addresses.filter(addr => addr.id !== updatedAddress.id);
-                if (otherAddresses.length > 0) {
-                    otherAddresses[0].isDefault = true;
-                    this.clientProfile.defaultAddress = otherAddresses[0];
-                }
-             }
-          }
-
-          this.clientProfile.addresses[index] = updatedAddress;
-          this.successMessage = 'Address updated successfully!';
-          this.showAddressModal = false;
-          this.initializeAddressForm();
-        } else {
-          this.error = 'Address not found for update.';
-        }
-      } else {
-        this.error = 'Client profile or addresses not loaded. Cannot update address.';
-      }
-      this.isAddingAddress = false;
-    }, 500);
   }
 
-  onDeleteAddress(addressId: number): void {
-    if (confirm('Are you sure you want to delete this address?')) {
-      this.isDeletingAddress = true;
+  onUpdateProfile(): void {
+    if (this.updateProfileForm.valid && !this.loading) {
+      this.loading = true;
       this.error = null;
       this.successMessage = null;
 
-      setTimeout(() => {
-        if (this.clientProfile && this.clientProfile.addresses) {
-          const initialLength = this.clientProfile.addresses.length;
-          this.clientProfile.addresses = this.clientProfile.addresses.filter(addr => addr.id !== addressId);
+      const updateData: UpdateClientProfileRequest = {
+        firstName: this.updateProfileForm.value.firstName,
+        lastName: this.updateProfileForm.value.lastName,
+        email: this.updateProfileForm.value.email,
+        phone: this.updateProfileForm.value.phone
+      };
 
-          if (this.clientProfile.addresses.length < initialLength) {
-            if (this.clientProfile.defaultAddress && this.clientProfile.defaultAddress.id === addressId) {
-              this.clientProfile.defaultAddress = null;
-              if (this.clientProfile.addresses.length > 0) {
-                this.clientProfile.addresses[0].isDefault = true;
-                this.clientProfile.defaultAddress = this.clientProfile.addresses[0];
-              }
-            }
-            this.successMessage = 'Address deleted successfully!';
+      this.clientProfileService.updateClientProfile(this.clientId, updateData).subscribe({
+        next: (response) => {
+          if (response.isSuccess) {
+            this.successMessage = 'Profile updated successfully!';
+            this.showUpdateForm = false;
+            this.loadClientProfile();
           } else {
-            this.error = 'Address not found for deletion.';
+            this.error = response.message || 'Failed to update profile';
           }
-        } else {
-          this.error = 'Client profile or addresses not loaded. Cannot delete address.';
-        }
-        this.isDeletingAddress = false;
-      }, 500);
-    }
-  }
-
-  onSetDefaultAddress(address: Address): void {
-    this.isSettingDefault = true;
-    this.error = null;
-    this.successMessage = null;
-
-    setTimeout(() => {
-      if (this.clientProfile && this.clientProfile.addresses) {
-        this.clientProfile.addresses.forEach(addr => {
-          if (addr.id === address.id) {
-            addr.isDefault = true;
-          } else {
-            addr.isDefault = false;
-          }
-        });
-        this.clientProfile.defaultAddress = address;
-        this.successMessage = `Address "${address.addressType}" set as default!`;
-      } else {
-        this.error = 'Client profile or addresses not loaded. Cannot set default address.';
-      }
-      this.isSettingDefault = false;
-    }, 500);
-  }
-
-  private isAddressFormValid(): boolean {
-    return !!(
-      this.addressForm.address1?.trim() &&
-      this.addressForm.city?.trim() &&
-      this.addressForm.addressType?.trim()
-    );
-  }
-
-  private generateUniqueId(): number {
-    return Date.now() + Math.floor(Math.random() * 10000);
-  }
-
-  getCurrentLocation(): void {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          this.addressForm.latitude = position.coords.latitude;
-          this.addressForm.longitude = position.coords.longitude;
+          this.loading = false;
         },
-        (error) => {
-          console.error('Error getting location:', error);
-          this.error = 'Unable to retrieve your current location.';
+        error: (error) => {
+          this.error = 'An error occurred while updating the profile';
+          this.loading = false;
         }
-      );
+      });
     } else {
-      console.error('Geolocation is not supported by this browser.');
-      this.error = 'Geolocation is not supported by your browser.';
+      Object.keys(this.updateProfileForm.controls).forEach(key => {
+        this.updateProfileForm.get(key)?.markAsTouched();
+      });
     }
   }
 
-  formatDate(dateString: string | undefined): string {
-    if (!dateString) return '';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  onAddAddress(): void {
+    if (this.addAddressForm.valid && !this.loading) {
+      this.loading = true;
+      this.error = null;
+      this.successMessage = null;
+
+      const addressData = new CreateAddressDTO(
+        this.clientId,
+        this.addAddressForm.value.address,
+        this.addAddressForm.value.city,
+        parseFloat(this.addAddressForm.value.latitude),
+        parseFloat(this.addAddressForm.value.longitude),
+        this.addAddressForm.value.addressType,
+        this.addAddressForm.value.isDefault,
+        this.addAddressForm.value.isActive,
+        new Date()
+      );
+
+      this.addressService.CreateAddress(addressData).subscribe({
+        next: (response) => {
+          if (response.isSuccess && response.statusCode !== 400) {
+            this.successMessage = 'Address added successfully!';
+            this.showAddressForm = false;
+            this.getAddresses();
+            this.addAddressForm.reset({
+              addressType: 'Home',
+              isDefault: false,
+              isActive: true
+            });
+          } else {
+            this.error = response.message || 'Failed to add address due to an unknown issue.';
+          }
+          this.loading = false;
+        },
+        error: (error) => {
+          this.error = 'An error occurred while adding the address';
+          this.loading = false;
+        }
+      });
+    } else {
+      Object.keys(this.addAddressForm.controls).forEach(key => {
+        this.addAddressForm.get(key)?.markAsTouched();
+      });
+      if (!this.clientProfile) {
+        this.error = "Client profile data is missing. Please try reloading the page.";
+      }
+    }
+  }
+
+  setDefaultAddress(addressId: number): void {
+    // Frontend-only: update the addresses array and clientProfile.defaultAddress
+    this.addresses = this.addresses.map(addr => ({
+      ...addr,
+      isDefault: addr.id === addressId
+    }));
+    const newDefault = this.addresses.find(addr => addr.id === addressId) || null;
+    if (newDefault) {
+      // Map AddressDTO to Address for defaultAddress assignment
+      this.clientProfile.defaultAddress = {
+        ...newDefault,
+        address: newDefault.address1, // Map address1 to address
+        createdAt: newDefault.createdAt
+          ? (newDefault.createdAt instanceof Date
+              ? newDefault.createdAt.toISOString()
+              : newDefault.createdAt)
+          : ''
+      } as Address;
+    }
+    this.successMessage = 'Default address updated!';
+  }
+
+  getFormControl(formName: 'update' | 'address', controlName: string) {
+    const form = formName === 'update' ? this.updateProfileForm : this.addAddressForm;
+    return form.get(controlName);
+  }
+
+  hasError(formName: 'update' | 'address', controlName: string, errorType: string): boolean {
+    const control = this.getFormControl(formName, controlName);
+    return !!(control && control.hasError(errorType) && (control.dirty || control.touched));
   }
 
   clearMessages(): void {
     this.error = null;
     this.successMessage = null;
+  }
+
+  formatDate(dateString: string): string {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleDateString();
   }
 }

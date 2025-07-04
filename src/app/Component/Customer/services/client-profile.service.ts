@@ -1,5 +1,3 @@
-// services/client-profile.service.ts
-
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -7,7 +5,6 @@ import { URL } from '../../../core/Shared/URL';
 import { 
   ClientProfile, 
   UpdateClientProfileRequest, 
-  ChangePasswordRequest, 
   ClientOrderHistory, 
   ApiResponse,
   AddAddressRequest,

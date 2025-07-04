@@ -1,1 +1,160 @@
-<p>client-booking works!</p>
+<div class="container">
+  <!-- Font Awesome CDN for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <h1 class="page-title">My Bookings</h1>
+
+  <!-- Empty State -->
+  <div *ngIf="orders.length === 0" class="empty-state">
+    <div class="empty-state-icon">
+      <i class="fas fa-calendar-times"></i>
+    </div>
+    <h3 class="empty-state-title">No bookings found</h3>
+    <p class="empty-state-text">You haven't made any bookings yet. Start by browsing our available services!</p>
+  </div>
+
+  <!-- Bookings Grid -->
+  <div class="bookings-grid" *ngIf="orders.length > 0">
+    <div *ngFor="let booking of pagedOrders()" class="booking-card"
+         [ngClass]="{
+           'status-border-left-completed': booking.status === 'Completed',
+           'status-border-left-pending': booking.status === 'Pending',
+           'status-border-left-confirmed': booking.status === 'Confirmed',
+           'status-border-left-cancelled': booking.status === 'Cancelled'
+         }">
+      
+      <!-- Booking Header -->
+      <div class="booking-header">
+        <span>Booking #{{ booking.bookingId }}</span>
+        <span class="ms-auto"
+              [ngClass]="{
+                'status-completed': booking.status === 'Completed',
+                'status-pending': booking.status === 'Pending',
+                'status-confirmed': booking.status === 'Confirmed',
+                'status-cancelled': booking.status === 'Cancelled'
+              }">
+          {{ booking.status }}
+        </span>
+      </div>
+
+      <!-- Booking Details Grid -->
+      <div class="booking-details">
+        <div class="booking-detail-item">
+          <i class="fas fa-user booking-detail-icon"></i>
+          <div>
+            <span class="booking-label">Handyman</span>
+            <span class="booking-value">{{ booking.handymanName }}</span>
+          </div>
+        </div>
+
+        <div class="booking-detail-item" *ngIf="booking.services && booking.services.length > 0">
+          <i class="fas fa-tools booking-detail-icon"></i>
+          <div>
+            <span class="booking-label">Service</span>
+            <span class="booking-value">{{ booking.services[0].serviceName }}</span>
+            <small class="text-muted d-block">{{ booking.services[0].categoryName }}</small>
+          </div>
+        </div>
+
+        <div class="booking-detail-item">
+          <i class="fas fa-calendar-alt booking-detail-icon"></i>
+          <div>
+            <span class="booking-label">Date & Time</span>
+            <span class="booking-value">{{ booking.preferredDate | date:'medium' }}</span>
+          </div>
+        </div>
+
+        <div class="booking-detail-item">
+          <i class="fas fa-map-marker-alt booking-detail-icon"></i>
+          <div>
+            <span class="booking-label">Location</span>
+            <span class="booking-value">{{ booking.address.fullAddress }}</span>
+            <small class="text-muted d-block">{{ booking.address.city }}</small>
+          </div>
+        </div>
+
+        <div class="booking-detail-item">
+          <i class="fas fa-money-bill-wave booking-detail-icon"></i>
+          <div>
+            <span class="booking-label">Total Price</span>
+            <span class="booking-value booking-price">{{ booking.totalPrice }} EGP</span>
+          </div>
+        </div>
+
+        <div class="booking-detail-item" *ngIf="booking.note">
+          <i class="fas fa-sticky-note booking-detail-icon"></i>
+          <div>
+            <span class="booking-label">Note</span>
+            <span class="booking-value">{{ booking.note }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <div class="d-flex justify-content-end" *ngIf="booking.status === 'Pending' || booking.status === 'Confirmed'">
+        <button class="cancel-btn"
+                (click)="cancelBooking(booking.bookingId)"
+                [disabled]="cancellingId === booking.bookingId"
+                [ngClass]="{'loading': cancellingId === booking.bookingId}">
+          <i class="fas fa-times me-2"></i>
+          {{ cancellingId === booking.bookingId ? 'Cancelling...' : 'Cancel Booking' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enhanced Pagination -->
+  <div class="pagination-container" *ngIf="totalPages > 1">
+    <button class="pagination-btn" 
+            (click)="prevPage()" 
+            [disabled]="currentPage === 1">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    
+    <div class="pagination-info">
+       {{ currentPage }} 
+    </div>
+    
+    <button class="pagination-btn" 
+            (click)="nextPage()" 
+            [disabled]="currentPage === totalPages">
+      <i class="fas fa-chevron-right"></i>
+    </button>
+  </div>
+
+  <!-- Enhanced Cancel Confirmation Modal -->
+  <div class="modal-backdrop" [ngClass]="{'show': showCancelModal}" *ngIf="showCancelModal"></div>
+  <div class="modal" tabindex="-1" role="dialog" [ngClass]="{'show d-block': showCancelModal}" *ngIf="showCancelModal">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content custom-modal-content">
+        <div class="modal-header custom-modal-header">
+          <h5 class="modal-title">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            Confirm Cancellation
+          </h5>
+          <button type="button" class="btn-close custom-btn-close" 
+                  aria-label="Close" (click)="closeCancelModal()"></button>
+        </div>
+        <div class="modal-body custom-modal-body">
+          <div class="mb-3">
+            <i class="fas fa-question-circle text-warning" style="font-size: 3rem;"></i>
+          </div>
+          <p class="mb-0">Are you sure you want to cancel this booking?</p>
+          <small class="text-muted">This action cannot be undone and may affect your booking history.</small>
+        </div>
+        <div class="modal-footer custom-modal-footer">
+          <button type="button" class="btn custom-modal-btn-secondary" 
+                  (click)="closeCancelModal()">
+            <i class="fas fa-times me-2"></i>
+            No, Keep Booking
+          </button>
+          <button type="button" class="btn custom-modal-btn-danger" 
+                  (click)="confirmCancel()">
+            <i class="fas fa-check me-2"></i>
+            Yes, Cancel Booking
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
