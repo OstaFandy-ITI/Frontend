@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { NotificationService } from './../services/notification.service';
 import { Notification, CreateBookingDTO, QuoteResponseDTO } from '../../../core/models/notification.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
+import { Toast, ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-notification',
@@ -27,16 +28,41 @@ export class NotificationComponent implements OnInit {
     loadingTimeSlots = false;
     selectedDate: string = '';
     minDate: string;
+    @Input() NotificationId!: number;
 
-    constructor(private notificationService: NotificationService, private authService: AuthService) {
+    constructor(private notificationService: NotificationService, private authService: AuthService, private toastr: ToastrService) {
         this.minDate = new Date().toISOString().slice(0, 16);
         this.userId = this.authService.getCurrentUserId() ?? 0;
         this.selectedDate = new Date().toISOString().slice(0, 10);
+        
     }
 
-    ngOnInit() {
+ngOnInit() {
+    this.loadNotifications();
+    
+    const userId = this.authService.getCurrentUserId() ?? 0;  
+    this.notificationService.startConnection(userId);
+    
+    this.notificationService.onQuoteUpdate((message: string) => {
+        console.log('Quote notification received:', message);
+        this.toastr.info(message, 'Quote Updated');
         this.loadNotifications();
-    }
+    });
+
+    this.notificationService.onJobUpdate((jobId: number, status: string) => {
+        console.log('Job status update received:', jobId, status);
+        this.toastr.info(`Job ${jobId} status changed to ${status}`, 'Job Status Updated');
+        this.loadNotifications();
+    });
+
+    this.notificationService.onQuoteResponse((quoteId: number, action: string) => {
+        console.log('Quote response received:', quoteId, action);
+        this.toastr.info(`Quote ${quoteId} has been ${action}`, 'Quote Response');
+        this.loadNotifications();
+    });
+}
+
+
 
     loadNotifications() {
         this.loading = true;

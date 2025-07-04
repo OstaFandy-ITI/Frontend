@@ -1,15 +1,13 @@
 import { NotificationComponent } from '../../notification/notification.component'; 
-// navbar.component.ts
-import { Component, OnInit } from '@angular/core';
+ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
-
-@Component({
+ @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
-  imports: [CommonModule],
+  imports: [CommonModule, NotificationComponent],
 })
 export class NavbarComponent implements OnInit {
   isLoggedIn = false;

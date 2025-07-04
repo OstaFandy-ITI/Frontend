@@ -48,9 +48,8 @@
   <ng-container *ngIf="isLoggedIn; else loginButton">
     <!-- Notification Bell -->
     <button class="icon-btn notification" title="Notifications">
-      <i class="bi bi-bell-fill">  </i>
-      <span class="notif-badge">3</span>
-    </button>
+           <app-notification></app-notification>
+        </button>
 
     <!-- Profile Dropdown -->
     <div class="dropdown">
