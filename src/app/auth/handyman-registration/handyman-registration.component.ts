@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-handyman-registration',
-  imports: [ReactiveFormsModule,CommonModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './handyman-registration.component.html',
   styleUrl: './handyman-registration.component.css',
 })
@@ -80,10 +80,9 @@ export class HandymanRegistrationComponent implements OnInit {
   //check if field is invalid
 
   isFieldInvalid(form: FormGroup, fieldName: string) {
-  const field = form.get(fieldName);
-  return field && field.invalid && (field.dirty || field.touched);
-}
-
+    const field = form.get(fieldName);
+    return field && field.invalid && (field.dirty || field.touched);
+  }
 
   //handel moving to next step
   nextStep() {
@@ -136,8 +135,10 @@ export class HandymanRegistrationComponent implements OnInit {
           };
           localStorage.setItem(cashekey, JSON.stringify(cacheItem));
           this.CategoryItem = cacheItem.value;
-          this.toastr.error('Failed to load categories.');
         }
+      },
+      error: (err) => {
+        this.toastr.error('Failed to load categories.'+err);
       },
     });
   }

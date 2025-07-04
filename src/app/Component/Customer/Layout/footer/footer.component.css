@@ -1,0 +1,41 @@
+.footer-section {
+  background-color: var(--blue-dark);
+  color: white;
+}
+
+.footer-section h5,
+.footer-section h6 {
+  color: var(--orange);
+}
+
+.footer-links a {
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: var(--orange);
+}
+
+.btn-orange {
+  background-color: var(--orange);
+  color: #000;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.btn-orange:hover {
+  background-color: #e6b638;
+  color: #000;
+}
+
+.footer-section .form-control {
+  border-radius: 30px;
+  padding-left: 15px;
+}
+
+.footer-section .btn {
+  border-radius: 30px;
+  padding: 6px 18px;
+  font-weight: 500;
+}
