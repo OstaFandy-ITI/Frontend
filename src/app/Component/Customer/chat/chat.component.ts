@@ -14,6 +14,7 @@ import { ChatService } from '../services/chat.service';
 import { MessageDTO } from '../../../core/models/message.model';
 import { Subscription, take } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
+import { Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-chat',
@@ -25,6 +26,7 @@ import { AuthService } from '../../../core/services/auth.service';
 export class ChatComponent implements OnInit, OnDestroy {
   @Input() chatId!: number;
   @Input() userId!: number;
+@Output() closed = new EventEmitter<void>();
 
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   messages: MessageDTO[] = [];
@@ -37,38 +39,33 @@ export class ChatComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private authService: AuthService
   ) {}
-ngOnInit(): void {
-  // Do NOT overwrite @Input() if it's already passed
-  const routeChatId = this.route.snapshot.paramMap.get('chatId');
-  if (!this.chatId && routeChatId) {
-    this.chatId = +routeChatId;
+ ngOnInit(): void {
+  if (!this.chatId || !this.userId) {
+    console.error('❌ chatId or userId missing; cannot start chat connection');
+    return;
   }
 
-  this.authService.CurrentUser$.pipe(take(1)).subscribe((user) => {
-    if (!user) {
-      console.error('❌ No logged-in user found');
-      return;
-    }
+  console.log('💬 Starting connection to chat', this.chatId);
 
-    this.userId = +user.NameIdentifier!;
-    if (!this.chatId) {
-      console.error('❌ chatId is missing; cannot start chat connection');
-      return;
-    }
+  // 1. Load message history from REST
+  this.chatService.getMessages(this.chatId).subscribe((history) => {
+    this.messages = history;
+    setTimeout(() => this.scrollToBottom(), 100);
+  });
 
-    // ✅ Load message history
-    this.chatService.getMessages(this.chatId).subscribe((history) => {
-      this.messages = history;
-      setTimeout(() => this.scrollToBottom(), 100);
-    });
+  // 2. Start SignalR connection and only then listen for messages
+  this.chatService.startConnection(this.chatId).then(() => {
+    console.log('✅ SignalR connection + group join complete');
 
-    // ✅ Start SignalR connection safely
-    this.chatService.startConnection(this.chatId);
+    // 3. Only now start listening for messages
+ this.messageSub = this.chatService.onNewMessage().subscribe((msg) => {
+  if (msg) {
+msg.sentAt = msg.sentAt ? new Date(msg.sentAt).toISOString() : '';
+    this.messages.push(msg);
+    setTimeout(() => this.scrollToBottom(), 100);
+  }
+});
 
-    this.messageSub = this.chatService.onNewMessage().subscribe((msg) => {
-      this.messages.push(msg);
-      setTimeout(() => this.scrollToBottom(), 100);
-    });
   });
 }
 
@@ -77,37 +74,34 @@ ngOnInit(): void {
 
     const msg: MessageDTO = {
       chatId: this.chatId,
-senderId: this.userId || 0,
+      senderId: this.userId || 0,
       content: this.newMessage.trim(),
     };
 
     this.chatService.sendMessageREST(msg).subscribe({
-      next: () => {
-        this.messages.push({
-          chatId: this.chatId,
-          content: msg.content,
-          senderId: this.userId,
-          sentAt: new Date().toISOString(),
-        });
-        this.newMessage = '';
-        setTimeout(() => this.scrollToBottom(), 100);
-      },
-      error: (err) => {
-        console.error('❌ Failed to send message', err);
-        if (err.status === 401 || err.status === 403) {
-          console.warn('Chat unauthorized');
-        }
-      },
-    });
-  }
+  next: () => {
+    this.newMessage = '';
+    console.log('✅ Message sent successfully');
+    // No need to push manually — SignalR will push it
+  },
+  error: (err) => {
+    console.error('❌ Failed to send message', err);
+  },
+});
 
-  scrollToBottom() {
+  }
+scrollToBottom() {
+  try {
     const el = this.scrollContainer?.nativeElement;
     if (el) el.scrollTop = el.scrollHeight;
+  } catch (e) {
+    console.warn('⚠️ Failed to scroll chat to bottom:', e);
   }
+}
 
   close() {
     this.chatService.stopConnection(this.chatId);
+      this.closed.emit(); // ✅ notify parent
   }
 
   ngOnDestroy(): void {

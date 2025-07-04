@@ -37,55 +37,57 @@
       <div class="flex-grow-1 d-flex justify-content-center">
         <ul class="navbar-nav flex-row gap-2 text-center">
           <li class="nav-item"><a class="nav-link" href="#hero-section">Book a Task</a></li>
-          <li class="nav-item"><a class="nav-link" href="contact.html">Contact Us</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
-          <li class="nav-item"><a class="nav-link" href="join.html">Join Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="/careers">Careers</a></li>
+          <li class="nav-item"><a class="nav-link" href="/about">About Us</a></li>
+          <li class="nav-item"><a class="nav-link" href="/registerHamdyMan">Join Us</a></li>
         </ul>
       </div>
 
       <!-- User Info Right -->
-      <div class="d-flex align-items-center gap-3 ms-4 user-info">
-
-        <!-- Notification Bell -->
-        <button class="icon-btn notification" title="Notifications">
-           <app-notification></app-notification> 
- 
+<div class="d-flex align-items-center gap-3 ms-4 user-info">
+  <ng-container *ngIf="isLoggedIn; else loginButton">
+    <!-- Notification Bell -->
+    <button class="icon-btn notification" title="Notifications">
+           <app-notification></app-notification>
         </button>
 
-      <!-- Profile Dropdown -->
-<div class="dropdown">
-  <button
-    class="icon-btn profile dropdown-toggle"
-    type="button"
-    data-bs-toggle="dropdown"
-    aria-expanded="false"
-    title="Profile"
-  >
-    <i class="bi bi-person-circle"></i>
-  </button>
-  <ul class="dropdown-menu dropdown-menu-end">
-    <li>
-      <a class="dropdown-item" routerLink="/profile">
-        <i class="bi bi-person me-2"></i> Profile
-      </a>
-    </li>
-    <li>
-      <hr class="dropdown-divider" />
-    </li>
-    <li>
-      <button class="dropdown-item text-danger" (click)="logout()">
-        <i class="bi bi-box-arrow-right me-2"></i> Logout
+    <!-- Profile Dropdown -->
+    <div class="dropdown">
+      <button
+        class="icon-btn profile dropdown-toggle"
+        type="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+        title="Profile"
+      >
+        <i class="bi bi-person-circle"></i>
       </button>
-    </li>
-  </ul>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+          <a class="dropdown-item" routerLink="/profile">
+            <i class="bi bi-person me-2"></i> Profile
+          </a>
+        </li>
+        <li><hr class="dropdown-divider" /></li>
+        <li>
+          <button class="dropdown-item text-danger" (click)="logout()">
+            <i class="bi bi-box-arrow-right me-2"></i> Logout
+          </button>
+        </li>
+      </ul>
+    </div>
+  </ng-container>
+
+  <!-- Login Button (when not logged in) -->
+  <ng-template #loginButton>
+    <button class="btn btn-primary d-flex align-items-center gap-2 px-3 py-1 rounded-pill shadow-sm" (click)="goToLogin()">
+      <i class="bi bi-box-arrow-in-right fs-5"></i>
+      <span class="fw-semibold">Login</span>
+    </button>
+  </ng-template>
 </div>
 
 
-        <!-- Logout Button -->
-        <!-- <button class="btn logout-btn d-flex align-items-center">
-          <i class="bi bi-box-arrow-right me-1"></i> Logout
-        </button> -->
-      </div>
 
     </div>
   </div>

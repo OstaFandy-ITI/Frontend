@@ -1,6 +1,7 @@
 <div class="chat-list p-3">
   <h5 class="mb-3">Active Chats</h5>
 
+
   <div *ngIf="threads.length === 0" class="text-muted">No active chats.</div>
 
   <div *ngFor="let thread of threads" class="chat-item border-bottom py-2" (click)="openChat(thread)" style="cursor: pointer;">
@@ -15,4 +16,11 @@
       </div>
     </div>
   </div>
+
+<app-chat
+  *ngIf="selectedChatId"
+  [chatId]="selectedChatId"
+  [userId]="userId"
+  (closed)="selectedChatId = null">
+</app-chat>
 </div>

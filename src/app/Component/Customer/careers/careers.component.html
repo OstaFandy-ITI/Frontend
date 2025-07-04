@@ -1,0 +1,78 @@
+<app-navbar></app-navbar>
+<div class="careers-hero text-white text-center">
+  <div class="overlay">
+    <h1>Build Your Future With OstaFandy</h1>
+    <p>Where talent meets trust, and handymen grow into heroes.</p>
+    <a class="btn btn-outline-light btn-lg mt-3" routerLink="/registerHamdyMan">Join Us Now</a>
+  </div>
+</div>
+
+<div class="container py-5">
+
+  <!-- Benefits Section -->
+<section class="benefits-section text-center mb-5">
+  <h2 class="mb-4 fw-bold" style="color: #004e98;">Why Work With Us?</h2>
+  <div class="row g-4 justify-content-center">
+
+    <div class="col-md-4">
+      <div class="benefit-card" style="border-left: 6px solid #004e98;">
+        <i class="bi bi-cash-coin icon" style="color: #004e98;"></i>
+        <h5 class="mt-3">Fixed Monthly Salary</h5>
+        <p>Reliable income every month without worrying about per-task commissions.</p>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="benefit-card" style="border-left: 6px solid #3a6ea5;">
+        <i class="bi bi-heart-pulse icon" style="color: #3a6ea5;"></i>
+        <h5 class="mt-3">Health Insurance</h5>
+        <p>Get coverage for you and your family to stay safe and secure.</p>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="benefit-card" style="border-left: 6px solid #ffa94d;">
+        <i class="bi bi-emoji-smile icon" style="color: #ffa94d;"></i>
+        <h5 class="mt-3">Healthy Work Culture</h5>
+        <p>Respectful environment, friendly teams, and structured working hours.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+  <!-- Success Stories -->
+  <section class="text-center">
+    <h2 class="mb-4">Success Stories</h2>
+    <div class="row g-4">
+
+      <div class="col-md-4" *ngFor="let person of successStories">
+        <div class="card h-100 shadow">
+          <img [src]="person.image" class="card-img-top" [alt]="person.name" />
+          <div class="card-body">
+            <h5 class="card-title">{{ person.name }}</h5>
+            <p class="card-text fst-italic">“{{ person.story }}”</p>
+            <span class="badge bg-primary">{{ person.job }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA -->
+ <section class="cta-section text-white mt-5">
+  <div class="cta-overlay d-flex flex-column justify-content-center align-items-center text-center px-3">
+    <h3 class="display-5 fw-bold mb-3">Ready to Build Your Future?</h3>
+    <p class="lead mb-4">Join hundreds of skilled handymen who trusted OstaFandy to turn their talent into stable careers. Let’s grow together in a respectful, reliable, and rewarding environment.</p>
+    <a class="btn btn-lg fw-bold" style="background-color: #ffa94d; color: #000;" routerLink="/registerHamdyMan">
+      Apply as a Handyman
+    </a>
+  </div>
+</section>
+
+</div>
+
+
+<app-footer></app-footer>

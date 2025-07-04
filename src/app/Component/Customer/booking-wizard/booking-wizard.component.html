@@ -307,8 +307,7 @@
           <i class="bi bi-chat-dots"></i> Chat with Handyman
         </button>
       </div>
-      <app-chat *ngIf="chatVisible"></app-chat>
-
+<app-chat *ngIf="chatVisible" [chatId]="chatId" [userId]="userId"></app-chat>
     </div>
   </div>
 

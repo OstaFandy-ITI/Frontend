@@ -13,8 +13,11 @@ export const handymanRoutes: Routes = [{
            { path: 'dashboard',component:DashboardComponent},
            { path: 'alljobs',component:AllJobsComponent},
            { path: 'quotes',component:QuotesComponent},
-           {path:'chatlist' , component: ChatListComponent}
-
+           {path:'chatlist' , component: ChatListComponent},
+{
+        path: 'chat/:chatId',
+        loadComponent: () =>
+import('../Customer/chat/chat.component').then(m => m.ChatComponent)    }
     ]
     
 }]

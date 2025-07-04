@@ -9,6 +9,13 @@ export enum AddressTypes {
   Other = 'Other',
 }
 
+export class BookingStatus {
+  Pending = 'Pending';
+  Confirmed = 'Confirmed';
+  Completed = 'Completed';
+  Cancelled = 'Cancelled';
+}
+
 export enum IsDefault {
   true = 1,
   false = 0,

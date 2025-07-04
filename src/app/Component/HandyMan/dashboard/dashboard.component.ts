@@ -112,7 +112,6 @@ export class DashboardComponent implements OnInit {
         if (modalBody) {
           modalBody.innerHTML = `
             <p><strong>Client Name:</strong> ${props['clientName']}</p>
-            <p><strong>Handyman Name:</strong> ${props['handymanName']}</p>
             <p><strong>Category:</strong> ${props['categoryName']}</p>
             <p><strong>Services:</strong> ${props['serviceNames']}</p>
             <p><strong>Note:</strong> ${props['note']}</p>
