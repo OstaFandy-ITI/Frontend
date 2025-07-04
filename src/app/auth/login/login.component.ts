@@ -78,7 +78,7 @@ export class LoginComponent {
       error: (error) => {
         if (error.error.data == "Pending") {
             this.router.navigate(['/handyman/pending']);
-          } else if (error.error.data == 'rejected') {
+          } else if (error.error.data == "Rejected") {
             this.router.navigate(['/handyman/rejected']);
           } else {
             this.toastr.error(error.error.message);
