@@ -8,15 +8,15 @@
   --ostafandy-blue: #3f63c8;
 }
 .btn-login {
-  background-color: #3f63c8;
+  background-color: var(--blue-dark);
   color: white;
 }
 .btn-login:hover {
-  background-color: #3651a3;
+  background-color: var(--blue-medium);
   color: white;
 }
 .top-info-bar {
-  background-color: #3f63c8;
+  background-color: var(--blue-dark);
   color: white;
   font-size: 0.9rem;
   white-space: nowrap;
@@ -75,7 +75,7 @@
 
 /* Branding */
 .Name {
-  color: #3f63c8;
+  color: var(--blue-dark);
 }
 
 /* Icon Buttons: Notification + Profile */
