@@ -1,392 +1,343 @@
 <div class="client-profile-container">
-  <div *ngIf="isLoading" class="loading-container">
+  <div *ngIf="loading && (!clientProfile || clientProfile.addresses.length === 0)" class="loading-spinner">
     <div class="spinner"></div>
-    <p>Loading profile...</p>
+    <p>Loading client profile...</p>
   </div>
 
-  <div *ngIf="error && !isLoading" class="error-container">
-    <div class="error-message">
+  <div *ngIf="error" class="error-message">
+    <div class="alert alert-danger">
       <i class="fas fa-exclamation-triangle"></i>
-      <p>{{ error }}</p>
-      <button class="retry-btn" (click)="loadClientProfile()">
-        <i class="fas fa-redo"></i> Retry
-      </button>
+      {{ error }}
     </div>
   </div>
 
-  <div *ngIf="successMessage" class="success-container">
-    <div class="success-message">
+  <div *ngIf="successMessage" class="success-message">
+    <div class="alert alert-success">
       <i class="fas fa-check-circle"></i>
-      <p>{{ successMessage }}</p>
-      <button class="close-btn" (click)="clearMessages()">
-        <i class="fas fa-times"></i>
-      </button>
+      {{ successMessage }}
     </div>
   </div>
 
-  <div *ngIf="clientProfile && !isLoading" class="profile-content">
+  <div *ngIf="clientProfile && !loading" class="profile-content">
 
     <div class="profile-header">
-      <div class="profile-info">
-        <div class="profile-avatar">
-          <img [src]="clientProfile.profilePicture || 'assets/profile.png'"
-               [alt]="clientProfile.fullName"
-               class="avatar-img">
-        </div>
-        <div class="profile-details">
-          <h1 class="profile-name">{{ clientProfile.fullName }}</h1>
-          <p class="profile-email">{{ clientProfile.email }}</p>
-          <span class="profile-status" [class.active]="clientProfile.isActive">
-            <i class="fas fa-circle"></i>
-            {{ clientProfile.isActive ? 'Active' : 'Inactive' }}
-          </span>
-        </div>
+      <div class="profile-avatar">
+        <img [src]="'/assets/profile.png'" alt="Profile Picture" class="avatar-img">
       </div>
-
+      <div class="profile-info">
+        <h2>{{ clientProfile.firstName }} {{ clientProfile.lastName }}</h2>
+        <!-- <p class="user-id">User ID: {{ clientProfile.userId }}</p> -->
+        <span class="status-badge" [class.active]="clientProfile.isActive">
+          {{ clientProfile.isActive ? 'Active' : 'Inactive' }}
+        </span>
+      </div>
       <div class="profile-actions">
-        <button *ngIf="!isEditMode" class="btn btn-primary" (click)="onEditProfile()">
-          <i class="fas fa-edit"></i>
-          Edit Profile
+        <button class="btn btn-primary" (click)="toggleUpdateForm()">
+          <i class="fas fa-edit"></i> Update Profile
         </button>
-        <button *ngIf="isEditMode" class="btn btn-success" (click)="onSaveProfile()" [disabled]="isUpdating">
-          <i class="fas fa-save"></i>
-          <span *ngIf="!isUpdating">Save Changes</span>
-          <span *ngIf="isUpdating">Saving...</span>
-        </button>
-        <button *ngIf="isEditMode" class="btn btn-outline" (click)="onCancelEdit()" [disabled]="isUpdating">
-          <i class="fas fa-times"></i>
-          Cancel
-        </button>
-        <button *ngIf="!isEditMode" class="btn btn-secondary" (click)="onAddAddress()">
-          <i class="fas fa-plus"></i>
-          Add Address
+        <button class="btn btn-secondary" (click)="toggleAddressForm()">
+          <i class="fas fa-plus"></i> Add Address
         </button>
       </div>
     </div>
 
-    <div class="profile-cards">
-
-      <div class="info-card">
-        <div class="card-header">
-          <h3><i class="fas fa-user"></i> Personal Information</h3>
+    <div class="profile-details">
+      <div class="detail-card">
+        <h3>Contact Information</h3>
+        <div class="detail-row">
+          <span class="label">Email:</span>
+          <span class="value">{{ clientProfile.email }}</span>
         </div>
-        <div class="card-body">
-          <div *ngIf="!isEditMode">
-            <div class="info-row">
-              <span class="info-label">User ID:</span>
-              <span class="info-value">{{ clientProfile.userId }}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">First Name:</span>
-              <span class="info-value">{{ clientProfile.firstName }}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Last Name:</span>
-              <span class="info-value">{{ clientProfile.lastName }}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Email:</span>
-              <span class="info-value">{{ clientProfile.email }}</span>
-            </div>
-            <div class="info-row">
-              <span class="info-label">Phone:</span>
-              <span class="info-value">{{ clientProfile.phone }}</span>
-            </div>
-          </div>
+        <div class="detail-row">
+          <span class="label">Phone:</span>
+          <span class="value">{{ clientProfile.phone }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Created:</span>
+          <span class="value">{{ formatDate(clientProfile.createdAt) }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="label">Last Updated:</span>
+          <span class="value">{{ formatDate(clientProfile.updatedAt) }}</span>
+        </div>
+      </div>
+    </div>
 
-          <div *ngIf="isEditMode" class="edit-form">
-            <div class="form-group">
-              <label for="firstName">First Name:</label>
-              <input
-                type="text"
-                id="firstName"
-                [(ngModel)]="editForm.firstName"
-                class="form-control"
-                placeholder="Enter first name"
-                [disabled]="isUpdating">
-            </div>
-            <div class="form-group">
-              <label for="lastName">Last Name:</label>
-              <input
-                type="text"
-                id="lastName"
-                [(ngModel)]="editForm.lastName"
-                class="form-control"
-                placeholder="Enter last name"
-                [disabled]="isUpdating">
-            </div>
-            <div class="form-group">
-              <label for="email">Email:</label>
-              <input
-                type="email"
-                id="email"
-                [(ngModel)]="editForm.email"
-                class="form-control"
-                placeholder="Enter email address"
-                [disabled]="isUpdating">
-            </div>
-            <div class="form-group">
-              <label for="phone">Phone:</label>
-              <input
-                type="tel"
-                id="phone"
-                [(ngModel)]="editForm.phone"
-                class="form-control"
-                placeholder="Enter phone number"
-                [disabled]="isUpdating">
-            </div>
+    <div *ngIf="clientProfile.defaultAddress" class="address-section detail-card">
+      <h3>Default Address</h3>
+      <div class="address-card default-address">
+        <div class="address-header">
+          <span class="address-type">{{ clientProfile.defaultAddress.addressType }}</span>
+          <span class="badge default-badge">Default</span>
+        </div>
+        <div class="address-content">
+          <p class="address-text">{{ clientProfile.defaultAddress.address }}</p>
+          <p class="city">{{ clientProfile.defaultAddress.city }}</p>
+          <div class="coordinates">
+            <small>Lat: {{ clientProfile.defaultAddress.latitude }},
+                  Lng: {{ clientProfile.defaultAddress.longitude }}</small>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="info-card" *ngIf="clientProfile.defaultAddress">
-        <div class="card-header">
-          <h3><i class="fas fa-map-marker-alt"></i> Default Address</h3>
-        </div>
-        <div class="card-body">
-          <div class="info-row">
-            <span class="info-label">Address ID:</span>
-            <span class="info-value">{{ clientProfile.defaultAddress.id }}</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Address:</span>
-            <span class="info-value">{{ clientProfile.defaultAddress.address }}</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">City:</span>
-            <span class="info-value">{{ clientProfile.defaultAddress.city }}</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Address Type:</span>
-            <span class="info-value">{{ clientProfile.defaultAddress.addressType }}</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Coordinates:</span>
-            <span class="info-value">
-              {{ clientProfile.defaultAddress.latitude }}, {{ clientProfile.defaultAddress.longitude }}
-            </span>
-          </div>
-        </div>
-      </div>
-      <div class="info-card" *ngIf="!clientProfile.defaultAddress && clientProfile.addresses.length > 0">
-        <div class="card-header">
-          <h3><i class="fas fa-map-marker-alt"></i> Default Address</h3>
-        </div>
-        <div class="card-body">
-          <p class="no-addresses">No default address set. Please set one from "All Addresses".</p>
-        </div>
-      </div>
-      <div class="info-card" *ngIf="!clientProfile.defaultAddress && clientProfile.addresses.length === 0">
-        <div class="card-header">
-          <h3><i class="fas fa-map-marker-alt"></i> Default Address</h3>
-        </div>
-        <div class="card-body">
-          <p class="no-addresses">No addresses added yet.</p>
-        </div>
-      </div>
-
-
-      <div class="info-card">
-        <div class="card-header">
-          <h3><i class="fas fa-info-circle"></i> Account Information</h3>
-        </div>
-        <div class="card-body">
-          <div class="info-row">
-            <span class="info-label">Account Status:</span>
-            <span class="info-value">
-              <span class="status-badge" [class.active]="clientProfile.isActive">
-                {{ clientProfile.isActive ? 'Active' : 'Inactive' }}
+    <div class="addresses-section">
+      <h3>All Addresses ({{ addresses.length }})</h3>
+      <div *ngIf="addresses.length > 0; else noAddresses" class="addresses-grid">
+        <div *ngFor="let address of addresses" class="address-card">
+          <div class="address-header">
+            <span class="address-type">{{ address.addressType }}</span>
+            <div class="address-badges">
+              <span *ngIf="address.isDefault" class="badge default-badge">Default</span>
+              <span [class]="address.isActive ? 'badge active-badge' : 'badge inactive-badge'">
+                {{ address.isActive ? 'Active' : 'Inactive' }}
               </span>
-            </span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Created At:</span>
-            <span class="info-value">{{ formatDate(clientProfile.createdAt) }}</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Last Updated:</span>
-            <span class="info-value">{{ formatDate(clientProfile.updatedAt) }}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="info-card addresses-section" *ngIf="clientProfile.addresses && clientProfile.addresses.length > 0">
-        <div class="card-header">
-          <h3><i class="fas fa-map-marker-alt"></i> All Addresses</h3>
-        </div>
-        <div class="card-body">
-          <div class="addresses-grid">
-            <div class="address-card"
-                *ngFor="let address of clientProfile.addresses"
-                [class.default]="address.isDefault">
-              <div class="address-card-header">
-                <span class="address-type" [class.default]="address.isDefault">
-                  {{ address.addressType }}
-                </span>
-                <div class="address-actions">
-                  <button class="btn btn-primary btn-small" (click)="onEditAddress(address)" [disabled]="isAddingAddress">
-                    <i class="fas fa-edit"></i> Edit
-                  </button>
-                  <button class="btn btn-secondary btn-small" (click)="onDeleteAddress(address.id)" [disabled]="isDeletingAddress">
-                    <i class="fas fa-trash-alt"></i> Delete
-                  </button>
-                  <button *ngIf="!address.isDefault" class="btn btn-outline btn-small" (click)="onSetDefaultAddress(address)" [disabled]="isSettingDefault">
-                    <i class="fas fa-thumbtack"></i> Set Default
-                  </button>
-                </div>
-              </div>
-              <div class="address-details">
-                {{ address.address }}, {{ address.city }}
-              </div>
-              <div class="address-coordinates">
-                {{ address.latitude }}, {{ address.longitude }}
-              </div>
             </div>
           </div>
+          <div class="address-content">
+            <p class="address-text">{{ address.address1 }}</p>
+            <p class="city">{{ address.city }}</p>
+            <div class="coordinates">
+              <small>Lat: {{ address.latitude }}, Lng: {{ address.longitude }}</small>
+            </div>
+          </div>
+          <!-- Add Set as Default button if more than one address and not already default -->
+          <div *ngIf="addresses.length > 1 && !address.isDefault" class="set-default-btn">
+            <button 
+              class="btn btn-sm"
+              style="
+                background: linear-gradient(90deg, #3A6EA5 0%, #0056b3 100%);
+                color: #fff;
+                border: none;
+                border-radius: 20px;
+                padding: 5px 18px;
+                font-weight: 600;
+                box-shadow: 0 2px 8px rgba(58,110,165,0.12);
+                transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+              "
+             (click)="setDefaultAddress(address.id)">
+              Set as Default
+            </button>
+          </div>
         </div>
       </div>
-      <div class="info-card addresses-section" *ngIf="!clientProfile.addresses || clientProfile.addresses.length === 0">
-        <div class="card-header">
-          <h3><i class="fas fa-map-marker-alt"></i> All Addresses</h3>
+      <ng-template #noAddresses>
+        <div class="no-addresses detail-card">
+          <p>No addresses found. Click "Add Address" to create your first address.</p>
         </div>
-        <div class="card-body">
-          <p class="no-addresses">You have no saved addresses. Click "Add Address" to add one.</p>
-        </div>
-      </div>
+      </ng-template>
+</div>
+  </div>
 
+  <div *ngIf="showUpdateForm" class="form-modal">
+    <div class="modal-backdrop" (click)="toggleUpdateForm()"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Update Profile</h3>
+        <button class="close-btn" (click)="toggleUpdateForm()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <form [formGroup]="updateProfileForm" (ngSubmit)="onUpdateProfile()">
+        <div class="form-group">
+          <label for="firstName">First Name *</label>
+          <input
+            type="text"
+            id="firstName"
+            formControlName="firstName"
+            class="form-control"
+            placeholder="Enter your first name"
+            [class.is-invalid]="hasError('update', 'firstName', 'required') || hasError('update', 'firstName', 'minlength')">
+          <div *ngIf="hasError('update', 'firstName', 'required')" class="invalid-feedback">
+            First name is required
+          </div>
+          <div *ngIf="hasError('update', 'firstName', 'minlength')" class="invalid-feedback">
+            First name must be at least 2 characters
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Last Name *</label>
+          <input
+            type="text"
+            id="lastName"
+            formControlName="lastName"
+            class="form-control"
+            placeholder="Enter your last name"
+            [class.is-invalid]="hasError('update', 'lastName', 'required') || hasError('update', 'lastName', 'minlength')">
+          <div *ngIf="hasError('update', 'lastName', 'required')" class="invalid-feedback">
+            Last name is required
+          </div>
+          <div *ngIf="hasError('update', 'lastName', 'minlength')" class="invalid-feedback">
+            Last name must be at least 2 characters
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input
+            type="email"
+            id="email"
+            formControlName="email"
+            class="form-control"
+            placeholder="Enter your email address"
+            [class.is-invalid]="hasError('update', 'email', 'required') || hasError('update', 'email', 'email')">
+          <div *ngIf="hasError('update', 'email', 'required')" class="invalid-feedback">
+            Email is required
+          </div>
+          <div *ngIf="hasError('update', 'email', 'email')" class="invalid-feedback">
+            Please enter a valid email address
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone *</label>
+          <input
+            type="tel"
+            id="phone"
+            formControlName="phone"
+            class="form-control"
+            placeholder="Enter your phone number"
+            [class.is-invalid]="hasError('update', 'phone', 'required') || hasError('update', 'phone', 'pattern')">
+          <div *ngIf="hasError('update', 'phone', 'required')" class="invalid-feedback">
+            Phone number is required
+          </div>
+          <div *ngIf="hasError('update', 'phone', 'pattern')" class="invalid-feedback">
+            Please enter a valid phone number (at least 10 digits)
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="toggleUpdateForm()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="!updateProfileForm.valid || loading">
+            <span *ngIf="loading" class="spinner-sm"></span>
+            Update Profile
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
-  <div *ngIf="showAddressModal" class="modal-overlay" (click)="onCancelAddAddress()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
+  <div *ngIf="showAddressForm" class="form-modal">
+    <div class="modal-backdrop" (click)="toggleAddressForm()"></div>
+    <div class="modal-content">
       <div class="modal-header">
-        <h2>
-          <i class="fas fa-map-marker-alt"></i>
-          {{ isEditAddressMode ? 'Edit Address' : 'Add New Address' }}
-        </h2>
-        <button class="close-btn" (click)="onCancelAddAddress()">
+        <h3>Add New Address</h3>
+        <button class="close-btn" (click)="toggleAddressForm()">
           <i class="fas fa-times"></i>
         </button>
       </div>
+      <form [formGroup]="addAddressForm" (ngSubmit)="onAddAddress()">
+        <div class="form-group">
+          <label for="addressType">Address Type *</label>
+          <select id="addressType" formControlName="addressType" class="form-control">
+            <option value="Home">Home</option>
+            <option value="Work">Work</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
 
-      <div class="modal-body">
-        <form class="address-form">
-          <div class="form-group">
-            <label for="address1">Address <span class="required">*</span></label>
-            <input
-              type="text"
-              id="address1"
-              [(ngModel)]="addressForm.address1"
-              name="address1"
-              class="form-control"
-              placeholder="Enter full address"
-              [disabled]="isAddingAddress"
-              required>
+        <div class="form-group">
+          <label for="address">Address *</label>
+          <input
+            type="text"
+            id="address"
+            formControlName="address"
+            class="form-control"
+            placeholder="Enter full address"
+            [class.is-invalid]="hasError('address', 'address', 'required') || hasError('address', 'address', 'minlength')">
+          <div *ngIf="hasError('address', 'address', 'required')" class="invalid-feedback">
+            Address is required
           </div>
-
-          <div class="form-group">
-            <label for="city">City <span class="required">*</span></label>
-            <input
-              type="text"
-              id="city"
-              [(ngModel)]="addressForm.city"
-              name="city"
-              class="form-control"
-              placeholder="Enter city"
-              [disabled]="isAddingAddress"
-              required>
+          <div *ngIf="hasError('address', 'address', 'minlength')" class="invalid-feedback">
+            Address must be at least 5 characters
           </div>
+        </div>
 
-          <div class="form-group">
-            <label for="addressType">Address Type <span class="required">*</span></label>
-            <select
-              id="addressType"
-              [(ngModel)]="addressForm.addressType"
-              name="addressType"
-              class="form-control"
-              [disabled]="isAddingAddress"
-              required>
-              <option value="Home">Home</option>
-              <option value="Work">Work</option>
-              <option value="Other">Other</option>
-            </select>
+        <div class="form-group">
+          <label for="city">City *</label>
+          <input
+            type="text"
+            id="city"
+            formControlName="city"
+            class="form-control"
+            placeholder="Enter city"
+            [class.is-invalid]="hasError('address', 'city', 'required') || hasError('address', 'city', 'minlength')">
+          <div *ngIf="hasError('address', 'city', 'required')" class="invalid-feedback">
+            City is required
           </div>
+          <div *ngIf="hasError('address', 'city', 'minlength')" class="invalid-feedback">
+            City must be at least 2 characters
+          </div>
+        </div>
 
-          <div class="form-row">
+        <div class="form-row">
+          <div class="col-md-6">
             <div class="form-group">
-              <label for="latitude">Latitude</label>
+              <label for="latitude">Latitude *</label>
               <input
                 type="number"
                 id="latitude"
-                [(ngModel)]="addressForm.latitude"
-                name="latitude"
+                formControlName="latitude"
                 class="form-control"
-                placeholder="0.00"
-                step="0.000001"
-                [disabled]="isAddingAddress">
+                step="any"
+                placeholder="e.g., 40.7128"
+                [class.is-invalid]="hasError('address', 'latitude', 'required') || hasError('address', 'latitude', 'min') || hasError('address', 'latitude', 'max')">
+              <div *ngIf="hasError('address', 'latitude', 'required')" class="invalid-feedback">
+                Latitude is required
+              </div>
+              <div *ngIf="hasError('address', 'latitude', 'min') || hasError('address', 'latitude', 'max')" class="invalid-feedback">
+                Latitude must be between -90 and 90
+              </div>
             </div>
-
+          </div>
+          <div class="col-md-6">
             <div class="form-group">
-              <label for="longitude">Longitude</label>
+              <label for="longitude">Longitude *</label>
               <input
                 type="number"
                 id="longitude"
-                [(ngModel)]="addressForm.longitude"
-                name="longitude"
+                formControlName="longitude"
                 class="form-control"
-                placeholder="0.00"
-                step="0.000001"
-                [disabled]="isAddingAddress">
+                step="any"
+                placeholder="e.g., -74.0060"
+                [class.is-invalid]="hasError('address', 'longitude', 'required') || hasError('address', 'longitude', 'min') || hasError('address', 'longitude', 'max')">
+              <div *ngIf="hasError('address', 'longitude', 'required')" class="invalid-feedback">
+                Longitude is required
+              </div>
+              <div *ngIf="hasError('address', 'longitude', 'min') || hasError('address', 'longitude', 'max')" class="invalid-feedback">
+                Longitude must be between -180 and 180
+              </div>
             </div>
           </div>
+        </div>
 
-          <div class="form-group">
-            <button
-              type="button"
-              class="btn btn-outline btn-location"
-              (click)="getCurrentLocation()"
-              [disabled]="isAddingAddress">
-              <i class="fas fa-location-arrow"></i>
-              Get Current Location
-            </button>
+        <div class="form-check-group">
+          <div class="form-check">
+            <input type="checkbox" id="isDefault" formControlName="isDefault" class="form-check-input">
+            <label for="isDefault" class="form-check-label">Set as Default Address</label>
           </div>
-
-          <div class="form-group">
-            <label class="checkbox-label">
-              <input
-                type="checkbox"
-                [(ngModel)]="addressForm.isDefault"
-                name="isDefault"
-                [disabled]="isAddingAddress">
-              <span class="checkmark"></span>
-              Set as default address
-            </label>
+          <div class="form-check">
+            <input type="checkbox" id="isActive" formControlName="isActive" class="form-check-input">
+            <label for="isActive" class="form-check-label">Address is Active</label>
           </div>
-        </form>
-      </div>
+        </div>
 
-      <div class="modal-footer">
-        <button
-          type="button"
-          class="btn btn-outline"
-          (click)="onCancelAddAddress()"
-          [disabled]="isAddingAddress">
-          Cancel
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="isEditAddressMode ? onUpdateAddress() : onSaveAddress()"
-          [disabled]="isAddingAddress">
-          <i class="fas fa-save"></i>
-          <span *ngIf="!isAddingAddress">
-            {{ isEditAddressMode ? 'Update Address' : 'Save Address' }}
-          </span>
-          <span *ngIf="isAddingAddress">
-            {{ isEditAddressMode ? 'Updating...' : 'Adding...' }}
-          </span>
-        </button>
-      </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" (click)="toggleAddressForm()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="!addAddressForm.valid || loading">
+            <span *ngIf="loading" class="spinner-sm"></span>
+            Add Address
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

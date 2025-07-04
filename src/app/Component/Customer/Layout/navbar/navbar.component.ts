@@ -23,6 +23,10 @@ export class NavbarComponent implements OnInit {
     });
   }
 
+  goToProfile() {
+    this.router.navigate(['/client/profile']);
+  }
+
   goToLogin(): void {
     this.router.navigate(['/login']);
   }

@@ -14,7 +14,7 @@ export const clientRoutes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'profile/:id',
+        redirectTo: 'profile', 
         pathMatch: 'full'
       },
       {
@@ -23,7 +23,12 @@ export const clientRoutes: Routes = [
         title: 'Client Home'
       },
       {
-        path: 'profile/:clientId',
+        path: 'profile/:id', // Keep the parameterized route for direct access
+        component: ClientProfileComponent,
+        title: 'Client Profile'
+      },
+      {
+        path: 'profile', // Add a route for profile without ID
         component: ClientProfileComponent,
         title: 'Client Profile'
       },
