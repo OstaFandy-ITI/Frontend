@@ -13,16 +13,6 @@ export const clientRoutes: Routes = [
     component: SideNavComponent, // Use SideNavComponent as the main layout for client routes
     children: [
       {
-        path: '',
-        redirectTo: 'home',
-        pathMatch: 'full'
-      },
-      {
-        path: 'home',
-        component: HomeComponent,
-        title: 'Client Home'
-      },
-      {
         path: 'profile',
         component: ClientProfileComponent,
         title: 'Client Profile'

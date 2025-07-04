@@ -61,7 +61,6 @@ export class LoginComponent {
       next: (response: ResponseDto<string>) => {
         if (response.isSuccess && response.data) {
           this._AuthService.Login(response.data);
-          console.log('Login function called22');
           this._AuthService.CurrentUser$.subscribe((user) => {
             if (user) {
               this.toastr.success(response.message);
@@ -75,7 +74,17 @@ export class LoginComponent {
             }
           });
         } else {
-          this.toastr.error(response.message);
+          if(response.data=='Pending')
+          {
+
+          }else if(response.data=='rejected')
+          {
+
+          }else{
+            this.toastr.error(response.message);
+          }
+
+          
         }
       },
       error: (error) => {
