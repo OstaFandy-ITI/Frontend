@@ -9,7 +9,9 @@ import {
   UpdateClientProfileRequest, 
   ChangePasswordRequest, 
   ClientOrderHistory, 
-  ApiResponse 
+  ApiResponse,
+  AddAddressRequest,
+  AddAddressResponse
 } from '../../../core/models/ClientProfile.model';
 
 @Injectable({
@@ -17,6 +19,7 @@ import {
 })
 export class ClientProfileService {
   private baseUrl = `${URL.apiUrl}/ClientProfile`;
+  private addressUrl = `${URL.apiUrl}/Address`;
 
   constructor(private http: HttpClient) { }
 
@@ -46,7 +49,14 @@ export class ClientProfileService {
     );
   }
 
-  
+  addAddress(addressData: AddAddressRequest): Observable<ApiResponse<AddAddressResponse>> { 
+    return this.http.post<ApiResponse<AddAddressResponse>>( 
+      `${this.addressUrl}/CreateAddress`,
+      addressData,
+      this.getHttpOptions()
+    );
+  }
+
   getClientOrderHistory(clientId: number): Observable<ApiResponse<ClientOrderHistory>> {
     return this.http.get<ApiResponse<ClientOrderHistory>>(
       `${this.baseUrl}/GetClientOrderHistory/${clientId}`,
@@ -54,18 +64,5 @@ export class ClientProfileService {
     );
   }
 
- 
-  changePassword(
-    clientId: number,
-    passwordData: ChangePasswordRequest
-  ): Observable<ApiResponse<null>> {
-    return this.http.put<ApiResponse<null>>(
-      `${this.baseUrl}/ChangePassword/${clientId}`,
-      passwordData,
-      this.getHttpOptions()
-    );
-  }
-
   
-
 }
