@@ -1,7 +1,4 @@
 
-
-
-
 import { Component, OnInit } from '@angular/core';
 import { ChatService } from '../../Customer/services/chat.service';
 import { ChatThread, MessageDTO } from '../../../core/models/message.model';
