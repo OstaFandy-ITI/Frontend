@@ -1,0 +1,169 @@
+.chat-box {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 21rem;
+  max-height: 25rem;
+  min-height: 25rem;
+  background: #fff;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+.chat-header {
+  background: var(--blue-dark);
+  color: #fff;
+  font-weight: bold;
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-body {
+  flex: 1;
+  background: var(--light-gray);
+  padding: 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scroll-behavior: smooth;
+}
+
+.message-wrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 75%;
+}
+
+.message-wrapper.sent {
+  align-self: flex-end;
+  text-align: right;
+}
+
+.message-wrapper.received {
+  align-self: flex-start;
+  text-align: left;
+}
+
+.sender-name {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--gray);
+  margin-bottom: 2px;
+}
+
+.message-bubble {
+  border-radius: 16px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  word-break: break-word;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.message-wrapper.sent .message-bubble {
+  background-color: var(--blue-dark);
+  border-radius: 5px 15px 0 15px;
+  color: #fff;
+}
+
+.message-wrapper.sent .message-bubble:hover {
+  background-color: var(--blue-medium);
+}
+
+.message-wrapper.received .message-bubble {
+  border-radius:15px 8px 15px 0;
+  background-color: #ebebeb;
+  color: #333;
+}
+
+.message-wrapper.received .message-bubble:hover {
+  border-radius:15px 8px 15px 0;
+  background-color: var(--gray);
+  color: #333;
+}
+
+.message-bubble .timestamp {
+  align-self: flex-end;
+  font-size: 0.72rem;
+  opacity: 0.6;
+}
+
+.chat-footer {
+  background: white;
+  border-top: 1px solid var(--gray);
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+input.form-control {
+  flex: 1;
+  padding: 8px 14px;
+  border-radius: 30px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+}
+
+.send-btn {
+  background: var(--orange);
+  color: white;
+  border: none;
+  padding: 10px 12px;
+  margin-left: 8px;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.send-btn:hover {
+  background:#ff9523;
+}
+
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.typing-indicator span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: #999;
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.typing-indicator span:nth-child(1) {
+  animation-delay: 0s;
+}
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+    opacity: 0.3;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
