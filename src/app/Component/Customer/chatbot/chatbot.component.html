@@ -1,0 +1,38 @@
+<div class="chat-box shadow">
+  <div class="chat-header">
+    <span><i class="bi bi-chat-dots me-2"></i> Live Chat</span>
+    <i class="bi bi-x-lg" role="button" (click)="close()"></i>
+  </div>
+
+  <div class="chat-body" #scrollContainer>
+    <div *ngFor="let msg of chat" class="message-wrapper"
+      [ngClass]="{'sent': msg.from === 'user', 'received': msg.from === 'bot'}">
+      <div class="sender-name">
+        {{ msg.from === 'user' ? 'You' : 'Bot' }}
+      </div>
+      <div class="message-bubble">
+        <div class="content">{{ msg.text }}</div>
+        <div class="timestamp">{{ msg.time | date:'shortTime' }}</div>
+      </div>
+    </div>
+
+    <div *ngIf="isTyping" class="message-wrapper received">
+      <div class="sender-name">Bot</div>
+      <div class="message-bubble">
+        <div class="content">
+          <div class="typing-indicator">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-footer">
+    <input type="text" class="form-control" [(ngModel)]="message"
+      (keyup.enter)="sendMessage()" placeholder="Type a message..." />
+    <button class="send-btn" (click)="sendMessage()">
+      <i class="bi bi-send-fill"></i>
+    </button>
+  </div>
+</div>

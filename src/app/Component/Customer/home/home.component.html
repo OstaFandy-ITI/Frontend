@@ -316,8 +316,15 @@
 </section>
 
 
-<!-- Floating Join Us Button -->
-<a routerLink="/chatbot" class="floating-cta-btn d-flex align-items-center">
-<i class="fas fa-robot me-2"></i>Chat with us
+<!-- Floating chatbot Button -->
+<a href="javascript:void(0)" 
+   class="floating-cta-btn d-flex align-items-center" 
+   (click)="toggleChat()"
+   [class.hidden]="showChat">
+  <i class="fas fa-robot me-2"></i>Chat with us
 </a>
+
+<div class="chat-container" [class.open]="showChat" >
+  <app-chatbot *ngIf="showChat" (closed)="closeChat()"></app-chatbot>
+</div>
 <app-footer></app-footer>

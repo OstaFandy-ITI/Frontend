@@ -2,19 +2,18 @@ import { Component } from '@angular/core';
 import { CategoryService } from '../../Admin/services/Category.service';
 import { Category } from '../../../core/models/category.models';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from "../Layout/navbar/navbar.component";
+import { NavbarComponent } from '../Layout/navbar/navbar.component';
 import { Router, RouterModule } from '@angular/router';
-import { FooterComponent } from "../Layout/footer/footer.component";
+import { FooterComponent } from '../Layout/footer/footer.component';
+import { ChatbotComponent } from "../chatbot/chatbot.component";
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, NavbarComponent, RouterModule, FooterComponent],
+  imports: [CommonModule, NavbarComponent, RouterModule, FooterComponent, ChatbotComponent],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrl: './home.component.css',
 })
-
 export class HomeComponent {
-categories: Category[] = [];
- 
+  categories: Category[] = [];
 
   constructor(
     private categoryService: CategoryService,
@@ -23,14 +22,23 @@ categories: Category[] = [];
 
   ngOnInit(): void {
     this.categoryService.getAll().subscribe({
-      next: (res) => this.categories = res,
-      error: (err) => console.error('Failed to load categories', err)
+      next: (res) => (this.categories = res),
+      error: (err) => console.error('Failed to load categories', err),
     });
   }
-goToBooking(categoryId: number) {
-  this.router.navigate(['/booking'], {
-    queryParams: { categoryId }
-  });
-}
+  goToBooking(categoryId: number) {
+    this.router.navigate(['/booking'], {
+      queryParams: { categoryId },
+    });
+  }
+  //handle chatbot
+   showChat = false;
 
+  toggleChat() {
+    this.showChat = !this.showChat;
+  }
+
+  closeChat() {
+    this.showChat = false;
+  }
 }
