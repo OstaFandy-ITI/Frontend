@@ -11,10 +11,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AddressTypes } from '../../core/Shared/Enum';
 import { CategorySelect } from '../../core/models/category.models';
 import { CommonModule } from '@angular/common';
+import { NavbarComponent } from "../../Component/Customer/Layout/navbar/navbar.component";
+import { FooterComponent } from "../../Component/Customer/Layout/footer/footer.component";
 
 @Component({
   selector: 'app-handyman-registration',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, NavbarComponent, FooterComponent],
   templateUrl: './handyman-registration.component.html',
   styleUrl: './handyman-registration.component.css',
 })
