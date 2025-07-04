@@ -1,3 +1,6 @@
+<app-navbar></app-navbar>
+<div class="container-fluid" style="--bs-gutter-x: 0rem;">
+
 <div class="gradiant">
   <ng-container *ngIf="step === 1">
     <div class="container py-5">
@@ -14,12 +17,12 @@
         </div>
 
         <!-- Center Image -->
-        <div class="col-lg-4 mb-2 d-flex justify-content-center d-none d-lg-flex">
+        <div class="col-lg-4  heroimg d-flex justify-content-center d-none d-lg-flex">
           <img src="assets/handyman.png" alt="Handyman" class="handyman-img" />
         </div>
 
         <!-- Form Section -->
-        <div class="col-lg-4 d-flex justify-content-center">
+        <div class="col-lg-4 d-flex justify-content-center mb-2">
           <div class="form-card">
             <h3 class="text-center mb-4">Personal Information</h3>
             <form [formGroup]="userForm" (ngSubmit)="nextStep()">
@@ -182,3 +185,6 @@
     </div>
   </ng-container>
 </div>
+</div>
+
+<app-footer></app-footer>

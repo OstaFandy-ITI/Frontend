@@ -1,5 +1,5 @@
 .gradiant {
-  background: linear-gradient(180deg, #ffa940 0%, #ffe5b4 100%);
+background: linear-gradient(0deg, #004e98 0%, #e6f0ff 80%, #ffffff 100%);
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -16,12 +16,17 @@
 }
 .form-card {
   background: #fff;
-  padding: 30px;
-  border-radius: 15px;
+  padding: 30px;  border-radius: 15px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   width: 100%;
   max-width: 350px;
   z-index: 2;
+}
+
+.heroimg
+{
+  positionL:flex;
+  margin-top:0.68rem
 }
 
 .form-group {
