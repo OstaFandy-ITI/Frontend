@@ -12,7 +12,7 @@ import { AuthService } from "../../../../core/services/auth.service";
 })
 export class SideNavComponent {
   sidebarOpen = true;
-
+  currentClientId: number | null = null;
   constructor(private router: Router, private authService: AuthService) { }
 
   toggleSidebar() {
