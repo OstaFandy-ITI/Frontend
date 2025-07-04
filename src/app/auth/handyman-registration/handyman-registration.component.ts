@@ -44,7 +44,6 @@ export class HandymanRegistrationComponent implements OnInit {
     private registerService: RegisterService,
     private _AuthService: AuthService,
     private router: Router,
-    private _JwtService: JwtService,
     private toastr: ToastrService,
     private _CategoryService: CategoryService
   ) {
@@ -181,12 +180,13 @@ export class HandymanRegistrationComponent implements OnInit {
           if (response && response.data) {
             this._AuthService.Login(response.data);
             this.toastr.success(response.message);
+            this.router.navigate(['/handyman/pending']);
           } else {
             this.toastr.error(response.message);
           }
         },
         error: (error) => {
-          console.error('Registration error:', error);
+          this.toastr.error(error.error.message);
         },
       });
     }

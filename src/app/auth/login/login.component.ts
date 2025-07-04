@@ -73,23 +73,16 @@ export class LoginComponent {
               }
             }
           });
-        } else {
-          if(response.data=='Pending')
-          {
-
-          }else if(response.data=='rejected')
-          {
-
-          }else{
-            this.toastr.error(response.message);
-          }
-
-          
         }
       },
       error: (error) => {
-        this.toastr.error(error.error.message);
-        console.log(error.error.message);
+        if (error.error.data == "Pending") {
+            this.router.navigate(['/handyman/pending']);
+          } else if (error.error.data == 'rejected') {
+            this.router.navigate(['/handyman/rejected']);
+          } else {
+            this.toastr.error(error.error.message);
+          }
       },
     });
   }
