@@ -6,10 +6,10 @@ import { CommonModule } from '@angular/common';
 import { HandymanService } from '../../../Admin/services/handyman.service';
 import { HandymanApplication } from '../../../../core/models/Handyman.model';
 import { UserType } from '../../../../core/Shared/Enum';
-
+import {HandymanNotificationsComponent} from '../../handyman-notification/handyman-notification.component';
 @Component({
   selector: 'app-side-nav',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, HandymanNotificationsComponent],
   templateUrl: './side-nav.component.html',
   styleUrl: './side-nav.component.css',
 })
