@@ -4,52 +4,40 @@
 }
 
 .notification-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: transparent;
     border: none;
-    border-radius: 50px;
-    color: white;
-    font-size: 14px;
-    font-weight: 600;
-    padding: 12px 20px;
+    color: #333333;
+    font-size: 20px;
+    font-weight: 400;
+    padding: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
     position: relative;
 }
 
 .notification-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    color: #333333;
 }
 
 .notification-btn:active {
-    transform: translateY(0);
+    color: #333333;
 }
 
 .badge {
     position: absolute;
-    top: -5px;
-    right: -5px;
-    background: #ff4757;
-    color: white;
-    border-radius: 50%;
-    min-width: 20px;
-    height: 20px;
+    top: -8px;
+    right: -8px;
+    background: transparent;
+    color: #333333;
+    min-width: 16px;
+    height: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 12px;
-    font-weight: bold;
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+    font-weight: 700;
 }
 
 .dropdown {
@@ -537,8 +525,14 @@
     }
     
     .notification-btn {
-        padding: 10px 16px;
-        font-size: 13px;
+        padding: 6px;
+        font-size: 14px;
+    }
+    
+    .badge {
+        min-width: 14px;
+        height: 14px;
+        font-size: 10px;
     }
     
     .action-buttons {
