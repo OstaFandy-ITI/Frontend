@@ -13,7 +13,7 @@ export const handymanGuard: CanActivateFn = (route, state) => {
       if(user && user.UserType === UserType.Handyman )
         return true;
       else {
-        router.navigate(['/login']);
+        router.navigate(['/Unauthorized']);
         return false;
       }
     })

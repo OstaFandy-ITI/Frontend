@@ -7,21 +7,14 @@ import { HandymanRegistrationComponent } from './auth/handyman-registration/hand
 import { BookingWizardComponent } from './Component/Customer/booking-wizard/booking-wizard.component';
 import { ChatComponent } from './Component/Customer/chat/chat.component';
 import { handymanGuard } from './core/guards/handyman.guard';
-import { ChatListComponent } from './Component/HandyMan/chat-list/chat-list.component';
-
-import { Component } from '@angular/core';
 import { HomeComponent } from './Component/Customer/home/home.component';
-
-import { ClientProfileComponent } from './Component/Customer/client-profile/client-profile.component';
-
-import { SideNavComponent } from './Component/Customer/Layout/side-nav/side-nav.component';
-
 import { clientRoutes } from './Component/Customer/Customer.routes';
 import { customerGuard } from './core/guards/customer.guard';
 import { AboutUsComponent } from './Component/Customer/about-us/about-us.component';
 import { CareersComponent } from './Component/Customer/careers/careers.component';
 import { HandymanPendingComponent } from './Component/HandyMan/Layout/handyman-pending/handyman-pending.component';
 import { HandymanRejectedComponent } from './Component/HandyMan/Layout/handyman-rejected/handyman-rejected.component';
+import { UnauthorizedComponent } from './auth/unauthorized/unauthorized.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -29,6 +22,7 @@ export const routes: Routes = [
   { path: 'registerHamdyMan', component: HandymanRegistrationComponent },
   { path: 'handyman/pending', component: HandymanPendingComponent },
     { path: 'handyman/rejected', component: HandymanRejectedComponent },
+    {path:'Unauthorized',component:UnauthorizedComponent},
 
   {
     path: 'admin',
