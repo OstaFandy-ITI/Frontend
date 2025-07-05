@@ -69,27 +69,20 @@ export class LoginComponent {
               } else if (user.UserType === UserType.Customer) {
                 this.router.navigate(['/']);
               } else if (user.UserType === UserType.Handyman) {
-                this.router.navigate(['/handyman']);
+                this.router.navigate(['/handyman/dashboard']);
               }
             }
           });
-        } else {
-          if(response.data=='Pending')
-          {
-
-          }else if(response.data=='rejected')
-          {
-
-          }else{
-            this.toastr.error(response.message);
-          }
-
-          
         }
       },
       error: (error) => {
-        this.toastr.error(error.error.message);
-        console.log(error.error.message);
+        if (error.error.data == "Pending") {
+            this.router.navigate(['/handyman/pending']);
+          } else if (error.error.data == "Rejected") {
+            this.router.navigate(['/handyman/rejected']);
+          } else {
+            this.toastr.error(error.error.message);
+          }
       },
     });
   }
@@ -104,8 +97,8 @@ export class LoginComponent {
       next: (response: ResponseDto<string>) => {
         if (response && response.data) {
           this._AuthService.Login(response.data);
-
           this.toastr.success(response.message);
+          this.router.navigate(['/']);
         } else {
           this.toastr.error(response.message);
         }

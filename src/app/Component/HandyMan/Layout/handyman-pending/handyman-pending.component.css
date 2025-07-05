@@ -1,113 +1,112 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
-
-.pending-page {
-  height: 100vh;
-  width: 100vw;
-  position: relative;
+.pending-page-full {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--blue-dark), var(--blue-medium));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #243B55 0%, #141E30 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  color: #e1e8f7;
-  padding: 20px;
-}
-
-.overlay {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: url('https://cdn.pixabay.com/photo/2017/01/06/19/15/clock-1954774_1280.png') no-repeat center center;
-  background-size: 180px 180px;
-  opacity: 0.05;
-  pointer-events: none;
-  user-select: none;
-  animation: pulseOverlay 4s ease-in-out infinite;
-  z-index: 0;
-}
-
-@keyframes pulseOverlay {
-  0%, 100% { opacity: 0.05; }
-  50% { opacity: 0.12; }
-}
-
-.content-wrapper {
-  position: relative;
-  max-width: 520px;
+  color: var(--white);
   text-align: center;
+  overflow: hidden;
+  padding: 20px;
+  animation: fadeIn 1s ease;
+}
+
+.pending-page-full .content {
+  max-width: 800px;
+}
+
+.pending-page-full .icon-wrapper {
+  position: relative;
+  margin: 20px auto;
+}
+
+.pending-page-full .pulse-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 150px;
+  height: 150px;
+  background: var(--orange);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: pulse 2s infinite;
   z-index: 1;
+  opacity: 0.8;
 }
 
-.icon-container {
-  margin-bottom: 32px;
+.pending-page-full .icon-wrapper i {
+  font-size: 4rem;
+  color: var(--white);
+  position: relative;
+  z-index: 2;
 }
 
-.spinning-icon {
-  font-size: 120px;
-  color: #00bfff;
-  animation: spin 10s linear infinite;
-  filter: drop-shadow(0 0 8px #00bfff88);
+.pending-page-full h1 {
+  color: var(--white);
+  font-size: 2.5rem;
+  margin: 30px 0 15px;
 }
 
-@keyframes spin {
-  from { transform: rotate(0deg);}
-  to { transform: rotate(360deg);}
-}
-
-.title {
-  font-size: 3.8rem;
-  font-weight: 800;
-  margin-bottom: 18px;
-  letter-spacing: 0.04em;
-  text-shadow: 0 0 8px rgba(0, 191, 255, 0.8);
-}
-
-.description {
-  font-size: 1.25rem;
-  line-height: 1.6;
-  font-weight: 400;
-  margin-bottom: 40px;
-  color: #c3d7f5;
-}
-
-.info-box {
-  background-color: rgba(0, 191, 255, 0.12);
-  border-radius: 14px;
-  padding: 18px 28px;
-  font-weight: 600;
-  font-size: 1.05rem;
-  margin-bottom: 50px;
-  color: #00bfff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 14px;
-  box-shadow: 0 0 10px #00bfff44 inset;
-  user-select: none;
-}
-
-.info-box i {
-  font-size: 1.7rem;
-}
-
-.btn-action {
-  padding: 16px 54px;
-  font-weight: 700;
+.pending-page-full p {
   font-size: 1.2rem;
-  border-radius: 100px;
-  box-shadow: 0 10px 28px rgba(0, 191, 255, 0.5);
-  transition: all 0.3s ease;
-  cursor: pointer;
+  line-height: 1.6;
+  color: #e6e6e6;
+  margin-bottom: 30px;
 }
 
-.btn-action:hover {
-  background-color: #0099ff !important;
-  box-shadow: 0 12px 34px rgba(0, 153, 255, 0.8);
-  transform: translateY(-3px);
+.pending-page-full p span {
+  font-weight: bold;
+  color: var(--orange);
 }
 
-.btn-action:active {
-  background-color: #007acc !important;
-  box-shadow: none;
-  transform: translateY(0);
+.pending-page-full .info-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--white);
+  padding: 12px 20px;
+  border-radius: 50px;
+  font-size: 1rem;
+  margin-bottom: 30px;
+}
+
+.pending-page-full .loader-bar {
+  width: 60%;
+  max-width: 300px;
+  height: 6px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 0 auto;
+  position: relative;
+}
+
+.pending-page-full .loader-bar::before {
+  content: '';
+  position: absolute;
+  width: 40%;
+  height: 100%;
+  background: var(--orange);
+  animation: slide 2s infinite ease-in-out;
+  border-radius: 3px;
+}
+
+@keyframes pulse {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+  50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.6; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+}
+
+@keyframes slide {
+  0% { left: -40%; }
+  50% { left: 30%; }
+  100% { left: 100%; }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
