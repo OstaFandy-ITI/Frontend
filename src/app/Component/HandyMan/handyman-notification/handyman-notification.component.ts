@@ -31,9 +31,7 @@ showNotifications: boolean = false;
     
     this.handymanNotificationService.startConnection(this.handymanUserId);
     this.setupSignalRListeners();
-       setTimeout(() => {
-      this.showNotificationToast('System', 'Handyman dashboard loaded successfully', 'success');
-    }, 1000);
+
   }
 
   ngOnDestroy(): void {
