@@ -69,7 +69,7 @@ export class LoginComponent {
               } else if (user.UserType === UserType.Customer) {
                 this.router.navigate(['/']);
               } else if (user.UserType === UserType.Handyman) {
-                this.router.navigate(['/handyman']);
+                this.router.navigate(['/handyman/dashboard']);
               }
             }
           });
@@ -97,8 +97,8 @@ export class LoginComponent {
       next: (response: ResponseDto<string>) => {
         if (response && response.data) {
           this._AuthService.Login(response.data);
-
           this.toastr.success(response.message);
+          this.router.navigate(['/']);
         } else {
           this.toastr.error(response.message);
         }
