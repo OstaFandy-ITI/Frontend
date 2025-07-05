@@ -83,7 +83,7 @@
               <div class="form-group">
                 <i class="bi bi-briefcase form-icon"></i>
                 <select class="form-control" formControlName="SpecializationId">
-                  <option value="" disabled selected>Choose Your Speciality</option>
+                  <option [ngValue]="null" selected disabled  hidden >Choose Your Speciality</option>
                   <option *ngFor="let item of CategoryItem" [value]="item.id">{{ item.name }}</option>
                 </select>
               </div>
