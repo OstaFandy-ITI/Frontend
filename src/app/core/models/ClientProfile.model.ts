@@ -97,6 +97,19 @@ export interface Booking {
   review: any;
 }
 
+export interface ClientQuote {
+  quoteId: number;
+  bookingId: number;
+  handymanName: string;
+  price: number;
+  notes: string;
+  status: string;
+  createdAt: string;
+  bookingDate: string;
+  services: string[];
+  categoryName: string;
+}
+
 export interface ClientProfileApiResponse extends ClientProfile {}
 export interface ClientProfileResponse extends ApiResponse<ClientProfile> {}
 export interface ClientProfileService {
