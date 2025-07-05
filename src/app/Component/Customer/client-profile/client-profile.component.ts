@@ -44,6 +44,9 @@ export class ClientProfileComponent implements OnInit {
 
   clientId: number = 0;
 
+  loadingLocation = false;
+  locationError: string | null = null;
+
   constructor(
     private clientProfileService: ClientProfileService,
     private addressService: AddressService,
@@ -74,7 +77,7 @@ export class ClientProfileComponent implements OnInit {
 
     this.addAddressForm = this.fb.group({
       address: ['', [Validators.required, Validators.minLength(5)]],
-      city: ['', [Validators.required, Validators.minLength(2)]],
+      city: ['', Validators.required], // Updated: removed minlength validator since it's now a dropdown
       latitude: ['', [Validators.required, Validators.min(-90), Validators.max(90)]],
       longitude: ['', [Validators.required, Validators.min(-180), Validators.max(180)]],
       addressType: ['Home', Validators.required],
@@ -123,6 +126,82 @@ export class ClientProfileComponent implements OnInit {
     });
   }
 
+  getCurrentLocation(): void {
+    if (!navigator.geolocation) {
+      this.locationError = 'Geolocation is not supported by this browser.';
+      this.error = this.locationError;
+      return;
+    }
+
+    this.loadingLocation = true;
+    this.locationError = null;
+    this.error = null;
+
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 60000
+    };
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        
+        // Update the form with the coordinates
+        this.addAddressForm.patchValue({
+          latitude: latitude,
+          longitude: longitude
+        });
+        
+        this.loadingLocation = false;
+        this.successMessage = 'Location coordinates updated successfully!';
+        
+        // // Optional: Try to reverse geocode to get address
+        // this.reverseGeocodeLocation(latitude, longitude);
+      },
+      (error) => {
+        this.loadingLocation = false;
+        let errorMessage = 'Unable to get your location. ';
+        
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage += 'Location access denied by user.';
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage += 'Location information is unavailable.';
+            break;
+          case error.TIMEOUT:
+            errorMessage += 'Location request timed out.';
+            break;
+          default:
+            errorMessage += 'An unknown error occurred.';
+            break;
+        }
+        
+        this.locationError = errorMessage;
+        this.error = errorMessage;
+      },
+      options
+    );
+  }
+
+  toggleAddressForm(): void {
+    this.showAddressForm = !this.showAddressForm;
+    this.error = null;
+    this.successMessage = null;
+    this.locationError = null;
+    this.loadingLocation = false;
+
+    if (!this.showAddressForm) {
+      this.addAddressForm.reset({
+        addressType: 'Home',
+        isDefault: false,
+        isActive: true
+      });
+    }
+  }
+
   private populateUpdateForm(): void {
     if (this.clientProfile) {
       this.updateProfileForm.patchValue({
@@ -144,19 +223,19 @@ export class ClientProfileComponent implements OnInit {
     }
   }
 
-  toggleAddressForm(): void {
-    this.showAddressForm = !this.showAddressForm;
-    this.error = null;
-    this.successMessage = null;
+  // toggleAddressForm(): void {
+  //   this.showAddressForm = !this.showAddressForm;
+  //   this.error = null;
+  //   this.successMessage = null;
 
-    if (!this.showAddressForm) {
-      this.addAddressForm.reset({
-        addressType: 'Home',
-        isDefault: false,
-        isActive: true
-      });
-    }
-  }
+  //   if (!this.showAddressForm) {
+  //     this.addAddressForm.reset({
+  //       addressType: 'Home',
+  //       isDefault: false,
+  //       isActive: true
+  //     });
+  //   }
+  // }
 
   onUpdateProfile(): void {
     if (this.updateProfileForm.valid && !this.loading) {
