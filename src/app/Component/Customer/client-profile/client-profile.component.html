@@ -259,61 +259,38 @@
           </div>
         </div>
 
+        
         <div class="form-group">
           <label for="city">City *</label>
-          <input
-            type="text"
-            id="city"
-            formControlName="city"
+          <select 
+            id="city" 
+            formControlName="city" 
             class="form-control"
-            placeholder="Enter city"
-            [class.is-invalid]="hasError('address', 'city', 'required') || hasError('address', 'city', 'minlength')">
+            [class.is-invalid]="hasError('address', 'city', 'required')">
+            <option value="" disabled>Select a city</option>
+            <option value="Cairo">Cairo</option>
+            <option value="Alexandria">Alexandria</option>
+            <option value="Mansoura">Mansoura</option>
+          </select>
           <div *ngIf="hasError('address', 'city', 'required')" class="invalid-feedback">
             City is required
           </div>
-          <div *ngIf="hasError('address', 'city', 'minlength')" class="invalid-feedback">
-            City must be at least 2 characters
-          </div>
         </div>
 
-        <div class="form-row">
-          <div class="col-md-6">
-            <div class="form-group">
-              <label for="latitude">Latitude *</label>
-              <input
-                type="number"
-                id="latitude"
-                formControlName="latitude"
-                class="form-control"
-                step="any"
-                placeholder="e.g., 40.7128"
-                [class.is-invalid]="hasError('address', 'latitude', 'required') || hasError('address', 'latitude', 'min') || hasError('address', 'latitude', 'max')">
-              <div *ngIf="hasError('address', 'latitude', 'required')" class="invalid-feedback">
-                Latitude is required
-              </div>
-              <div *ngIf="hasError('address', 'latitude', 'min') || hasError('address', 'latitude', 'max')" class="invalid-feedback">
-                Latitude must be between -90 and 90
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="form-group">
-              <label for="longitude">Longitude *</label>
-              <input
-                type="number"
-                id="longitude"
-                formControlName="longitude"
-                class="form-control"
-                step="any"
-                placeholder="e.g., -74.0060"
-                [class.is-invalid]="hasError('address', 'longitude', 'required') || hasError('address', 'longitude', 'min') || hasError('address', 'longitude', 'max')">
-              <div *ngIf="hasError('address', 'longitude', 'required')" class="invalid-feedback">
-                Longitude is required
-              </div>
-              <div *ngIf="hasError('address', 'longitude', 'min') || hasError('address', 'longitude', 'max')" class="invalid-feedback">
-                Longitude must be between -180 and 180
-              </div>
-            </div>
+        <div class="form-group">
+          <div class="geolocation-section">
+            <button 
+              type="button" 
+              class="btn btn-location" 
+              (click)="getCurrentLocation()"
+              [disabled]="loadingLocation">
+              <span *ngIf="loadingLocation" class="spinner-sm"></span>
+              <i *ngIf="!loadingLocation" class="fas fa-map-marker-alt"></i>
+              {{ loadingLocation ? 'Getting Location...' : 'Use My Current Location' }}
+            </button>
+            <small class="location-help-text">
+              Click to automatically fill latitude and longitude with your current location
+            </small>
           </div>
         </div>
 
@@ -321,10 +298,6 @@
           <div class="form-check">
             <input type="checkbox" id="isDefault" formControlName="isDefault" class="form-check-input">
             <label for="isDefault" class="form-check-label">Set as Default Address</label>
-          </div>
-          <div class="form-check">
-            <input type="checkbox" id="isActive" formControlName="isActive" class="form-check-input">
-            <label for="isActive" class="form-check-label">Address is Active</label>
           </div>
         </div>
 

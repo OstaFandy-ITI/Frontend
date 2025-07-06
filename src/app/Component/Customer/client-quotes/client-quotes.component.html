@@ -1,1 +1,142 @@
-<p>client-quotes works!</p>
+<div class="quotes-container">
+  <!-- Font Awesome CDN for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <div class="header">
+    <h1 class="page-title">My Quotes</h1>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Loading your quotes...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !isLoading" class="error-container">
+    <div class="error-icon">
+      <i class="fas fa-exclamation-triangle"></i>
+    </div>
+    <p class="error-message">{{ errorMessage }}</p>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !errorMessage && quotes.length === 0" class="empty-state">
+    <div class="empty-icon">
+      <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <h3>No quotes found</h3>
+    <p>You don't have any quotes yet. Contact us to get started!</p>
+  </div>
+
+  <!-- Quotes List -->
+  <div class="quotes-list" *ngIf="!isLoading && !errorMessage && quotes.length > 0">
+    <div *ngFor="let quote of quotes; trackBy: trackByQuoteId" class="quote-card"
+         [ngClass]="{
+           'status-border-left-approved': quote.status === 'Approved',
+           'status-border-left-pending': quote.status === 'Pending',
+           'status-border-left-rejected': quote.status === 'Rejected',
+           'status-border-left-completed': quote.status === 'Completed'
+         }">
+      
+      <!-- Quote Header -->
+      <div class="quote-header">
+        <div class="quote-info">
+          <h3 class="quote-title">Quote #{{ quote.bookingId }}</h3>
+          <span class="quote-status"
+                [ngClass]="{
+                  'status-approved': quote.status === 'Approved',
+                  'status-pending': quote.status === 'Pending',
+                  'status-rejected': quote.status === 'Rejected',
+                  'status-completed': quote.status === 'Completed'
+                }">
+            {{ quote.status }}
+          </span>
+        </div>
+        <div class="quote-date">
+          <span class="date-label">Created:</span>
+          <span class="date-value">{{ formatDate(quote.createdAt) }}</span>
+        </div>
+      </div>
+
+      <!-- Quote Body -->
+      <div class="quote-body">
+        <div class="quote-details">
+          <div class="detail-row">
+            <i class="fas fa-user detail-icon"></i>
+            <div>
+              <span class="detail-label">Handyman</span>
+              <span class="detail-value">{{ quote.handymanName || 'N/A' }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <i class="fas fa-tags detail-icon"></i>
+            <div>
+              <span class="detail-label">Category</span>
+              <span class="detail-value">{{ quote.categoryName || 'N/A' }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <i class="fas fa-tools detail-icon"></i>
+            <div>
+              <span class="detail-label">Services</span>
+              <span class="detail-value">{{ quote.services.join(', ') || 'N/A' }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <i class="fas fa-calendar-alt detail-icon"></i>
+            <div>
+              <span class="detail-label">Booking Date</span>
+              <span class="detail-value">{{ formatDate(quote.bookingDate) || 'N/A' }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row" *ngIf="quote.notes">
+            <i class="fas fa-sticky-note detail-icon"></i>
+            <div>
+              <span class="detail-label">Notes</span>
+              <span class="detail-value">{{ quote.notes }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quote Pricing -->
+        <div class="quote-pricing">
+          <div class="price-container">
+            <span class="price-label">
+              <i class="fas fa-money-bill-wave me-2"></i>
+              Quote Price:
+            </span>
+            <span class="price-value">${{ quote.price || '0.00' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quote Actions -->
+      <div class="quote-actions" *ngIf="quote.status === 'Pending'">
+        <button class="btn btn-approve" type="button">
+          <i class="fas fa-check btn-icon"></i>
+          Approve 
+        </button>
+        <button class="btn btn-dismiss" type="button">
+          <i class="fas fa-times btn-icon"></i>
+          Dismiss 
+        </button>
+      </div>
+
+      <!-- Quote Footer -->
+      <div class="quote-footer">
+        <div class="footer-info">
+          <span class="updated-label">
+            <i class="fas fa-hashtag me-1"></i>
+            Quote ID:
+          </span>
+          <span class="updated-value">#{{ quote.quoteId }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
