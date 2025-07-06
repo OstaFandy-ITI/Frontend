@@ -1,3 +1,145 @@
+<!-- <div class="quotes-container">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <div class="header">
+    <h1 class="page-title">My Quotes</h1>
+  </div>
+
+
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Loading your quotes...</p>
+  </div>
+
+
+  <div *ngIf="errorMessage && !isLoading" class="error-container">
+    <div class="error-icon">
+      <i class="fas fa-exclamation-triangle"></i>
+    </div>
+    <p class="error-message">{{ errorMessage }}</p>
+  </div>
+
+
+  <div *ngIf="!isLoading && !errorMessage && quotes.length === 0" class="empty-state">
+    <div class="empty-icon">
+      <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <h3>No quotes found</h3>
+    <p>You don't have any quotes yet. Contact us to get started!</p>
+  </div>
+
+
+  <div class="quotes-list" *ngIf="!isLoading && !errorMessage && quotes.length > 0">
+    <div *ngFor="let quote of quotes; trackBy: trackByQuoteId" class="quote-card"
+         [ngClass]="{
+           'status-border-left-approved': quote.status === 'Approved',
+           'status-border-left-pending': quote.status === 'Pending',
+           'status-border-left-rejected': quote.status === 'Rejected',
+           'status-border-left-completed': quote.status === 'Completed'
+         }">
+      
+
+      <div class="quote-header">
+        <div class="quote-info">
+          <h3 class="quote-title">Quote #{{ quote.bookingId }}</h3>
+          <span class="quote-status"
+                [ngClass]="{
+                  'status-approved': quote.status === 'Approved',
+                  'status-pending': quote.status === 'Pending',
+                  'status-rejected': quote.status === 'Rejected',
+                  'status-completed': quote.status === 'Completed'
+                }">
+            {{ quote.status }}
+          </span>
+        </div>
+        <div class="quote-date">
+          <span class="date-label">Created:</span>
+          <span class="date-value">{{ formatDate(quote.createdAt) }}</span>
+        </div>
+      </div>
+
+
+      <div class="quote-body">
+        <div class="quote-details">
+          <div class="detail-row">
+            <i class="fas fa-user detail-icon"></i>
+            <div>
+              <span class="detail-label">Handyman</span>
+              <span class="detail-value">{{ quote.handymanName || 'N/A' }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <i class="fas fa-tags detail-icon"></i>
+            <div>
+              <span class="detail-label">Category</span>
+              <span class="detail-value">{{ quote.categoryName || 'N/A' }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <i class="fas fa-tools detail-icon"></i>
+            <div>
+              <span class="detail-label">Services</span>
+              <span class="detail-value">{{ quote.services.join(', ') || 'N/A' }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row">
+            <i class="fas fa-calendar-alt detail-icon"></i>
+            <div>
+              <span class="detail-label">Booking Date</span>
+              <span class="detail-value">{{ formatDate(quote.bookingDate) || 'N/A' }}</span>
+            </div>
+          </div>
+
+          <div class="detail-row" *ngIf="quote.notes">
+            <i class="fas fa-sticky-note detail-icon"></i>
+            <div>
+              <span class="detail-label">Notes</span>
+              <span class="detail-value">{{ quote.notes }}</span>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="quote-pricing">
+          <div class="price-container">
+            <span class="price-label">
+              <i class="fas fa-money-bill-wave me-2"></i>
+              Quote Price:
+            </span>
+            <span class="price-value">${{ quote.price || '0.00' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="quote-actions" *ngIf="quote.status === 'Pending'">
+        <button class="btn btn-approve" type="button">
+          <i class="fas fa-check btn-icon"></i>
+          Approve 
+        </button>
+        <button class="btn btn-dismiss" type="button">
+          <i class="fas fa-times btn-icon"></i>
+          Dismiss 
+        </button>
+      </div>
+
+      <div class="quote-footer">
+        <div class="footer-info">
+          <span class="updated-label">
+            <i class="fas fa-hashtag me-1"></i>
+            Quote ID:
+          </span>
+          <span class="updated-value">#{{ quote.quoteId }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+
 <div class="quotes-container">
   <!-- Font Awesome CDN for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -117,13 +259,23 @@
 
       <!-- Quote Actions -->
       <div class="quote-actions" *ngIf="quote.status === 'Pending'">
-        <button class="btn btn-approve" type="button">
+        <button class="btn btn-approve" 
+                type="button" 
+                (click)="approveQuote(quote)"
+                [disabled]="processingQuote">
           <i class="fas fa-check btn-icon"></i>
-          Approve 
+          <span *ngIf="!processingQuote">Approve</span>
+          <span *ngIf="processingQuote && selectedQuoteId === quote.quoteId">Processing...</span>
+          <span *ngIf="processingQuote && selectedQuoteId !== quote.quoteId">Approve</span>
         </button>
-        <button class="btn btn-dismiss" type="button">
+        <button class="btn btn-dismiss" 
+                type="button" 
+                (click)="rejectQuote(quote)"
+                [disabled]="processingQuote">
           <i class="fas fa-times btn-icon"></i>
-          Dismiss 
+          <span *ngIf="!processingQuote">Reject</span>
+          <span *ngIf="processingQuote && selectedQuoteId === quote.quoteId">Processing...</span>
+          <span *ngIf="processingQuote && selectedQuoteId !== quote.quoteId">Reject</span>
         </button>
       </div>
 
@@ -139,4 +291,133 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- Date Picker Modal for Quote Approval -->
+<div class="modal-overlay" *ngIf="showDatePicker" (click)="closeAllModals()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Approve Quote - Select Date</h3>
+            <button class="close-btn" (click)="closeAllModals()">&times;</button>
+        </div>
+        
+        <div class="modal-body" *ngIf="selectedQuote">
+            <div class="quote-details">
+                <h4>Quote Details</h4>
+                <p><strong>Handyman:</strong> {{ selectedQuote.handymanName }}</p>
+                <p><strong>Price:</strong> ${{ selectedQuote.price | number:'1.2-2' }}</p>
+                <p><strong>Estimated Time:</strong> {{ selectedQuote.estimatedMinutes }} minutes</p>
+                <p><strong>Notes:</strong> {{ selectedQuote.notes }}</p>
+            </div>
+            
+            <div class="date-selection">
+                <h4>Select Preferred Date</h4>
+                <input 
+                    type="date" 
+                    [(ngModel)]="selectedDate" 
+                    [min]="minDate.split('T')[0]"
+                    class="date-input">
+            </div>
+        </div>
+        
+        <div class="modal-footer">
+            <button 
+                class="confirm-btn" 
+                (click)="onDateSelected()"
+                [disabled]="loadingTimeSlots || !selectedDate">
+                <span *ngIf="!loadingTimeSlots">Next: Select Time</span>
+                <span *ngIf="loadingTimeSlots">Loading Available Times...</span>
+            </button>
+            <button class="cancel-btn" (click)="closeAllModals()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Time Slot Selection Modal -->
+<div class="modal-overlay" *ngIf="showTimeSlots" (click)="closeAllModals()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Select Available Time Slot</h3>
+            <button class="close-btn" (click)="closeAllModals()">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+            <div class="selected-info">
+                <p><strong>Selected Date:</strong> {{ selectedDate | date:'mediumDate' }}</p>
+                <p><strong>Duration:</strong> {{ selectedQuote?.estimatedMinutes }} minutes</p>
+            </div>
+            
+            <div class="time-slots-container">
+                <h4>Available Time Slots</h4>
+                <div *ngIf="availableTimeSlots.length === 0" class="no-slots">
+                    No available time slots found for this date.
+                </div>
+                
+                <div class="time-slots-grid" *ngIf="availableTimeSlots.length > 0">
+                    <button 
+                        *ngFor="let slot of availableTimeSlots"
+                        class="time-slot-btn"
+                        [class.selected]="selectedTime === slot.startTime"
+                        (click)="selectedTime = slot.startTime">
+                        {{ slot.startTime }} - {{ slot.endTime }}
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal-footer">
+            <button 
+                class="confirm-btn" 
+                (click)="confirmQuoteApproval()"
+                [disabled]="processingQuote || !selectedTime">
+                <span *ngIf="!processingQuote">Confirm Booking</span>
+                <span *ngIf="processingQuote">Creating Booking...</span>
+            </button>
+            <button class="back-btn" (click)="goBackToDatePicker()">Back to Date</button>
+            <button class="cancel-btn" (click)="closeAllModals()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Rejection Confirmation Modal -->
+<div class="modal-overlay" *ngIf="showRejectModal" (click)="closeAllModals()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Reject Quote</h3>
+            <button class="close-btn" (click)="closeAllModals()">&times;</button>
+        </div>
+        
+        <div class="modal-body" *ngIf="selectedQuote">
+            <div class="confirmation-message">
+                <i class="fas fa-exclamation-triangle warning-icon"></i>
+                <p>Are you sure you want to reject this quote?</p>
+                <div class="quote-summary">
+                    <p><strong>Quote ID:</strong> #{{ selectedQuote.quoteId }}</p>
+                    <p><strong>Handyman:</strong> {{ selectedQuote.handymanName }}</p>
+                    <p><strong>Price:</strong> ${{ selectedQuote.price | number:'1.2-2' }}</p>
+                </div>
+            </div>
+            
+            <!-- <div class="rejection-reason">
+                <h4>Reason for Rejection (Optional)</h4>
+                <textarea 
+                    [(ngModel)]="rejectionReason" 
+                    placeholder="Enter reason for rejecting this quote..."
+                    class="reason-textarea"
+                    rows="3">
+                </textarea>
+            </div> -->
+        </div>
+        
+        <div class="modal-footer">
+            <button 
+                class="confirm-btn reject-confirm" 
+                (click)="confirmQuoteRejection()"
+                [disabled]="processingQuote">
+                <span *ngIf="!processingQuote">Confirm Rejection</span>
+                <span *ngIf="processingQuote">Processing...</span>
+            </button>
+            <button class="cancel-btn" (click)="closeAllModals()">Cancel</button>
+        </div>
+    </div>
 </div>
