@@ -127,6 +127,14 @@
         </button>
       </div>
 
+      <!-- Review Action  -->
+      <div class="quote-actions review-action" *ngIf="quote.status === 'Accepted'">
+        <button class="btn btn-review" type="button" (click)="openReviewModal(quote.bookingId)">
+          <i class="fas fa-star btn-icon"></i>
+          Add Review
+        </button>
+      </div>
+      
       <!-- Quote Footer -->
       <div class="quote-footer">
         <div class="footer-info">
@@ -139,4 +147,50 @@
       </div>
     </div>
   </div>
+  <!-- Review Modal - NEW -->
+  <div class="modal-overlay" *ngIf="showReviewModal" (click)="closeReviewModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Add Review</h3>
+        <button class="close-btn" (click)="closeReviewModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="rating-section">
+          <label>Rating:</label>
+          <div class="stars-container">
+            <i *ngFor="let star of [1,2,3,4,5]" 
+               class="fas fa-star star-icon"
+               [class.selected]="star <= selectedRating"
+               (click)="selectRating(star)">
+            </i>
+          </div>
+        </div>
+        
+        <div class="comment-section">
+          <label for="reviewComment">Comment (Optional):</label>
+          <textarea 
+            id="reviewComment"
+            [(ngModel)]="reviewComment"
+            placeholder="Share your experience..."
+            rows="4"
+            maxlength="500">
+          </textarea>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-cancel" (click)="closeReviewModal()">Cancel</button>
+        <button class="btn btn-submit" 
+                [disabled]="selectedRating === 0 || isSubmittingReview"
+                (click)="submitReview()">
+          <i class="fas fa-spinner fa-spin" *ngIf="isSubmittingReview"></i>
+          Submit Review
+        </button>
+      </div>
+    </div>
+  </div>
+
 </div>
