@@ -1,9 +1,10 @@
 
 <div class="notification-container">
-    <button class="notification-btn" (click)="toggleDropdown()">
-        <i class="bi bi-bell-fill"></i>
-        <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
-    </button>
+    <button class="icon-btn notification" (click)="toggleDropdown()">
+  <i class="bi bi-bell-fill"></i>
+  <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+</button>
+
     
     <div class="dropdown" *ngIf="isDropdownOpen">
         <div class="dropdown-content">
