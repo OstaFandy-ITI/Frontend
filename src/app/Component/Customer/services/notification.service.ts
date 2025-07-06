@@ -39,17 +39,17 @@ public startConnection(userId: number): void {
         });
 }
 
- public onQuoteUpdate(callback: (data: any) => void): void {
-    this.hubConnection?.on('ReceiveNotification', callback);
-}
+//  public onQuoteUpdate(callback: (data: any) => void): void {
+//     this.hubConnection?.on('ReceiveNotification', callback);
+// }
 
 public onJobUpdate(callback: (jobId: number, status: string) => void): void {
     this.hubConnection?.on('ReceiveJobStatusUpdate', callback);
 }
 
-public onQuoteResponse(callback: (quoteId: number, action: string) => void): void {
-    this.hubConnection?.on('ReceiveQuoteResponse', callback);
-}
+// public onQuoteResponse(callback: (quoteId: number, action: string) => void): void {
+//     this.hubConnection?.on('ReceiveQuoteResponse', callback);
+// }
 
 public stopConnection(): void {
     if (this.hubConnection) {
@@ -81,54 +81,55 @@ public stopConnection(): void {
     });
   }
 
-  approveQuoteStatus(jobId: number, approvedStatus: string, clientUserId: number): Observable<any> {
-    return this.http.put(`${this.baseUrl}/ClientPage/new/ApproveQuoteStatusChange`, null, {
-      params: {
-        jobId: jobId.toString(),
-        approvedStatus: approvedStatus,
-        clientUserId: clientUserId.toString()
-      }
-    });
-  }
+  // approveQuoteStatus(jobId: number, approvedStatus: string, clientUserId: number): Observable<any> {
+  //   return this.http.put(`${this.baseUrl}/ClientPage/new/ApproveQuoteStatusChange`, null, {
+  //     params: {
+  //       jobId: jobId.toString(),
+  //       approvedStatus: approvedStatus,
+  //       clientUserId: clientUserId.toString()
+  //     }
+  //   });
+  // }
   
   markNotificationAsRead(notificationId: number): Observable<any> {
     return this.http.put(`${this.baseUrl}/new/MarkAsRead/${notificationId}`, {});
   }
 
-processQuoteResponse(quoteResponse: QuoteResponseDTO): Observable<any> {
-    console.log('Processing quote response:', quoteResponse);
+// processQuoteResponse(quoteResponse: QuoteResponseDTO): Observable<any> {
+//     console.log('Processing quote response:', quoteResponse);
     
-    return this.http.post(`${this.baseUrl}/HandymanJobs/quote-response`, quoteResponse).pipe(
-        map(response => {
-            console.log('Quote response result:', response);
-            return response;
-        })
-    );
-}
+//     return this.http.post(`${this.baseUrl}/HandymanJobs/quote-response`, quoteResponse).pipe(
+//         map(response => {
+//             console.log('Quote response result:', response);
+//             return response;
+//         })
+//     );
+// }
 
-getQuoteByJobId(jobId: number): Observable<any> {
-    console.log('Fetching quote details for job ID:', jobId);
-    return this.http.get<any>(`${this.baseUrl}/HandymanJobs/quote-details/${jobId}`).pipe(
-        map(quote => {
-            console.log('Received quote data:', quote);
-            return quote;
-        })
-    );
-}
+// getQuoteByJobId(jobId: number): Observable<any> {
+//     console.log('Fetching quote details for job ID:', jobId);
+//     return this.http.get<any>(`${this.baseUrl}/HandymanJobs/quote-details/${jobId}`).pipe(
+//         map(quote => {
+//             console.log('Received quote data:', quote);
+//             return quote;
+//         })
+//     );
+// }
 
-getAvailableTimeSlots(handymanId: number, date: Date, estimatedMinutes: number): Observable<any[]> {
-    const params = {
-        handymanId: handymanId.toString(),
-        day: date.toISOString(),
-        estimatedMinutes: estimatedMinutes.toString()
-    };
-    console.log('Fetching time slots with params:', params);
-    return this.http.get<any[]>(`${this.baseUrl}/ClientPage/GetAvailableTimeSlotForHandyman`, {
-        params: params
-    }).pipe(
-        map(slots => {
-            console.log('Received time slots:', slots);
-            return slots || [];
-        })
-    );
-}}
+// getAvailableTimeSlots(handymanId: number, date: Date, estimatedMinutes: number): Observable<any[]> {
+//     const params = {
+//         handymanId: handymanId.toString(),
+//         day: date.toISOString(),
+//         estimatedMinutes: estimatedMinutes.toString()
+//     };
+//     console.log('Fetching time slots with params:', params);
+//     return this.http.get<any[]>(`${this.baseUrl}/ClientPage/GetAvailableTimeSlotForHandyman`, {
+//         params: params
+//     }).pipe(
+//         map(slots => {
+//             console.log('Received time slots:', slots);
+//             return slots || [];
+//         })
+//     );
+// }
+}
