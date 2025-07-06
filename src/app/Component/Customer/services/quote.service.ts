@@ -52,16 +52,6 @@ public stopConnection(): void {
     }
 }
 
-  approveQuoteStatus(jobId: number, approvedStatus: string, clientUserId: number): Observable<any> {
-    return this.http.put(`${this.baseUrl}/ClientPage/new/ApproveQuoteStatusChange`, null, {
-      params: {
-        jobId: jobId.toString(),
-        approvedStatus: approvedStatus,
-        clientUserId: clientUserId.toString()
-      }
-    });
-  }
-
   processQuoteResponse(quoteResponse: QuoteResponseDTO): Observable<any> {
     console.log('Processing quote response:', quoteResponse);
     
