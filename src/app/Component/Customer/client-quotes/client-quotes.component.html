@@ -1,18 +1,23 @@
 <div class="quotes-container">
-  <!-- Font Awesome CDN for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <div class="header">
     <h1 class="page-title">My Quotes</h1>
   </div>
 
-  <!-- Loading State -->
+  <div class="filter-container" *ngIf="!isLoading && !errorMessage && quotes.length > 0">
+    <label for="serviceFilter">Filter by Service:</label>
+    <select id="serviceFilter" [(ngModel)]="selectedService" (change)="applyFilter()">
+      <option value="">All</option>
+      <option *ngFor="let service of availableServices" [value]="service">{{ service }}</option>
+    </select>
+  </div>
+
   <div *ngIf="isLoading" class="loading-container">
     <div class="loading-spinner"></div>
     <p class="loading-text">Loading your quotes...</p>
   </div>
 
-  <!-- Error State -->
   <div *ngIf="errorMessage && !isLoading" class="error-container">
     <div class="error-icon">
       <i class="fas fa-exclamation-triangle"></i>
@@ -20,18 +25,16 @@
     <p class="error-message">{{ errorMessage }}</p>
   </div>
 
-  <!-- Empty State -->
-  <div *ngIf="!isLoading && !errorMessage && quotes.length === 0" class="empty-state">
+  <div *ngIf="!isLoading && !errorMessage && filteredQuotes.length === 0" class="empty-state">
     <div class="empty-icon">
       <i class="fas fa-file-invoice-dollar"></i>
     </div>
     <h3>No quotes found</h3>
-    <p>You don't have any quotes yet. Contact us to get started!</p>
+    <p>You don't have any quotes yet or no quotes match your current filter. Contact us to get started!</p>
   </div>
 
-  <!-- Quotes List -->
-  <div class="quotes-list" *ngIf="!isLoading && !errorMessage && quotes.length > 0">
-    <div *ngFor="let quote of quotes; trackBy: trackByQuoteId" class="quote-card"
+  <div class="quotes-list" *ngIf="!isLoading && !errorMessage && filteredQuotes.length > 0">
+    <div *ngFor="let quote of pagedQuotes(); trackBy: trackByQuoteId" class="quote-card"
          [ngClass]="{
            'status-border-left-approved': quote.status === 'Approved',
            'status-border-left-pending': quote.status === 'Pending',
@@ -39,7 +42,6 @@
            'status-border-left-completed': quote.status === 'Completed'
          }">
       
-      <!-- Quote Header -->
       <div class="quote-header">
         <div class="quote-info">
           <h3 class="quote-title">Quote #{{ quote.bookingId }}</h3>
@@ -59,7 +61,6 @@
         </div>
       </div>
 
-      <!-- Quote Body -->
       <div class="quote-body">
         <div class="quote-details">
           <div class="detail-row">
@@ -103,7 +104,6 @@
           </div>
         </div>
 
-        <!-- Quote Pricing -->
         <div class="quote-pricing">
           <div class="price-container">
             <span class="price-label">
@@ -115,7 +115,6 @@
         </div>
       </div>
 
-      <!-- Quote Actions -->
       <div class="quote-actions" *ngIf="quote.status === 'Pending'">
         <button class="btn btn-approve" type="button">
           <i class="fas fa-check btn-icon"></i>
@@ -127,7 +126,6 @@
         </button>
       </div>
 
-      <!-- Quote Footer -->
       <div class="quote-footer">
         <div class="footer-info">
           <span class="updated-label">
@@ -138,5 +136,23 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="pagination-container" *ngIf="totalPages > 1">
+    <button class="pagination-btn" 
+            (click)="prevPage()" 
+            [disabled]="currentPage === 1">
+      <i class="fas fa-chevron-left"></i>
+    </button>
+    
+    <div class="pagination-info">
+       {{ currentPage }} 
+    </div>
+    
+    <button class="pagination-btn" 
+            (click)="nextPage()" 
+            [disabled]="currentPage === totalPages">
+      <i class="fas fa-chevron-right"></i>
+    </button>
   </div>
 </div>
