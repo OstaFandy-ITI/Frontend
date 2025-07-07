@@ -1,23 +1,23 @@
 <div class="chat-list-container p-3">
   <h5 class="mb-3">💬 Active Conversations</h5>
 
-  <div class="d-flex justify-content-between align-items-center mb-3 gap-2 flex-wrap">
-    <input
-      type="text"
-      [(ngModel)]="nameFilter"
-      class="form-control w-100 w-md-auto"
-      placeholder="🔍 Search by name..."
-      (ngModelChange)="onSearchChange()"
-    />
+  <div class="d-flex gap-2 flex-column flex-md-row mb-3">
+  <input
+    type="text"
+    [(ngModel)]="nameFilter"
+    class="form-control"
+    placeholder="🔍 Search by name..."
+    (ngModelChange)="onSearchChange()"
+  />
 
-    <select
-      class="form-select w-100 w-md-auto"
-      [(ngModel)]="sort"
-      (change)="onSortChange(sort)">
-      <option value="newest">🕐 Newest First</option>
-      <option value="oldest">📜 Oldest First</option>
-    </select>
-  </div>
+  <select
+    class="form-select"
+    [(ngModel)]="sort"
+    (change)="onSortChange(sort)">
+    <option value="newest">🕐 Newest First</option>
+    <option value="oldest">📜 Oldest First</option>
+  </select>
+</div>
 
   <div *ngIf="loading" class="text-center my-4">
     <div class="spinner-border text-primary" role="status"></div>
@@ -50,8 +50,11 @@
         <small class="text-muted">{{ thread.lastMessageTime | date: 'shortTime' }}</small>
       </div>
 
-      <div class="text-muted small">
-        {{ thread.categoryName || 'Service' }} • {{ thread.bookingDate | date: 'EEE, MMM d' }}
+      <!-- <div class="text-muted small">
+        {{ thread.categoryName || 'Category' }} • {{ thread.bookingDate | date: 'EEE, MMM d' }}
+      </div> -->
+       <div class="text-muted small">
+        {{ thread.serviceName  || 'Service' }} • {{ thread.bookingDate | date: 'EEE, MMM d' }}
       </div>
 
       <div class="text-truncate mt-1" style="max-width: 95%;">
@@ -60,24 +63,6 @@
     </div>
   </div>
 
-  <!-- Pagination Controls -->
-  <!-- <div class="d-flex justify-content-center align-items-center mt-3 gap-2" *ngIf="totalItems > pageSize">
-    <button
-      class="btn btn-sm btn-outline-primary"
-      [disabled]="pageNumber === 1"
-      (click)="onPageChange(pageNumber - 1)">
-      ◀ Prev
-    </button>
-
-    <span class="text-muted small">Page {{ pageNumber }}</span>
-
-    <button
-      class="btn btn-sm btn-outline-primary"
-      [disabled]="pageNumber * pageSize >= totalItems"
-      (click)="onPageChange(pageNumber + 1)">
-      Next ▶
-    </button>
-  </div> -->
 
   <!-- Consistent Styled Pagination -->
 <div class="pagination-container" *ngIf="totalItems > pageSize">
