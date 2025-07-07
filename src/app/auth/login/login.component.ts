@@ -38,11 +38,42 @@ export class LoginComponent {
     });
 
     this.registerForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      phone: ['', Validators.required],
-      password: ['', Validators.required],
+      firstName: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(50),
+        ],
+      ],
+      lastName: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(2),
+          Validators.maxLength(50),
+        ],
+      ],
+      email: [
+        '',
+        [Validators.required, Validators.email, Validators.maxLength(100)],
+      ],
+      phone: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern(/^01[0125][0-9]{8}$/), 
+        ],
+      ],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(6),
+          Validators.maxLength(20),
+          Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/),
+        ],
+      ],
       confirmPassword: ['', Validators.required],
     });
   }
@@ -76,13 +107,13 @@ export class LoginComponent {
         }
       },
       error: (error) => {
-        if (error.error.data == "Pending") {
-            this.router.navigate(['/handyman/pending']);
-          } else if (error.error.data == "Rejected") {
-            this.router.navigate(['/handyman/rejected']);
-          } else {
-            this.toastr.error(error.error.message);
-          }
+        if (error.error.data == 'Pending') {
+          this.router.navigate(['/handyman/pending']);
+        } else if (error.error.data == 'Rejected') {
+          this.router.navigate(['/handyman/rejected']);
+        } else {
+          this.toastr.error(error.error.message);
+        }
       },
     });
   }

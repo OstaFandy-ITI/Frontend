@@ -206,6 +206,14 @@ button.ghost {
   z-index: 0;
 }
 
+button:disabled {
+  background-color: #ccc;    
+  color: #666;               
+  cursor: not-allowed;      
+  opacity: 0.6;              
+  border: 1px solid #999;   
+}
+
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
