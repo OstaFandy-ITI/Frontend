@@ -46,6 +46,37 @@ export class ChatService {
     });
 }
 
+startGlobalConnection(): Promise<void> {
+  if (this.hubConnection && this.hubConnection.state === signalR.HubConnectionState.Connected)
+    return Promise.resolve();
+
+  this.hubConnection = new signalR.HubConnectionBuilder()
+    .withUrl("https://localhost:7187/chatHub") // no chatId here
+    .withAutomaticReconnect()
+    .build();
+
+  return this.hubConnection
+    .start()
+    .then(() => {
+      console.log('🌐 Global SignalR connection started');
+    })
+    .catch(err => {
+      console.error('❌ Failed to start global SignalR', err);
+      throw err;
+    });
+}
+
+onNewChatThread(): Observable<void> {
+  const newChat = new Subject<void>();
+  this.hubConnection.on('NewChatThread', () => {
+    console.log('📥 New chat thread received');
+    newChat.next();
+  });
+  return newChat.asObservable();
+}
+
+
+
   // Stop SignalR connection and leave chat group
   stopConnection(chatId: number): void {
     if (
@@ -84,12 +115,13 @@ export class ChatService {
     return this.messageReceived.asObservable();
   }
 
-  getHandymanThreads(): Observable<ChatThread[]> {
-    return this.http.get<ChatThread[]>(`${URL.apiUrl}/Chat/handyman/threads`);
-  }
-  getClientThreads(): Observable<ChatThread[]> {
-    return this.http.get<ChatThread[]>(`${URL.apiUrl}/Chat/threads`);
-  }
+ getHandymanThreads(filters: any): Observable<any> {
+  return this.http.get(`${URL.apiUrl}/Chat/handyman/threads`, { params: filters });
+}
+
+getClientThreads(filters: any): Observable<any> {
+  return this.http.get(`${URL.apiUrl}/Chat/threads`, { params: filters });
+}
 
 
 

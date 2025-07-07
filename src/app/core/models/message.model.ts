@@ -1,9 +1,25 @@
+// export interface ChatThread {
+//   chatId: number;
+//   bookingId: number;
+//   clientName: string;
+//   handymanName?: string;     
+//   lastMessage?: string;
+//   lastMessageTime?: string;
+//   bookingDate?: string;      
+//   categoryName?: string;    
+// }
+
 export interface ChatThread {
   chatId: number;
   bookingId: number;
   clientName: string;
+  handymanName: string;
   lastMessage?: string;
   lastMessageTime?: string;
+  unreadCount?: number;           // NEW
+  isOnline?: boolean;             // NEW
+  bookingDate?: string;          // For display
+  categoryName?: string;         // For context
 }
 
 export interface MessageDTO {
