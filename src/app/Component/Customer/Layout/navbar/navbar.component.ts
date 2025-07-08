@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 export class NavbarComponent implements OnInit {
   isLoggedIn = false;
  userName: string | null = null;
+ usertype:string| null = null;
   constructor(private authService: AuthService, private router: Router) {}
 
 ngOnInit(): void {
@@ -21,6 +22,7 @@ ngOnInit(): void {
 
   this.authService.CurrentUser$.subscribe(user => {
     this.userName = user?.GivenName ?? null;
+    this.usertype=user?.UserType??null;
   });
 }
 

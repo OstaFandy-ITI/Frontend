@@ -1,5 +1,5 @@
 .gradiant {
-background: linear-gradient(0deg, #004e98 0%, #e6f0ff 80%, #ffffff 100%);
+  background: linear-gradient(0deg, #004e98 0%, #e6f0ff 80%, #ffffff 100%);
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -16,29 +16,29 @@ background: linear-gradient(0deg, #004e98 0%, #e6f0ff 80%, #ffffff 100%);
 }
 .form-card {
   background: #fff;
-  padding: 30px;  border-radius: 15px;
+  padding: 30px;
+  border-radius: 15px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   width: 100%;
   max-width: 350px;
   z-index: 2;
 }
 
-.heroimg
-{
-  positionL:flex;
-  margin-top:0.68rem
+.handyman-img {
+  margin-top: -378px !important;
+  margin-left: auto;
+  margin-right: 0;
 }
-
 .form-group {
   position: relative;
-  margin-bottom: 15px;
+  margin-top: 15px;
 }
 
 .form-control {
   position: relative;
   border-radius: 50px;
   padding-left: 45px;
-    z-index: 1;
+  z-index: 1;
 }
 
 .form-icon,
@@ -94,6 +94,17 @@ background: linear-gradient(0deg, #004e98 0%, #e6f0ff 80%, #ffffff 100%);
   font-weight: 500;
 }
 
+.stats-item {
+  border-radius: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+  user-select: none;
+}
+
+.stats-item:hover {
+  transform: translateY(-8px);
+}
+
 /* step2 */
 .upload-wrapper {
   position: relative;
@@ -138,18 +149,24 @@ background: linear-gradient(0deg, #004e98 0%, #e6f0ff 80%, #ffffff 100%);
   font-size: 10px;
 }
 
+.number .plus {
+  color: #d68300;
+  font-weight: bold;
+  font-size:2.5rem;
+  margin: 20px;
+}
 
-
-
+@media (max-width: 1200px) {
+  .handyman-img {
+   position:relative;
+   right:7rem
+  }
+}
 
 @media (max-width: 992px) {
-  .handyman-img {
-    height: auto;
-    max-height: 350px;
-  }
-
   .stats-bar-container {
     margin-top: 20px;
+  
   }
 
   .app-card {
@@ -170,6 +187,9 @@ background: linear-gradient(0deg, #004e98 0%, #e6f0ff 80%, #ffffff 100%);
   .custom-file-btn {
     padding: 6px 14px;
     font-size: 0.9rem;
+  }
+  .handyman-img {
+   display:none;
   }
 }
 
@@ -196,10 +216,7 @@ background: linear-gradient(0deg, #004e98 0%, #e6f0ff 80%, #ffffff 100%);
     padding: 10px;
   }
 
-  .handyman-img {
-    max-height: 280px;
-    margin-top: 40px;
-  }
+
 }
 
 @media (max-width: 480px) {
@@ -221,16 +238,5 @@ background: linear-gradient(0deg, #004e98 0%, #e6f0ff 80%, #ffffff 100%);
     padding: 9px;
   }
 
-  .handyman-img {
-    max-height: 220px;
-    margin-top: 30px;
-  }
+
 }
-
-
-
-
-
-  
-
-
