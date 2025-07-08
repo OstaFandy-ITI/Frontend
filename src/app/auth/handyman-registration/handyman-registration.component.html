@@ -1,191 +1,210 @@
 <app-navbar></app-navbar>
 <div class="container-fluid" style="--bs-gutter-x: 0rem;">
 
-<div class="gradiant">
-  <ng-container *ngIf="step === 1">
-    <div class="container py-5">
-      <div class="row align-items-center justify-content-center text-center text-lg-start">
-        <!-- Left Section -->
-        <div class="col-lg-4 mb-5">
-          <h1 class="fw-bold mb-3">Join Us</h1>
-          <p>
-            Are you a skilled handyman looking for stable work and a
-            professional platform? Join our team and get matched with clients,
-            receive a fixed salary, and focus on what you do best — providing
-            great service.
-          </p>
+  <div class="gradiant">
+    <ng-container *ngIf="step === 1">
+      <div class="container py-5">
+        <div class="row align-items-center justify-content-center text-center text-lg-start">
+          <!-- Left Section -->
+          <div class="col-lg-4 mb-5">
+            <h1 class="fw-bold mb-3">Join Us</h1>
+            <p>
+              Are you a skilled handyman looking for stable work and a
+              professional platform? Join our team and get matched with clients,
+              receive a fixed salary, and focus on what you do best — providing
+              great service.
+            </p>
+          </div>
+
+          <div class="col-lg-4 mb-5"></div>
+
+          <!-- Form Section -->
+          <div class="col-lg-4 d-flex justify-content-center mb-2">
+            <div class="form-card">
+              <h3 class="text-center mb-4">Personal Information</h3>
+              <form [formGroup]="userForm" (ngSubmit)="nextStep()">
+                <!-- First Name -->
+                <div class="form-group">
+                  <i class="bi bi-person form-icon"></i>
+                  <input type="text" class="form-control" formControlName="firstname" placeholder="First Name" />
+                </div>
+                <small class="text-danger"
+                  *ngIf="userForm.get('firstname')?.touched && userForm.get('firstname')?.invalid">
+                  <ng-container *ngIf="userForm.get('firstname')?.errors?.['required']">required</ng-container>
+                  <ng-container *ngIf="userForm.get('firstname')?.errors?.['pattern']">Only letters</ng-container>
+                </small>
+
+                <!-- Last Name -->
+                <div class="form-group">
+                  <i class="bi bi-person form-icon"></i>
+                  <input type="text" class="form-control" formControlName="lastname" placeholder="Last Name" />
+                </div>
+                <small class="text-danger"
+                  *ngIf="userForm.get('lastname')?.touched && userForm.get('lastname')?.invalid">
+                  <ng-container *ngIf="userForm.get('lastname')?.errors?.['required']">required</ng-container>
+                  <ng-container *ngIf="userForm.get('lastname')?.errors?.['pattern']">Only letters</ng-container>
+                </small>
+
+                <!-- Email -->
+                <div class="form-group">
+                  <i class="bi bi-envelope form-icon"></i>
+                  <input type="email" class="form-control" formControlName="email" placeholder="Email" />
+                </div>
+                <small class="text-danger" *ngIf="userForm.get('email')?.touched && userForm.get('email')?.invalid">
+                  <ng-container *ngIf="userForm.get('email')?.errors?.['required']">Email is required.</ng-container>
+                  <ng-container *ngIf="userForm.get('email')?.errors?.['email']">Enter a valid email.</ng-container>
+                  <ng-container *ngIf="userForm.get('email')?.errors?.['maxlength']">Email too long.</ng-container>
+                </small>
+
+                <!-- Phone -->
+                <div class="form-group">
+                  <i class="bi bi-telephone form-icon"></i>
+                  <input type="tel" class="form-control" formControlName="phone" placeholder="Phone Number" />
+                </div>
+                <small class="text-danger" *ngIf="userForm.get('phone')?.touched && userForm.get('phone')?.invalid">
+                  <ng-container *ngIf="userForm.get('phone')?.errors?.['required']">required</ng-container>
+                  <ng-container *ngIf="userForm.get('phone')?.errors?.['pattern']">Enter valid Phone</ng-container>
+                </small>
+
+                <!-- Password -->
+                <div class="form-group">
+                  <i class="bi bi-lock form-icon"></i>
+                  <input type="password" class="form-control" formControlName="password" placeholder="Password" />
+                </div>
+                <small class="text-danger"
+                  *ngIf="userForm.get('password')?.touched && userForm.get('password')?.invalid">
+                  <ng-container *ngIf="userForm.get('password')?.errors?.['pattern']">Password: 6-20 chars, letters,
+                    numbers, symbols.</ng-container>
+                </small>
+
+                <!-- Confirm Password -->
+                <div class="form-group">
+                  <i class="bi bi-lock form-icon"></i>
+                  <input type="password" class="form-control" formControlName="confirmpassword"
+                    placeholder="Confirm Password" />
+                </div>
+
+
+                <!-- Specialization -->
+                <div class="form-group">
+                  <i class="bi bi-briefcase form-icon"></i>
+                  <select class="form-control" formControlName="SpecializationId" style="color:#595C5F">
+                    <option [ngValue]="null" selected disabled hidden>Choose Your Speciality</option>
+                    <option *ngFor="let item of CategoryItem" [value]="item.id">{{ item.name }}</option>
+                  </select>
+                </div>
+                <small class="text-danger"
+                  *ngIf="userForm.get('SpecializationId')?.touched && userForm.get('SpecializationId')?.invalid">
+                  Speciality is required.
+                </small>
+
+                <button type="submit" class="btn-submit mt-3">Next Step</button>
+              </form>
+            </div>
+          </div>
         </div>
 
-       <div class="col-lg-4 mb-5"></div>
+        <!-- Stats Bar -->
+        <div class=" stats-bar-container d-flex justify-content-start gap-5">
+          <div class="stats-item">
+            <div id="activeClients" class="number">
+              <span class="count">0</span><span class="plus">+</span>
+            </div>
+            <div class="label">Customers</div>
+          </div>
 
-        <!-- Form Section -->
-        <div class="col-lg-4 d-flex justify-content-center mb-2">
-          <div class="form-card">
-            <h3 class="text-center mb-4">Personal Information</h3>
-            <form [formGroup]="userForm" (ngSubmit)="nextStep()">
+          <div class="stats-item">
+            <div id="completedBookings" class="number">
+              <span class="count">0</span><span class="plus">+</span>
+            </div>
+            <div class="label">Completed Bookings</div>
+          </div>
 
-              <small class="text-danger" *ngIf="isFieldInvalid(userForm, 'firstname')">
-                First Name is required.
-              </small>
-              <div class="form-group">
-                <i class="bi bi-person form-icon"></i>
-                <input type="text" class="form-control" formControlName="firstname" placeholder="First Name" />
-              </div>
-
-              <small class="text-danger" *ngIf="isFieldInvalid(userForm, 'lastname')">
-                Last Name is required.
-              </small>
-              <div class="form-group">
-                <i class="bi bi-person form-icon"></i>
-                <input type="text" class="form-control" formControlName="lastname" placeholder="Last Name" />
-              </div>
-
-              <small class="text-danger" *ngIf="isFieldInvalid(userForm, 'email')">
-                <ng-container *ngIf="userForm.get('email')?.errors?.['required']">Email is required.</ng-container>
-                <ng-container *ngIf="userForm.get('email')?.errors?.['email']">Please enter a valid email.</ng-container>
-              </small>
-              <div class="form-group">
-                <i class="bi bi-envelope form-icon"></i>
-                <input type="email" class="form-control" formControlName="email" placeholder="Email" />
-              </div>
-
-              <small class="text-danger" *ngIf="isFieldInvalid(userForm, 'phone')">
-                Phone Number is required.
-              </small>
-              <div class="form-group">
-                <i class="bi bi-telephone form-icon"></i>
-                <input type="tel" class="form-control" formControlName="phone" placeholder="Phone Number" />
-              </div>
-
-              <small class="text-danger" *ngIf="isFieldInvalid(userForm, 'password')">
-                Password is required.
-              </small>
-              <div class="form-group">
-                <i class="bi bi-lock form-icon"></i>
-                <input type="password" class="form-control" formControlName="password" placeholder="Password" />
-              </div>
-
-              <small class="text-danger" *ngIf="isFieldInvalid(userForm, 'confirmpassword')">
-                Confirm Password is required.
-              </small>
-              <div class="form-group">
-                <i class="bi bi-lock form-icon"></i>
-                <input type="password" class="form-control" formControlName="confirmpassword"
-                  placeholder="Confirm Password" />
-              </div>
-
-              <small class="text-danger" *ngIf="isFieldInvalid(userForm, 'SpecializationId')">
-                Speciality is required.
-              </small>
-              <div class="form-group">
-                <i class="bi bi-briefcase form-icon"></i>
-                <select class="form-control" formControlName="SpecializationId">
-                  <option [ngValue]="null" selected disabled  hidden >Choose Your Speciality</option>
-                  <option *ngFor="let item of CategoryItem" [value]="item.id">{{ item.name }}</option>
-                </select>
-              </div>
-
-              <button type="submit" class="btn-submit mt-3">Next Step</button>
-            </form>
+          <!-- Center Image -->
+          <div>
+            <img src="assets/handyman.png" alt="Handyman" class="handyman-img" />
           </div>
         </div>
       </div>
+    </ng-container>
 
-      <!-- Stats Bar -->
-      <div class=" stats-bar-container d-flex justify-content-start gap-5">
-        <div class="stats-item">
-          <div class="number" data-target="1200">0</div>
-          <div class="label">Customers</div>
-        </div>
-        <div class="stats-item">
-          <div class="number" data-target="2500">0</div>
-          <div class="label">Completed Bookings</div>
-        </div>
-         <!-- Center Image -->
-        <div class=" stats-item">
-          <img src="assets/handyman.png" alt="Handyman" class="handyman-img" />
-        </div>
+    <!-- Step 2 -->
+    <ng-container *ngIf="step === 2">
+      <div class="app-card mt-5">
+        <h3>Complete Your Application</h3>
+        <form [formGroup]="handymanForm" (ngSubmit)="submit()">
+
+          <div class="form-group upload-wrapper">
+            <i class="bi bi-credit-card-2-front upload-icon"></i>
+            <input type="text" class="upload-input" placeholder="Upload National ID Image"
+              [value]="nationalIdImg?.name || ''" readonly />
+            <button type="button" class="custom-file-btn" (click)="nationalIdInput.click()">Choose File</button>
+            <input type="file" #nationalIdInput class="hidden-file-input" accept="image/*"
+              (change)="onNationalIdSelected($event)" />
+          </div>
+
+          <div class="form-group upload-wrapper">
+            <i class="bi bi-camera upload-icon"></i>
+            <input type="text" class="upload-input" placeholder="Upload Personal Photo" [value]="profileImg?.name || ''"
+              readonly />
+            <button type="button" class="custom-file-btn" (click)="profileImgInput.click()">Choose File</button>
+            <input type="file" #profileImgInput class="hidden-file-input" accept="image/*"
+              (change)="onProfileImgSelected($event)" />
+          </div>
+
+          <small class="text-danger" *ngIf="isFieldInvalid(handymanForm, 'NationalId')">
+            National ID is required.
+          </small>
+          <div class="form-group">
+            <i class="bi bi-credit-card-2-front form-icon"></i>
+            <input type="text" class="form-control" placeholder="National ID Number" formControlName="NationalId" />
+          </div>
+
+          <small class="text-danger" *ngIf="isFieldInvalid(handymanForm, 'ExperienceYears')">
+            Years of Experience is required.
+          </small>
+          <div class="form-group">
+            <i class="bi bi-briefcase form-icon"></i>
+            <input type="number" min="0" class="form-control" placeholder="Years of Experience"
+              formControlName="ExperienceYears" />
+          </div>
+
+          <small class="text-danger" *ngIf="isFieldInvalid(handymanForm, 'Address')">
+            Address is required.
+          </small>
+          <div class="form-group">
+            <i class="bi bi-geo-alt form-icon"></i>
+            <input type="text" class="form-control" placeholder="Address" formControlName="Address" />
+          </div>
+
+          <small class="text-danger" *ngIf="isFieldInvalid(handymanForm, 'City')">
+            City is required.
+          </small>
+          <div class="form-group">
+            <i class="bi bi-building form-icon"></i>
+            <select class="form-control" formControlName="City">
+              <option value="" disabled selected>Choose Your City</option>
+              <option *ngFor="let item of cites" [value]="item">{{ item }}</option>
+            </select>
+          </div>
+
+          <small class="text-danger" *ngIf="isFieldInvalid(handymanForm, 'AddressType')">
+            Address Type is required.
+          </small>
+          <div class="form-group">
+            <i class="bi bi-briefcase form-icon"></i>
+            <select class="form-control" formControlName="AddressType">
+              <option value="" disabled selected>Choose Your Address Type</option>
+              <option *ngFor="let item of addressTypes" [value]="item">{{ item }}</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn-submit mt-2">Submit Application</button>
+          <button type="button" class="btn btn-link mt-2" (click)="previousStep()">Back</button>
+        </form>
       </div>
-    </div>
-  </ng-container>
-
-  <!-- Step 2 -->
-  <ng-container *ngIf="step === 2">
-    <div class="app-card mt-5">
-      <h3>Complete Your Application</h3>
-      <form [formGroup]="handymanForm" (ngSubmit)="submit()">
-
-        <div class="form-group upload-wrapper">
-          <i class="bi bi-credit-card-2-front upload-icon"></i>
-          <input type="text" class="upload-input" placeholder="Upload National ID Image"
-            [value]="nationalIdImg?.name || ''" readonly />
-          <button type="button" class="custom-file-btn" (click)="nationalIdInput.click()">Choose File</button>
-          <input type="file" #nationalIdInput class="hidden-file-input" accept="image/*"
-            (change)="onNationalIdSelected($event)" />
-        </div>
-
-        <div class="form-group upload-wrapper">
-          <i class="bi bi-camera upload-icon"></i>
-          <input type="text" class="upload-input" placeholder="Upload Personal Photo"
-            [value]="profileImg?.name || ''" readonly />
-          <button type="button" class="custom-file-btn" (click)="profileImgInput.click()">Choose File</button>
-          <input type="file" #profileImgInput class="hidden-file-input" accept="image/*"
-            (change)="onProfileImgSelected($event)" />
-        </div>
-
-        <small class="text-danger" *ngIf="isFieldInvalid(handymanForm, 'NationalId')">
-          National ID is required.
-        </small>
-        <div class="form-group">
-          <i class="bi bi-credit-card-2-front form-icon"></i>
-          <input type="text" class="form-control" placeholder="National ID Number" formControlName="NationalId" />
-        </div>
-
-        <small class="text-danger" *ngIf="isFieldInvalid(handymanForm, 'ExperienceYears')">
-          Years of Experience is required.
-        </small>
-        <div class="form-group">
-          <i class="bi bi-briefcase form-icon"></i>
-          <input type="number" class="form-control" placeholder="Years of Experience"
-            formControlName="ExperienceYears" />
-        </div>
-
-        <small class="text-danger" *ngIf="isFieldInvalid(handymanForm, 'Address')">
-          Address is required.
-        </small>
-        <div class="form-group">
-          <i class="bi bi-geo-alt form-icon"></i>
-          <input type="text" class="form-control" placeholder="Address" formControlName="Address" />
-        </div>
-
-        <small class="text-danger" *ngIf="isFieldInvalid(handymanForm, 'City')">
-          City is required.
-        </small>
-        <div class="form-group">
-          <i class="bi bi-building form-icon"></i>
-          <select class="form-control" formControlName="City">
-            <option value="" disabled selected>Choose Your City</option>
-            <option *ngFor="let item of cites" [value]="item">{{ item }}</option>
-          </select>
-        </div>
-
-        <small class="text-danger" *ngIf="isFieldInvalid(handymanForm, 'AddressType')">
-          Address Type is required.
-        </small>
-        <div class="form-group">
-          <i class="bi bi-briefcase form-icon"></i>
-          <select class="form-control" formControlName="AddressType">
-            <option value="" disabled selected>Choose Your Address Type</option>
-            <option *ngFor="let item of addressTypes" [value]="item">{{ item }}</option>
-          </select>
-        </div>
-
-        <button type="submit" class="btn-submit mt-2">Submit Application</button>
-        <button type="button" class="btn btn-link mt-2" (click)="previousStep()">Back</button>
-      </form>
-    </div>
-  </ng-container>
-</div>
+    </ng-container>
+  </div>
 </div>
 
 <app-footer></app-footer>
