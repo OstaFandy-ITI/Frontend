@@ -7,19 +7,23 @@ import { CommonModule } from '@angular/common';
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
-  imports: [CommonModule, NotificationComponent],
+  imports: [CommonModule, NotificationComponent ,],
 })
 export class NavbarComponent implements OnInit {
   isLoggedIn = false;
-
+ userName: string | null = null;
   constructor(private authService: AuthService, private router: Router) {}
 
-  ngOnInit(): void {
-    // Subscribe to authentication state reactively
-    this.authService.isAuthenticated$.subscribe(status => {
-      this.isLoggedIn = status;
-    });
-  }
+ngOnInit(): void {
+  this.authService.isAuthenticated$.subscribe(status => {
+    this.isLoggedIn = status;
+  });
+
+  this.authService.CurrentUser$.subscribe(user => {
+    this.userName = user?.GivenName ?? null;
+  });
+}
+
 
   goToProfile() {
     this.router.navigate(['/client/profile']);

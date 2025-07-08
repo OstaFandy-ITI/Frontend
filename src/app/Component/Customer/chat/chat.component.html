@@ -5,22 +5,31 @@
   </div>
 
   <div class="chat-body" #scrollContainer>
-    <div *ngFor="let msg of messages"
-         class="message-wrapper"
-         [ngClass]="{'sent': msg.senderId === userId, 'received': msg.senderId !== userId}">
-      <div class="sender-name">{{ msg.senderName || 'You' }}</div>
-        <div class="message-bubble">
-      <div class="content">{{ msg.content }}</div>
-      <div class="timestamp">{{ msg.sentAt | date:'shortTime' }}</div>
-    </div>
-    </div>
+   <div *ngFor="let msg of messages"
+     class="message-wrapper"
+     [ngClass]="{
+       'sent': msg.senderId === userId,
+       'received': msg.senderId !== userId
+     }">
+  
+  <div class="sender-name" *ngIf="msg.senderId !== userId">
+    {{ msg.senderName }}
+  </div>
+
+  <div class="message-bubble">
+    <div class="content">{{ msg.content }}</div>
+    <div class="timestamp">{{ msg.sentAt | date:'shortTime' }}</div>
+  </div>
+</div>
+
   </div>
 
   <div class="chat-footer">
     <input type="text"
            class="form-control"
            [(ngModel)]="newMessage"
-           placeholder="Type a message..." />
+           placeholder="Type a message..."
+           (keydown.enter)="sendMessage()" />
     <button class="send-btn" (click)="sendMessage()">
       <i class="bi bi-send-fill"></i>
     </button>
