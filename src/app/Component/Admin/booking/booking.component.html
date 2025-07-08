@@ -11,6 +11,7 @@
     </span>
   </label>
 </div>
+
 <!-- Show calendar if currentView is 'calendar' -->
 <div *ngIf="currentView === 'calendar'">
   <div class="calendar-container">
@@ -127,9 +128,16 @@
               </span>
             </td>
             <td>
-              <button class="bi bi-eye btn btn-outline-info btn-sm" (click)="viewBookingDetails(booking)"
-                title="View Details" data-bs-toggle="modal" data-bs-target="#bookingDetailsModal"></button>
-                <button class="bi bi-calendar-x btn btn-outline-danger btn-sm" (click)="CancelBooking(booking.id!)"></button>
+              <div class="d-flex gap-2">
+                <button class="btn btn-outline-info btn-sm" (click)="viewBookingDetails(booking)"
+                  title="View Details" data-bs-toggle="modal" data-bs-target="#bookingDetailsModal">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn btn-outline-danger btn-sm" (click)="confirmCancelBooking(booking)"
+                  title="Cancel Booking">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
             </td>
           </tr>
           <tr *ngIf="pagedbooking.length === 0">
@@ -169,6 +177,40 @@
         Showing {{ ((pageNumber - 1) * pageSize) + 1 }} to {{ Math.min(pageNumber * pageSize, totalCount) }} of {{
         totalCount }} entries
       </small>
+    </div>
+  </div>
+
+  <!-- Cancel Confirmation Modal -->
+  <div class="modal fade" id="cancelConfirmModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            Confirm Cancellation
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="text-center mb-3">
+            <i class="bi bi-calendar-x text-danger" style="font-size: 3rem;"></i>
+          </div>
+          <p class="text-center mb-3">
+            Are you sure you want to cancel this booking?
+          </p>
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="bi bi-x-circle me-1"></i>
+            Keep Booking
+          </button>
+          <button type="button" class="btn btn-danger" (click)="proceedCancel()">
+            <i class="bi bi-calendar-x me-1"></i>
+            Cancel Booking
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 

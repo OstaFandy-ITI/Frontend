@@ -93,33 +93,39 @@
 
   <!-- Pagination -->
   <nav *ngIf="!loading && clients.length > 0" aria-label="Clients pagination" class="mt-4">
-    <div class="d-flex justify-content-between align-items-center">
-      <div class="text-muted">
-        Showing {{ ((currentPage - 1) * pageSize) + 1 }} to 
-        {{ (currentPage * pageSize) < totalCount ? (currentPage * pageSize) : totalCount }} of {{ totalCount }} entries
-      </div>
-      
-      <ul class="pagination mb-0">
-        <li class="page-item" [class.disabled]="currentPage === 1">
-          <button class="page-link" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">
-            Previous
-          </button>
-        </li>
-        
-        <li *ngFor="let page of paginationPages" 
-            class="page-item" 
-            [class.active]="page === currentPage">
-          <button class="page-link" (click)="onPageChange(page)">{{ page }}</button>
-        </li>
-        
-        <li class="page-item" [class.disabled]="currentPage === totalPages">
-          <button class="page-link" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">
-            Next
-          </button>
-        </li>
-      </ul>
+  <div class="d-flex flex-column align-items-center">
+    
+    <!-- Text Info -->
+    <div class="text-muted mb-2">
+      Showing {{ ((currentPage - 1) * pageSize) + 1 }} to 
+      {{ (currentPage * pageSize) < totalCount ? (currentPage * pageSize) : totalCount }} of {{ totalCount }} entries
     </div>
-  </nav>
+
+    <!-- Pagination Buttons -->
+    <ul class="pagination mb-0 justify-content-center">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <button class="page-link" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">
+          Previous
+        </button>
+      </li>
+
+      <li *ngFor="let page of paginationPages" 
+          class="page-item" 
+          [class.active]="page === currentPage">
+        <button class="page-link" (click)="onPageChange(page)">
+          {{ page }}
+        </button>
+      </li>
+
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <button class="page-link" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">
+          Next
+        </button>
+      </li>
+    </ul>
+  </div>
+</nav>
+
 </div>
 
 <!-- Delete Confirmation Modal -->

@@ -80,7 +80,7 @@
                     title="Edit">
               <i class="bi bi-pencil"></i>
             </button>
-            <button (click)="deleteHandyman(handyman)" 
+            <button (click)="confirmDeleteHandyman(handyman)" 
                     class="action-btn delete-btn" 
                     title="Delete">
               <i class="bi bi-trash"></i>
@@ -90,7 +90,16 @@
       </tbody>
     </table>
     
-    <!-- Pagination -->
+    
+  </div>
+  
+  <!-- Empty State -->
+  <div *ngIf="!loading && handymen.length === 0" class="empty-state">
+    <div class="display-1">📋</div>
+    <p class="mt-3">No handymen found.</p>
+  </div>
+  
+  <!-- Pagination -->
     <div class="pagination d-flex justify-content-center align-items-center" *ngIf="totalPages > 1">
       <button 
         (click)="onPageChange(currentPage - 1)"
@@ -116,14 +125,6 @@
         Next
       </button>
     </div>
-  </div>
-  
-  <!-- Empty State -->
-  <div *ngIf="!loading && handymen.length === 0" class="empty-state">
-    <div class="display-1">📋</div>
-    <p class="mt-3">No handymen found.</p>
-  </div>
-  
   <!-- Pagination Info -->
   <div *ngIf="!loading && handymen.length > 0" class="text-center text-muted mt-3">
     Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize, totalCount) }} of {{ totalCount }} entries
@@ -145,4 +146,23 @@
     (updated)="onHandymanUpdated($event)"
     *ngIf="selectedHandymanForEdit">
   </app-handyman-edit>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">Confirm Deletion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete <strong>{{ selectedHandymanForDelete?.firstName }} {{ selectedHandymanForDelete?.lastName }}</strong>?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="proceedDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
 </div>

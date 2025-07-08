@@ -7,11 +7,11 @@ export interface CreateReviewRequest {
 }
 
 export interface ReviewResponse {
-  reviewId: number;
+  id: number;
   bookingId: number;
   rating: number;
   comment: string;
-  createdAt: string;
+  createdAt: Date;
 }
 
 export interface ApiResponse<T> {

@@ -339,7 +339,7 @@ export class AllJobsComponent implements OnInit {
       return;
     }
 
-    if (!this.quoteForm.estimatedMinutes || this.quoteForm.estimatedMinutes <= 0) {
+    if (!this.quoteForm.estimatedMinutes || this.quoteForm.estimatedMinutes <= 0 || this.quoteForm.estimatedMinutes >480) {
       this.showAlert('Please enter a valid estimated Minutes.');
       return;
     }
