@@ -49,7 +49,7 @@
 
       <!-- User Info Right -->
       <div class="d-flex align-items-center gap-3 user-info ms-lg-4 mt-3 mt-lg-0">
-        <ng-container *ngIf="isLoggedIn; else loginButton">
+        <ng-container *ngIf="isLoggedIn && usertype=='Customer'; else loginButton">
           <span class="Name fw-semibold me-2 fa-sm">Welcome, {{ userName }}!</span>
           <button class="icon-btn notification" title="Notifications">
             <app-notification></app-notification>
