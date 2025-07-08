@@ -206,7 +206,29 @@ button.ghost {
   z-index: 0;
 }
 
+button:disabled {
+  background-color: #ccc;    
+  color: #666;               
+  cursor: not-allowed;      
+  opacity: 0.6;              
+  border: 1px solid #999;   
+}
+
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
 }
+
+.footer {
+    margin-top: 30px;
+}
+
+.footer a {
+    color: var(--blue-dark);
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+

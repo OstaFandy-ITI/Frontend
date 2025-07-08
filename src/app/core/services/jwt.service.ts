@@ -1,3 +1,5 @@
+import { ResetPasswordDto } from './../models/user.model';
+import { ForgetPasswordComponent } from './../../auth/forget-password/forget-password.component';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -19,5 +21,20 @@ Login(data: UserLoginDto): Observable<ResponseDto<string>> {
 ///api/Auth/register-Customer
   Register(data: UserRegisterDto): Observable<ResponseDto<string>> {
     return this.http.post<ResponseDto<string>>(`${this.BaseUrl}/register-Customer`, data);
+  }
+  ///api/Auth/forgot-password
+  ForgetPass(email:string):Observable<ResponseDto<string>>
+  {
+    return this.http.post<ResponseDto<string>>(`${this.BaseUrl}/forgot-password`,JSON.stringify(email), 
+  {
+    headers: { 'Content-Type': 'application/json' }
+  });
+
+  }
+
+  ///api/Auth/reset-password
+  ResetPass(ResetPass:ResetPasswordDto):Observable<ResponseDto<string>>
+  {
+    return this.http.post<ResponseDto<string>>(`${this.BaseUrl}/reset-password`,ResetPass);
   }
 }

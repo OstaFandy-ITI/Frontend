@@ -112,6 +112,8 @@ export interface Booking {
 }
 
 export interface ClientQuote {
+  handymanId: number;
+  addressId: number;
   quoteId: number;
   bookingId: number;
   handymanName: string;

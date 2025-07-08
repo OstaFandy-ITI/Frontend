@@ -1,9 +1,10 @@
 
 <div class="notification-container">
-    <button class="notification-btn" (click)="toggleDropdown()">
-        <i class="bi bi-bell-fill"></i>
-        <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
-    </button>
+    <button class="icon-btn notification" (click)="toggleDropdown()">
+  <i class="bi bi-bell-fill"></i>
+  <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+</button>
+
     
     <div class="dropdown" *ngIf="isDropdownOpen">
         <div class="dropdown-content">
@@ -19,7 +20,7 @@
                     </div>
                     
                     <!-- Show action buttons for unread notifications -->
-                    <div *ngIf="!n.isRead && !processingQuote" class="action-buttons">
+                    <!-- <div *ngIf="!n.isRead && !processingQuote" class="action-buttons">
                         <button 
                             class="approve-btn" 
                             (click)="approve(n)"
@@ -32,7 +33,7 @@
                             [disabled]="processingQuote">
                             {{ getActionButtonText(n).dismiss }}
                         </button>
-                    </div>
+                    </div> -->
                     
                     <!-- Show result for read notifications -->
                     <div *ngIf="n.isRead" class="action-result">
@@ -68,9 +69,9 @@
                     </div>
                     
                     <!-- Processing indicator -->
-                    <div *ngIf="processingQuote" class="processing">
+                    <!-- <div *ngIf="processingQuote" class="processing">
                         Processing...
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -78,7 +79,7 @@
 </div>
 
 <!-- STEP 1: Date Picker Modal for Quote Acceptance -->
-<div class="modal-overlay" *ngIf="showDatePicker" (click)="closeAllModals()">
+<!-- <div class="modal-overlay" *ngIf="showDatePicker" (click)="closeAllModals()">
     <div class="modal-content" (click)="$event.stopPropagation()">
         <div class="modal-header">
             <h3>Accept Quote - Select Date</h3>
@@ -115,10 +116,10 @@
             <button class="cancel-btn" (click)="closeAllModals()">Cancel</button>
         </div>
     </div>
-</div>
+</div> -->
 
 <!-- STEP 2: Time Slot Selection Modal -->
-<div class="modal-overlay" *ngIf="showTimeSlots" (click)="closeAllModals()">
+<!-- <div class="modal-overlay" *ngIf="showTimeSlots" (click)="closeAllModals()">
     <div class="modal-content" (click)="$event.stopPropagation()">
         <div class="modal-header">
             <h3>Select Available Time Slot</h3>
@@ -161,4 +162,4 @@
             <button class="cancel-btn" (click)="closeAllModals()">Cancel</button>
         </div>
     </div>
-</div>
+</div> -->

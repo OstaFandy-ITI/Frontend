@@ -1,3 +1,4 @@
+
 export class UserRegisterDto{
     constructor(
         public email?: string,
@@ -29,6 +30,15 @@ export class LoggedInUser {
         public Surname?: string,
         public UserType?: string,
         public exp?: string
+    ){}
+}
+
+export class ResetPasswordDto
+{
+    constructor(
+        public email:string,
+        public otp:string,
+        public newPassword:string,
     ){}
 }
 
