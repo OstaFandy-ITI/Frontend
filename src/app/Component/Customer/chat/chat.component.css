@@ -43,10 +43,11 @@
   gap: 10px;
 }
 
+/* Shared message layout */
 .message-wrapper {
+  max-width: 75%;
   display: flex;
   flex-direction: column;
-  max-width: 75%;
 }
 
 .message-wrapper.sent {
@@ -59,59 +60,57 @@
   text-align: left;
 }
 
+/* Only show sender name for received */
 .sender-name {
   font-size: 0.7rem;
   font-weight: 600;
   color: var(--gray);
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 
+/* Bubble style */
 .message-bubble {
-  background-color: var(--ostafandy-blue);
-  color: white;
-  border-radius: 16px;
+  border-radius: 18px;
   padding: 10px 14px 6px 14px;
   font-size: 0.9rem;
-
+  word-break: break-word;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-self: flex-start;
-  word-break: break-word;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-/* Sent messages */
+/* Sent (You) */
 .message-wrapper.sent .message-bubble {
-  background-color: #3A6EA5;
+  background-color: var(--blue-medium);
+  color: white;
   align-self: flex-end;
 }
 
-/* Received messages */
+/* Received (Other user) */
 .message-wrapper.received .message-bubble {
-  background-color: #EBEBEB;
-  color: black;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  color: #222;
   align-self: flex-start;
 }
-/* Message content inside bubble */
+
+/* Message content */
 .message-bubble .content {
   display: block;
   margin-bottom: 4px;
   line-height: 1.4;
 }
 
-/* Time inside bubble (bottom right) */
+/* Timestamp */
 .message-bubble .timestamp {
   align-self: flex-end;
   font-size: 0.72rem;
   opacity: 0.6;
   color: inherit;
 }
-.timestamp {
-  font-size: 0.7rem;
-  color: #777;
-  margin-top: 4px;
-}
 
+/* Chat input area */
 .chat-footer {
   background: white;
   border-top: 1px solid var(--gray);

@@ -25,15 +25,15 @@ import { PaymentService } from '../services/payment.service';
 import { HandymanService } from '../../Admin/services/handyman.service';
 import { AdminHandyManDTO } from '../../../core/models/Adminhandyman.model';
 import { NavbarComponent } from "../Layout/navbar/navbar.component";
-import { FooterComponent } from "../Layout/footer/footer.component";
+import { FooterComponent } from '../Layout/footer/footer.component';
+
 
 @Component({
   selector: 'app-booking-wizard',
   templateUrl: './booking-wizard.component.html',
   styleUrls: ['./booking-wizard.component.css'],
   standalone: true,
-
-  imports: [FormsModule, CommonModule, ChatComponent, ReactiveFormsModule, NavbarComponent, FooterComponent],
+  imports: [FormsModule, CommonModule, ChatComponent, ReactiveFormsModule, NavbarComponent,FooterComponent],
 })
 export class BookingWizardComponent implements OnInit {
   currentStep = 1;
