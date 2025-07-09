@@ -90,9 +90,19 @@
         </div>
       </div>
 
-      <!-- Action Button -->
-      <div class="d-flex justify-content-end" *ngIf="booking.status === 'Pending' || booking.status === 'Confirmed'">
-        <button class="cancel-btn"
+      <!-- Action Buttons -->
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <!-- Review Button (only for completed bookings) -->
+        <button class="review-btn" 
+                *ngIf="booking.status === 'Completed'"
+                (click)="openReviewModal(booking.bookingId)">
+          <i class="fas fa-star me-2"></i>
+          Add Review
+        </button>
+
+        <!-- Cancel Button -->
+        <button class="cancel-btn ms-auto"
+                *ngIf="booking.status === 'Pending' || booking.status === 'Confirmed'"
                 (click)="cancelBooking(booking.bookingId)"
                 [disabled]="cancellingId === booking.bookingId"
                 [ngClass]="{'loading': cancellingId === booking.bookingId}">
@@ -152,6 +162,123 @@
                   (click)="confirmCancel()">
             <i class="fas fa-check me-2"></i>
             Yes, Cancel Booking
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Modal -->
+  <div class="modal-backdrop" [ngClass]="{'show': showReviewModal}" *ngIf="showReviewModal"></div>
+  <div class="modal" tabindex="-1" role="dialog" [ngClass]="{'show d-block': showReviewModal}" *ngIf="showReviewModal">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content custom-modal-content">
+        <div class="modal-header custom-modal-header">
+          <h5 class="modal-title">
+            <i class="fas fa-star me-2"></i>
+            Add Review
+          </h5>
+          <button type="button" class="btn-close custom-btn-close" 
+                  aria-label="Close" (click)="closeReviewModal()"></button>
+        </div>
+        <div class="modal-body custom-modal-body text-center">
+          <div class="mb-4">
+            <h6 class="mb-3">Rate your experience</h6>
+            <div class="star-rating">
+              <i class="fas fa-star" 
+                 *ngFor="let star of [1,2,3,4,5]"
+                 [ngClass]="{'active': star <= reviewRating}"
+                 (click)="setRating(star)"></i>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="reviewComment" class="form-label">Comments (Optional)</label>
+            <textarea class="form-control" 
+                      id="reviewComment"
+                      rows="4" 
+                      placeholder="Share your experience..."
+                      [(ngModel)]="reviewComment"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer custom-modal-footer">
+          <button type="button" class="btn custom-modal-btn-primary" 
+                  (click)="submitReview()"
+                  [disabled]="reviewRating === 0 || isSubmittingReview">
+            <i class="fas fa-check me-2"></i>
+            {{ isSubmittingReview ? 'Submitting...' : 'Submit Review' }}
+          </button>
+          <button type="button" class="btn custom-modal-btn-secondary"
+                  style="color: white;"
+                  [ngClass]="{'loading': isSubmittingReview}" 
+                  (click)="closeReviewModal()">
+            <i class="fas fa-times me-2"></i>
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Dialog Modal -->
+  <div class="modal fade show" 
+       *ngIf="showSuccessDialog" 
+       style="display: block; background-color: rgba(0,0,0,0.5);" 
+       tabindex="-1" 
+       role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content border-primary">
+        <div class="modal-header text-white" style="background-color: #3a6ea5;">
+          <h5 class="modal-title">
+            <i class="fas fa-check-circle me-2"></i>
+            Success
+          </h5>
+        </div>
+        <div class="modal-body">
+          <div class="text-center">
+            <i class="fas fa-check-circle fa-4x mb-3" style="color: #3a6ea5;"></i>
+            <p class="mb-0 fw-bold" style="color: #3a6ea5;">{{ successMessage }}</p>
+          </div>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button 
+            type="button" 
+            class="btn" 
+            style="background-color: #3a6ea5; color: white;"
+            (click)="closeSuccessDialog()">
+            <i class="fas fa-check me-1"></i>
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alert Dialog Modal -->
+  <div class="modal fade show" 
+       *ngIf="showAlertDialog" 
+       style="display: block; background-color: rgba(0,0,0,0.5);" 
+       tabindex="-1" 
+       role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #ffa94d;">
+          <h5 class="modal-title" style="color: white;">Alert</h5>
+        </div>
+        <div class="modal-body">
+          <div class="text-center">
+            <i class="fas fa-exclamation-triangle fa-3x mb-3" style="color: #ffa94d;"></i>
+            <p class="mb-0" style="color: #ffa94d;">{{ alertMessage }}</p>
+          </div>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button 
+            type="button" 
+            class="btn"
+            style="background-color: #ffa94d; color: #ffffff;" 
+            (click)="closeAlertDialog()">
+            <i class="fas fa-check me-1"></i>
+            OK
           </button>
         </div>
       </div>

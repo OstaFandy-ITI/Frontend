@@ -8,6 +8,7 @@
   --icon-inactive: #999999;
   --icon-active: #ffffff;
 }
+
 /* calender */
 .calendar-container {
     flex-direction: column;
@@ -27,28 +28,6 @@
     box-sizing: border-box;
     overflow-y: auto;
     
-  }
-
-  /* Modal */
-  .modal-header {
-    background-color: var(--blue-dark);
-    color: white;
-    font-weight: 900;
-    border-bottom: none;
-    padding: 1.25rem 1.5rem;
-    border-top-left-radius: 0.3rem;
-    border-top-right-radius: 0.3rem;
-  }
-
-  .modal-body {
-    font-size: 1.2rem;
-    color: #333;
-    padding: 1.25rem 1.5rem;
-    line-height: 1.5;
-  }
-
-  .modal-body p {
-    margin: 0.5rem 0;
   }
 
   .fc .fc-button {
@@ -87,8 +66,6 @@
   font-weight: bold !important;
   color: white !important;
 }
-
-
 
 .switch-container {
   display: flex;

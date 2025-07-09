@@ -3,10 +3,12 @@ import { ClientProfileService } from '../services/client-profile.service';
 import { BookingService } from '../../Admin/services/booking.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { CreateReviewRequest } from '../../../core/models/ClientProfile.model';
 
 @Component({
   selector: 'app-client-booking',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './client-booking.component.html',
   styleUrls: ['./client-booking.component.css']
 })
@@ -18,6 +20,19 @@ export class ClientBookingComponent implements OnInit {
 
   showCancelModal: boolean = false;
   bookingToCancelId: number | null = null;
+  
+  // Review Modal Properties
+  showReviewModal: boolean = false;
+  reviewBookingId: number | null = null;
+  reviewRating: number = 0;
+  reviewComment: string = '';
+  isSubmittingReview: boolean = false;
+
+  // Success and Alert Dialog Properties
+  showSuccessDialog: boolean = false;
+  successMessage: string = '';
+  showAlertDialog: boolean = false;
+  alertMessage: string = '';
 
   constructor(
     private clientProfileService: ClientProfileService,
@@ -91,5 +106,95 @@ export class ClientBookingComponent implements OnInit {
   closeCancelModal() {
     this.showCancelModal = false;
     this.bookingToCancelId = null; 
+  }
+
+  // Review Modal Methods
+  openReviewModal(bookingId: number) {
+    this.reviewBookingId = bookingId;
+    this.reviewRating = 0;
+    this.reviewComment = '';
+    this.showReviewModal = true;
+  }
+
+  closeReviewModal() {
+    this.showReviewModal = false;
+    this.reviewBookingId = null;
+    this.reviewRating = 0;
+    this.reviewComment = '';
+  }
+
+  setRating(rating: number) {
+    this.reviewRating = rating;
+  }
+
+  submitReview() {
+    if (this.reviewBookingId && this.reviewRating > 0) {
+      this.isSubmittingReview = true;
+
+      const reviewData: CreateReviewRequest = {
+        bookingId: this.reviewBookingId,
+        rating: this.reviewRating,
+        comment: this.reviewComment || ''
+      };
+
+      this.clientProfileService.createReview(reviewData).subscribe({
+        next: (response) => {
+          console.log('Review submitted successfully:', response);
+          this.isSubmittingReview = false;
+          this.closeReviewModal();
+          
+          if (response.message.includes('successfully')) {
+            this.showSuccessMessage('Review submitted successfully!');
+          } 
+          else {
+            this.showAlertMessage(response.message || 'Failed to submit review');
+          }
+        },
+        error: (error) => {
+          console.error('Error submitting review:', error);
+          this.isSubmittingReview = false;
+          
+          let errorMessage = 'An error occurred while submitting the review';
+          
+          if (error.error && error.error.message) {
+            errorMessage = error.error.message;
+            
+            // التحقق من نص الرسالة لتحديد نوع الخطأ
+            if (errorMessage.includes('already reviewed')) {
+              errorMessage = 'You have already reviewed this booking';
+            } else if (errorMessage.includes('Booking not found')) {
+              errorMessage = 'Booking not found';
+            }
+          } else if (error.status === 400) {
+            // معالجة خاصة للـ 400 errors
+            errorMessage = 'Invalid request or you have already reviewed this booking';
+          }
+          
+          this.showAlertMessage(errorMessage);
+        }
+      });
+    }
+  }
+
+  // Success Dialog Methods
+  showSuccessMessage(message: string) {
+    this.successMessage = message;
+    this.showSuccessDialog = true;
+  }
+
+  closeSuccessDialog() {
+    this.showSuccessDialog = false;
+    this.successMessage = '';
+  }
+
+  // Alert Dialog Methods
+  showAlertMessage(message: string) {
+    this.alertMessage = message;
+    this.showAlertDialog = true;
+  }
+
+  closeAlertDialog() {
+    this.showAlertDialog = false;
+    this.alertMessage = '';
   }
 }
