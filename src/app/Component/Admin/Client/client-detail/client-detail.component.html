@@ -2,12 +2,12 @@
 <div class="modal fade" [id]="modalId" tabindex="-1" aria-labelledby="clientDetailModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="clientDetailModalLabel">
+      <div class="modal-header" style="background-color: #004e98;">
+        <h5 class="modal-title" id="clientDetailModalLabel" style="color: white;">
           <i class="bi bi-person-circle me-2"></i>
           Client Details
         </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close btn-close-white"  data-bs-dismiss="modal" aria-label="Close" style="color: white !important;"></button>
       </div>
       
       <div class="modal-body" *ngIf="client">
