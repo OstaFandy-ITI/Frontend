@@ -29,8 +29,8 @@ export class AdminNotificationComponent implements OnInit {
     
   ngOnInit() {
     this.notificationService.startConnection(this.userId);
-    this.notificationService.onVacationUpdate((jobId: number, status: string) => {
-      this.toastr.success(`Job ID ${jobId} has been ${status}`);
+    this.notificationService.onAdminNotification((message) => {
+      this.toastr.success(`New notification: ${message}`);
     });
   
   }
