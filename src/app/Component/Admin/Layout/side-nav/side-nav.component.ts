@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { Router,RouterModule } from '@angular/router';
 import{ AuthService} from "../../../../core/services/auth.service"
 import { CommonModule } from '@angular/common';
+import { AdminNotificationComponent } from "../../admin-notification/admin-notification.component";
 
 @Component({
   selector: 'app-side-nav',
-  imports: [CommonModule,RouterModule],
+  imports: [CommonModule, RouterModule, AdminNotificationComponent],
   templateUrl: './side-nav.component.html',
   styleUrl: './side-nav.component.css'
 })

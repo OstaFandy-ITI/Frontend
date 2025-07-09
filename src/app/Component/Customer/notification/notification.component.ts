@@ -24,7 +24,7 @@ export class NotificationComponent implements OnInit {
     // selectedQuote: any = null;
     // selectedTime: string = '';
     // availableTimeSlots: any[] = [];
-    // processingQuote = false;
+    processingQuote = false;
     // loadingTimeSlots = false;
     // selectedDate: string = '';
     // minDate: string;
@@ -40,8 +40,8 @@ export class NotificationComponent implements OnInit {
 ngOnInit() {
     this.loadNotifications();
     
-    // const userId = this.authService.getCurrentUserId() ?? 0;  
-    // this.notificationService.startConnection(userId);
+    const userId = this.authService.getCurrentUserId() ?? 0;  
+    this.notificationService.startConnection(userId);
     
     // this.notificationService.onQuoteUpdate((message: string) => {
     //     console.log('Quote notification received:', message);
