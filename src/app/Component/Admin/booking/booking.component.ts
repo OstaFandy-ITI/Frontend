@@ -21,6 +21,9 @@ declare var bootstrap: any;
 export class BookingComponent implements OnInit {
   bookings: BookingViewModel[] = [];
   currentView: 'table' | 'calendar' = 'calendar';
+  
+  // Delete confirmation modal instance
+  private deleteModalInstance: any;
 
   constructor(private bookingSerivce: BookingService,private sanitizer: DomSanitizer,private toastr:ToastrService) {}
 
@@ -134,16 +137,13 @@ export class BookingComponent implements OnInit {
     status: 'Confirmed',
     isActive: true,
   };
-  //togel is avtive
   
-  //list iscompleted
   statusOptions = [
     { value: '', label: 'All Status' },
     { value: 'Confirmed', label: 'Confirmed' },
     { value: 'Completed', label: 'Completed' },
     { value: 'Cancelled', label: 'Cancelled' },
   ];
-  //searchbar
 
   getPaginationbooking() {
     this.loading = true;
@@ -203,7 +203,7 @@ export class BookingComponent implements OnInit {
   }
 
   getSortIcon(column: string): string {
-    if (this.sortColumn !== column) return 'bi bi-arrow-down-up'; // icon neutral
+    if (this.sortColumn !== column) return 'bi bi-arrow-down-up';
     return this.sortDirection === 'asc' ? 'bi bi-arrow-up' : 'bi bi-arrow-down';
   }
 
@@ -232,32 +232,66 @@ export class BookingComponent implements OnInit {
     this.selectedpagedbooking = booking;
   }
 
-  CancelBooking(bookingId: number)
-  {
-    let confirmed=confirm("Are you sure that u want to cancle that booking?");
-    if(confirmed){
-    this.bookingSerivce.CancelBooking(bookingId).subscribe({
-      next:(res)=>{
-        this.toastr.success(res.message);
-      },error:(err)=>{
-        this.toastr.error(err.error.message);
-      }
-    })}
+  // New Delete Confirmation Modal Method
+  confirmCancelBooking(booking: BookingViewModel): void {
+    this.selectedpagedbooking = booking;
 
+    const modalElement = document.getElementById('cancelConfirmModal');
+    if (modalElement) {
+      if (this.deleteModalInstance) {
+        this.deleteModalInstance.dispose();
+      }
+      this.deleteModalInstance = new bootstrap.Modal(modalElement);
+      this.deleteModalInstance.show();
+    }
+  }
+
+  // Proceed with cancellation
+  proceedCancel(): void {
+    if (!this.selectedpagedbooking || !this.selectedpagedbooking.id) return;
+
+    this.CancelBooking(this.selectedpagedbooking.id);
+
+    if (this.deleteModalInstance) {
+      this.deleteModalInstance.hide();
+    }
+  }
+
+  // Updated Cancel Booking Method
+  CancelBooking(bookingId: number) {
+    this.loading = true;
+    
+    this.bookingSerivce.CancelBooking(bookingId).subscribe({
+      next: (res) => {
+        // Smart pagination handling
+        const remainingBookingsOnCurrentPage = this.pagedbooking.length - 1;
+        if (remainingBookingsOnCurrentPage === 0 && this.pageNumber > 1) {
+          this.pageNumber = this.pageNumber - 1;
+        }
+        
+        this.getPaginationbooking();
+        this.toastr.success(res.message || 'Booking cancelled successfully', 'Success');
+      },
+      error: (err) => {
+        console.error('Error cancelling booking:', err);
+        this.toastr.error(err.error?.message || 'Failed to cancel booking', 'Error');
+        this.loading = false;
+      }
+    });
   }
 
   getMapUrl(lat?: number, lng?: number): SafeResourceUrl {
-  if (lat == null || lng == null) return '';
-  const url = `https://maps.google.com/maps?q=${lat},${lng}&z=13&output=embed`;
-  return this.sanitizer.bypassSecurityTrustResourceUrl(url);
-}
+    if (lat == null || lng == null) return '';
+    const url = `https://maps.google.com/maps?q=${lat},${lng}&z=13&output=embed`;
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
 
   closeModal() {
     this.selectedpagedbooking = null;
   }
 
   onFilterChange() {
-    this.pageNumber = 1; // ترجع الصفحة الأولى عند تغيير الفلتر
+    this.pageNumber = 1;
     this.getPaginationbooking();
   }
 
@@ -284,6 +318,13 @@ export class BookingComponent implements OnInit {
     if (page >= 1 && page <= this.totalPages) {
       this.pageNumber = page;
       this.getPaginationbooking();
+    }
+  }
+
+  // Cleanup method
+  ngOnDestroy(): void {
+    if (this.deleteModalInstance) {
+      this.deleteModalInstance.dispose();
     }
   }
   //#endregion

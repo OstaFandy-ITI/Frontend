@@ -1,5 +1,19 @@
 import { Observable } from "rxjs";
 
+export interface CreateReviewRequest {
+  bookingId: number;
+  rating: number;
+  comment?: string;
+}
+
+export interface ReviewResponse {
+  id: number;
+  bookingId: number;
+  rating: number;
+  comment: string;
+  createdAt: Date;
+}
+
 export interface ApiResponse<T> {
   isSuccess: boolean;
   message: string;
