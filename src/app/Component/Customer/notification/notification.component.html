@@ -20,7 +20,7 @@
                     </div>
                     
                     <!-- Show action buttons for unread notifications -->
-                    <!-- <div *ngIf="!n.isRead && !processingQuote" class="action-buttons">
+                    <div *ngIf="!n.isRead && !processingQuote" class="action-buttons">
                         <button 
                             class="approve-btn" 
                             (click)="approve(n)"
@@ -33,7 +33,7 @@
                             [disabled]="processingQuote">
                             {{ getActionButtonText(n).dismiss }}
                         </button>
-                    </div> -->
+                    </div>
                     
                     <!-- Show result for read notifications -->
                     <div *ngIf="n.isRead" class="action-result">

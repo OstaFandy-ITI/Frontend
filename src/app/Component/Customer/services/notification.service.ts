@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import {  QuoteDetails, QuoteResponseDTO } from '../../../core/models/notification.model';
 import { URL } from '../../../core/Shared/URL';
-import * as signalR from '@microsoft/signalr';
+import * as signalR from '@microsoft/signalr';  
 
 @Injectable({
   providedIn: 'root'
