@@ -33,7 +33,7 @@ export class ApplicationComponent implements OnInit {
   
   // Pagination
   pageNumber = 1;
-  pageSize = 10;
+  pageSize = 1;
   totalCount = 0;
   totalPages = 0;
   

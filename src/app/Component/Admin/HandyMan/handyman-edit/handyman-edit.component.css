@@ -46,7 +46,7 @@
 
 .modal-backdrop.fade {
   opacity: 0;
-  transition: opacity 0.15s linear;
+  transition: opacity 0.9s linear;
 }
 
 .modal-backdrop.show {
@@ -60,7 +60,7 @@
   justify-content: space-between;
   padding: 1rem 1rem;
   border-bottom: 1px solid #dee2e6;
-  background-color: #f8f9fa;
+  background-color: var(--blue-dark);
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
 }
@@ -68,7 +68,7 @@
 .modal-title {
   margin-bottom: 0;
   line-height: 1.5;
-  color: #495057;
+  color: var(--white);
   font-weight: 600;
   font-size: 1.25rem;
 }
@@ -79,11 +79,12 @@
   background: transparent;
   border: 0;
   border-radius: 0.25rem;
-  opacity: 0.5;
+  opacity: 1;
   cursor: pointer;
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 700;
   line-height: 1;
+  color: var(--white);
 }
 
 .btn-close:hover {

@@ -5,9 +5,9 @@ import { AuthService } from "../../../../core/services/auth.service";
 import { NavbarComponent } from '../navbar/navbar.component';
 
 @Component({
-  selector: 'app-side-nav', 
-  standalone: true,
-  imports: [RouterModule, CommonModule, NavbarComponent],
+  selector: 'app-side-nav',
+  standalone: true, 
+  imports: [RouterModule, CommonModule, NavbarComponent], 
   templateUrl: './side-nav.component.html',
   styleUrl: './side-nav.component.css'
 })

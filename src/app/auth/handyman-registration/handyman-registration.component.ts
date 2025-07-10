@@ -5,18 +5,24 @@ import { RegisterService } from '../../Component/HandyMan/services/register.serv
 import { ResponseDto } from '../../core/models/Response.model';
 import { AuthService } from '../../core/services/auth.service';
 import { Router } from '@angular/router';
-import { JwtService } from '../../core/services/jwt.service';
 import { ToastrService } from 'ngx-toastr';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AddressTypes } from '../../core/Shared/Enum';
 import { CategorySelect } from '../../core/models/category.models';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from "../../Component/Customer/Layout/navbar/navbar.component";
-import { FooterComponent } from "../../Component/Customer/Layout/footer/footer.component";
+import { NavbarComponent } from '../../Component/Customer/Layout/navbar/navbar.component';
+import { FooterComponent } from '../../Component/Customer/Layout/footer/footer.component';
+import { DashboardStatistics } from '../../core/models/dashboard.models';
+import { DashboardService } from '../../Component/Admin/services/dashboard.service';
 
 @Component({
   selector: 'app-handyman-registration',
-  imports: [ReactiveFormsModule, CommonModule, NavbarComponent, FooterComponent],
+  imports: [
+    ReactiveFormsModule,
+    CommonModule,
+    NavbarComponent,
+    FooterComponent,
+  ],
   templateUrl: './handyman-registration.component.html',
   styleUrl: './handyman-registration.component.css',
 })
@@ -26,9 +32,17 @@ export class HandymanRegistrationComponent implements OnInit {
   cites: string[] = ['Cairo', 'Alexandria', 'Mansoura'];
   step = 1;
 
+  statistics: DashboardStatistics = {
+    completedJobCount: 0,
+    totalRevenue: 0,
+    averageRating: 0,
+    activeClientCount: 0,
+  };
+
   ngOnInit(): void {
     this.addressTypes = Object.values(AddressTypes);
     this.getCategories();
+    this.loadStatistics();
   }
 
   //forms
@@ -45,14 +59,35 @@ export class HandymanRegistrationComponent implements OnInit {
     private _AuthService: AuthService,
     private router: Router,
     private toastr: ToastrService,
-    private _CategoryService: CategoryService
+    private _CategoryService: CategoryService,
+    private dashboardService: DashboardService
   ) {
     this.userForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      firstname: ['', Validators.required],
-      lastname: ['', Validators.required],
-      phone: ['', Validators.required],
-      password: ['', Validators.required],
+      email: [
+        '',
+        [Validators.required, Validators.email, Validators.maxLength(100)],
+      ],
+      firstname: [
+        '',
+        [Validators.required, Validators.pattern(/^[a-zA-Z\s]{2,30}$/)],
+      ],
+      lastname: [
+        '',
+        [Validators.required, Validators.pattern(/^[a-zA-Z\s]{2,30}$/)],
+      ],
+      phone: [
+        '',
+        [Validators.required, Validators.pattern(/^01[0125][0-9]{8}$/)],
+      ],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(6),
+          Validators.maxLength(30),
+          Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/),
+        ],
+      ],
       confirmpassword: ['', Validators.required],
       SpecializationId: [null, Validators.required],
     });
@@ -60,9 +95,22 @@ export class HandymanRegistrationComponent implements OnInit {
     this.handymanForm = this.fb.group({
       Latitude: [null],
       Longitude: [null],
-      NationalId: ['', Validators.required],
-      ExperienceYears: [, Validators.required],
-      Address: ['', Validators.required],
+      NationalId: [
+        '',
+        [Validators.required, Validators.pattern(/^[0-9]{14}$/)],
+      ],
+      ExperienceYears: [
+        null,
+        [Validators.required, Validators.min(0), Validators.max(50)],
+      ],
+      Address: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(5),
+          Validators.maxLength(100),
+        ],
+      ],
       City: ['', Validators.required],
       AddressType: ['', Validators.required],
       IsDefault: [true],
@@ -87,8 +135,15 @@ export class HandymanRegistrationComponent implements OnInit {
 
   //handel moving to next step
   nextStep() {
-    this.userForm.markAllAsTouched();
+    const password = this.userForm.get('password')?.value;
+    const confirmPassword = this.userForm.get('confirmpassword')?.value;
 
+    if (password !== confirmPassword) {
+      this.toastr.error('Passwords do not match.');
+      return;
+    }
+
+    this.userForm.markAllAsTouched();
     if (this.userForm.invalid) {
       this.toastr.error('Please fill all required fields in the user form.');
       return;
@@ -139,7 +194,7 @@ export class HandymanRegistrationComponent implements OnInit {
         }
       },
       error: (err) => {
-        this.toastr.error('Failed to load categories.'+err);
+        this.toastr.error('Failed to load categories.' + err);
       },
     });
   }
@@ -191,4 +246,45 @@ export class HandymanRegistrationComponent implements OnInit {
       });
     }
   }
+
+  //total customer
+  //total complete booking
+  loadStatistics(): void {
+    this.dashboardService.getAllStatistics().subscribe({
+      next: (data) => {
+        this.statistics = data;
+
+        this.animateCounter('activeClients', this.statistics.activeClientCount);
+        this.animateCounter('completedBookings',this.statistics.completedJobCount);
+      },
+      error: (error) => {
+        console.error('Error loading statistics:', error);
+      },
+    });
+  }
+
+  //animation
+  animateCounter(elementId: string, target: number, duration: number = 1500) {
+  const element = document.getElementById(elementId)?.querySelector('.count');
+  if (!element) return;
+
+  const startTime = performance.now();
+  
+
+  const updateCount = (currentTime: number) => {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1); 
+    const currentCount = Math.floor(progress * target);
+
+    element.textContent = currentCount.toLocaleString();
+
+    if (progress < 1) {
+      requestAnimationFrame(updateCount);
+    } else {
+      element.textContent = target.toLocaleString(); 
+    }
+  };
+
+  requestAnimationFrame(updateCount);
+}
 }

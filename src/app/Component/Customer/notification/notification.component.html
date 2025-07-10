@@ -1,13 +1,13 @@
 
 <div class="notification-container">
-    <button class="notification-btn" (click)="toggleDropdown()">
-        <i class="bi bi-bell-fill"></i>
-        <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
-    </button>
+    <button class="icon-btn notification" (click)="toggleDropdown()">
+  <i class="bi bi-bell-fill"></i>
+  <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+</button>
+
     
     <div class="dropdown" *ngIf="isDropdownOpen">
         <div class="dropdown-content">
-            <div *ngIf="loading">Loading...</div>
             <div *ngIf="!loading && notifications.length === 0">No notifications</div>
             
             <div *ngIf="!loading && notifications.length > 0">
@@ -18,8 +18,7 @@
                         <small>{{ n.createdAt | date:'short' }}</small>
                     </div>
                     
-                    <!-- Show action buttons for unread notifications -->
-                    <div *ngIf="!n.isRead && !processingQuote" class="action-buttons">
+                    <div *ngIf="!n.isRead && !processingQuote && !isQuoteNotification(n)" class="action-buttons">
                         <button 
                             class="approve-btn" 
                             (click)="approve(n)"
@@ -34,9 +33,7 @@
                         </button>
                     </div>
                     
-                    <!-- Show result for read notifications -->
                     <div *ngIf="n.isRead" class="action-result">
-                        <!-- Quote Approval (creates booking) -->
                         <div *ngIf="isQuoteNotification(n)">
                             <div *ngIf="n.actionTaken === 'accept'" class="action-result accepted">
                                 Quote Accepted & Booking Created ✓
@@ -46,7 +43,6 @@
                             </div>
                         </div>
                         
-                        <!-- Quote Status Change (like job status) -->
                         <div *ngIf="isQuoteStatusNotification(n)">
                             <div *ngIf="n.currentJobStatus === getRequestedStatus(n)" class="action-result approved">
                                 Quote Status Approved ✓
@@ -56,7 +52,6 @@
                             </div>
                         </div>
                         
-                        <!-- Regular Job Status Change -->
                         <div *ngIf="!isQuoteNotification(n) && !isQuoteStatusNotification(n)">
                             <div *ngIf="n.currentJobStatus === getRequestedStatus(n)" class="action-result approved">
                                 Job Status Approved ✓
@@ -66,99 +61,9 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Processing indicator -->
-                    <div *ngIf="processingQuote" class="processing">
-                        Processing...
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- STEP 1: Date Picker Modal for Quote Acceptance -->
-<div class="modal-overlay" *ngIf="showDatePicker" (click)="closeAllModals()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-            <h3>Accept Quote - Select Date</h3>
-            <button class="close-btn" (click)="closeAllModals()">&times;</button>
-        </div>
-        
-        <div class="modal-body" *ngIf="selectedQuote">
-            <div class="quote-details">
-                <h4>Quote Details</h4>
-                <p><strong>Handyman:</strong> {{ selectedQuote.handymanName }}</p>
-                <p><strong>Price:</strong> ${{ selectedQuote.price | number:'1.2-2' }}</p>
-                <p><strong>Estimated Time:</strong> {{ selectedQuote.estimatedMinutes }} minutes</p>
-                <p><strong>Notes:</strong> {{ selectedQuote.notes }}</p>
-            </div>
-            
-            <div class="date-selection">
-                <h4>Select Preferred Date</h4>
-                <input 
-                    type="date" 
-                    [(ngModel)]="selectedDate" 
-                    [min]="minDate.split('T')[0]"
-                    class="date-input">
-            </div>
-        </div>
-        
-        <div class="modal-footer">
-            <button 
-                class="confirm-btn" 
-                (click)="onDateSelected()"
-                [disabled]="loadingTimeSlots || !selectedDate">
-                <span *ngIf="!loadingTimeSlots">Next: Select Time</span>
-                <span *ngIf="loadingTimeSlots">Loading Available Times...</span>
-            </button>
-            <button class="cancel-btn" (click)="closeAllModals()">Cancel</button>
-        </div>
-    </div>
-</div>
-
-<!-- STEP 2: Time Slot Selection Modal -->
-<div class="modal-overlay" *ngIf="showTimeSlots" (click)="closeAllModals()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-        <div class="modal-header">
-            <h3>Select Available Time Slot</h3>
-            <button class="close-btn" (click)="closeAllModals()">&times;</button>
-        </div>
-        
-        <div class="modal-body">
-            <div class="selected-info">
-                <p><strong>Selected Date:</strong> {{ selectedDate | date:'mediumDate' }}</p>
-                <p><strong>Duration:</strong> {{ selectedQuote?.estimatedMinutes }} minutes</p>
-            </div>
-            
-            <div class="time-slots-container">
-                <h4>Available Time Slots</h4>
-                <div *ngIf="availableTimeSlots.length === 0" class="no-slots">
-                    No available time slots found for this date.
-                </div>
-                
-                <div class="time-slots-grid" *ngIf="availableTimeSlots.length > 0">
-                    <button 
-                        *ngFor="let slot of availableTimeSlots"
-                        class="time-slot-btn"
-                        [class.selected]="selectedTime === slot.startTime"
-                        (click)="selectedTime = slot.startTime">
-                        {{ slot.startTime }} - {{ slot.endTime }}
-                    </button>
                 </div>
             </div>
-        </div>
-        
-        <div class="modal-footer">
-            <button 
-                class="confirm-btn" 
-                (click)="confirmQuoteAcceptance()"
-                [disabled]="processingQuote || !selectedTime">
-                <span *ngIf="!processingQuote">Confirm Booking</span>
-                <span *ngIf="processingQuote">Creating Booking...</span>
-            </button>
-            <button class="back-btn" (click)="goBackToDatePicker()">Back to Date</button>
-            <button class="cancel-btn" (click)="closeAllModals()">Cancel</button>
         </div>
     </div>
 </div>

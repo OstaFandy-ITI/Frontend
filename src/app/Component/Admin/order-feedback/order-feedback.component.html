@@ -108,7 +108,7 @@
                     class="btn btn-outline-info btn-sm"
                     (click)="showDetails(feedback)"
                     title="View Details">
-                    <i class="bi bi-eye"></i>
+                    <i class="bi bi-eye" style="margin: auto;"></i>
                   </button>
                 </div>
               </td>
@@ -129,37 +129,43 @@
   </div>
 
   <!-- Pagination -->
-  <nav *ngIf="shouldShowPagination()" aria-label="Orders feedback pagination" class="mt-4">
-    <div class="d-flex justify-content-between align-items-center">
-      <div class="text-muted">
-        {{ getPaginationInfo() }}
-      </div>
-      
-      <ul class="pagination mb-0">
-        <li class="page-item" [class.disabled]="currentPage === 1">
-          <button class="page-link" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">
-            Previous
-          </button>
-        </li>
-        
-        <li *ngFor="let page of paginationPages" 
-            class="page-item" 
-            [class.active]="page === currentPage">
-          <button class="page-link" (click)="onPageChange(page)">{{ page }}</button>
-        </li>
-        
-        <li class="page-item" [class.disabled]="currentPage === totalPages">
-          <button class="page-link" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">
-            Next
-          </button>
-        </li>
-      </ul>
+  <!-- Pagination -->
+<nav *ngIf="shouldShowPagination()" aria-label="Orders feedback pagination" class="mt-4">
+  <div class="d-flex flex-column align-items-center">
+    
+    <!-- النص -->
+    <div class="text-muted mb-2">
+      {{ getPaginationInfo() }}
     </div>
-  </nav>
+
+    <!-- أزرار الصفحات -->
+    <ul class="pagination mb-0 justify-content-center">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <button class="page-link" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">
+          Previous
+        </button>
+      </li>
+
+      <li *ngFor="let page of paginationPages" 
+          class="page-item" 
+          [class.active]="page === currentPage">
+        <button class="page-link" (click)="onPageChange(page)">
+          {{ page }}
+        </button>
+      </li>
+
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <button class="page-link" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">
+          Next
+        </button>
+      </li>
+    </ul>
+  </div>
+</nav>
+
  
 <!-- Modal -->
-<div *ngIf="showModal" class="modal-overlay" (click)="closeModal()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
+<div *ngIf="showModal" class="modal-overlay fade" [class.show]="showModalAnimation" (click)="closeModal()">  <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
       <h2>Order Feedback Details</h2>
       <button (click)="closeModal()" class="close-btn">

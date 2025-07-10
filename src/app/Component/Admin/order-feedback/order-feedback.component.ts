@@ -15,6 +15,9 @@ import { Subject } from 'rxjs';
   imports: [FormsModule, CommonModule, ReactiveFormsModule]
 })
 export class OrderFeedbackComponent implements OnInit, OnDestroy {
+  showModalAnimation = false;
+
+
   ordersFeedback: OrderFeedback[] = [];
   allOrdersFeedback: OrderFeedback[] = [];  
   filteredOrdersFeedback: OrderFeedback[] = [];
@@ -24,7 +27,7 @@ export class OrderFeedbackComponent implements OnInit, OnDestroy {
   currentPage = 1;
   totalPages = 1;
   totalCount = 0;
-  pageSize = 5;
+  pageSize = 1;
   paginationPages: number[] = [];
   
   searchControl = new FormControl('');
@@ -227,14 +230,23 @@ export class OrderFeedbackComponent implements OnInit, OnDestroy {
   }
 
   showDetails(feedback: OrderFeedback): void {
-    this.selectedFeedback = feedback;
-    this.showModal = true;
-  }
+  this.selectedFeedback = feedback;
+  this.showModal = true;
+  
+  setTimeout(() => {
+    this.showModalAnimation = true;
+  }, 10);
+}
 
   closeModal(): void {
+  this.showModalAnimation = false;
+  
+  setTimeout(() => {
     this.showModal = false;
     this.selectedFeedback = null;
-  }
+  }, 300); 
+}
+
 
   formatDate(dateString: string | null): string {
     if (!dateString) return 'N/A';

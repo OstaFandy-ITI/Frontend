@@ -7,78 +7,102 @@
   <div class="container" [ngClass]="containerClass" id="container">
     <!-- Sign Up -->
     <div class="form-container sign-up-container">
-      <form [formGroup]="registerForm" (ngSubmit)="register()">
-        <h1>Create Account</h1>
+     <form [formGroup]="registerForm" (ngSubmit)="register()">
+  <h1>Create Account</h1>
 
-        <div class="row w-100">
-          <div class="col">
-            <div class="input-icon">
-              <i class="bi bi-person"></i>
-              <input type="text" placeholder="First Name" formControlName="firstName" />
-            </div>
-            <small class="text-danger"
-              *ngIf="registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid">
-              First name is required.
-            </small>
-          </div>
-          <div class="col">
-            <div class="input-icon">
-              <i class="bi bi-person"></i>
-              <input type="text" placeholder="Last Name" formControlName="lastName" />
-            </div>
-            <small class="text-danger"
-              *ngIf="registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid">
-              Last name is required.
-            </small>
-          </div>
-        </div>
+  <div class="row w-100">
+    <div class="col">
+      <div class="input-icon">
+        <i class="bi bi-person"></i>
+        <input type="text" placeholder="First Name" formControlName="firstName" />
+      </div>
+      <small class="text-danger" *ngIf="registerForm.get('firstName')?.touched && registerForm.get('firstName')?.invalid">
+        <ng-container *ngIf="registerForm.get('firstName')?.errors?.['required']">
+          required.
+        </ng-container>
+        <ng-container *ngIf="registerForm.get('firstName')?.errors?.['minlength']">
+          must be at least 2 characters.
+        </ng-container>
+        <ng-container *ngIf="registerForm.get('firstName')?.errors?.['maxlength']">
+          cannot exceed 50 characters.
+        </ng-container>
+      </small>
+    </div>
+    <div class="col">
+      <div class="input-icon">
+        <i class="bi bi-person"></i>
+        <input type="text" placeholder="Last Name" formControlName="lastName" />
+      </div>
+      <small class="text-danger" *ngIf="registerForm.get('lastName')?.touched && registerForm.get('lastName')?.invalid">
+        <ng-container *ngIf="registerForm.get('lastName')?.errors?.['required']">
+          required.
+        </ng-container>
+        <ng-container *ngIf="registerForm.get('lastName')?.errors?.['minlength']">
+          must be at least 2 characters.
+        </ng-container>
+        <ng-container *ngIf="registerForm.get('lastName')?.errors?.['maxlength']">
+          cannot exceed 50 characters.
+        </ng-container>
+      </small>
+    </div>
+  </div>
 
-        <div class="row w-100">
-          <div class="col">
-            <div class="input-icon">
-              <i class="bi bi-envelope"></i>
-              <input type="email" placeholder="Email" formControlName="email" />
-            </div>
-            <small class="text-danger" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
-              Valid email is required.
-            </small>
-          </div>
-          <div class="col">
-            <div class="input-icon">
-              <i class="bi bi-telephone"></i>
-              <input type="text" placeholder="Phone" formControlName="phone" />
-            </div>
-            <small class="text-danger" *ngIf="registerForm.get('phone')?.touched && registerForm.get('phone')?.invalid">
-              Phone is required.
-            </small>
-          </div>
-        </div>
+  <div class="row w-100">
+    <div class="col">
+      <div class="input-icon">
+        <i class="bi bi-envelope"></i>
+        <input type="email" placeholder="Email" formControlName="email" />
+      </div>
+      <small class="text-danger" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
+        <ng-container *ngIf="registerForm.get('email')?.errors?.['required']">
+          required.
+        </ng-container>
+        <ng-container *ngIf="registerForm.get('email')?.errors?.['email']">
+          Please enter a valid email address.
+        </ng-container>
+        <ng-container *ngIf="registerForm.get('email')?.errors?.['maxlength']">
+          Email cannot exceed 100 characters.
+        </ng-container>
+      </small>
+    </div>
+    <div class="col">
+      <div class="input-icon">
+        <i class="bi bi-telephone"></i>
+        <input type="text" placeholder="Phone" formControlName="phone" />
+      </div>
+      <small class="text-danger" *ngIf="registerForm.get('phone')?.touched && registerForm.get('phone')?.invalid">
+        <ng-container *ngIf="registerForm.get('phone')?.errors?.['required']">
+          required.
+        </ng-container>
+        <ng-container *ngIf="registerForm.get('phone')?.errors?.['pattern']">
+          Please enter a valid phone number.
+        </ng-container>
+      </small>
+    </div>
+  </div>
 
-        <div class="row w-100">
-          <div class="col">
-            <div class="input-icon">
-              <i class="bi bi-lock"></i>
-              <input type="password" placeholder="Password" formControlName="password" />
-            </div>
-            <small class="text-danger"
-              *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
-              Password is required.
-            </small>
-          </div>
-          <div class="col">
-            <div class="input-icon">
-              <i class="bi bi-lock-fill"></i>
-              <input type="password" placeholder="Confirm Password" formControlName="confirmPassword" />
-            </div>
-            <small class="text-danger"
-              *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.invalid">
-              Confirm password is required.
-            </small>
-          </div>
-        </div>
+  <div class="row w-100">
+    <div class="col">
+      <div class="input-icon">
+        <i class="bi bi-lock"></i>
+        <input type="password" placeholder="Password" formControlName="password" />
+      </div>
+      <small class="text-danger" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
+        <ng-container *ngIf="registerForm.get('password')?.errors?.['pattern']">
+         Password: 6-20 chars, letters, numbers, symbols.
+        </ng-container>
+      </small>
+    </div>
+    <div class="col">
+      <div class="input-icon">
+        <i class="bi bi-lock-fill"></i>
+        <input type="password" placeholder="Confirm Password" formControlName="confirmPassword" />
+      </div>
+    </div>
+  </div>
 
-        <button type="submit">Sign Up</button>
-      </form>
+  <button type="submit" [disabled]="registerForm.invalid">Sign Up</button>
+</form>
     </div>
 
     <!-- Sign In -->
@@ -94,8 +118,12 @@
           Password is required.
         </small>
         <button type="submit">Log In</button>
+        <span class="footer">
+            <h5> <a href="/forgetPass">Forget Password</a></h5>
+       </span>
       </form>
     </div>
+    
 
     <!-- Overlay -->
     <div class="overlay-container">

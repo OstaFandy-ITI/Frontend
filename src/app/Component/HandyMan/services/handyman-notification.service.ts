@@ -21,11 +21,19 @@ private hubConnection: signalR.HubConnection | null = null;
       console.warn('Handyman notification connection already established');
       return;
     }
-
+const token = this.authService.getToken();
+  
+  if (!token) {
+    console.error('No authentication token found');
+    return;
+  }
+ 
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${this.hubUrl}?userId=${handymanUserId}`) 
-      .withAutomaticReconnect()
-      .build();
+  .withUrl(`${this.hubUrl}?userId=${handymanUserId}`, {
+    accessTokenFactory: () => token
+  })
+  .withAutomaticReconnect()
+  .build();
 
     this.hubConnection
       .start()
@@ -51,8 +59,12 @@ private hubConnection: signalR.HubConnection | null = null;
     }
 
     this.hubConnection.on('ReceiveNotificationhandyman', (messageOrUserId: string, message?: string) => {      
+      
       if (message) {
+         const userId = parseInt(messageOrUserId);
+      if (userId === this.handymanUserId) {
         callback(message);
+      }
       } else {
         callback(messageOrUserId);
       }
