@@ -309,25 +309,24 @@
 }
 
 .approve-btn {
-  background: linear-gradient(135deg, #2ed573 0%, #1e90ff 100%);
+  background:#3a6ea5;
   color: white;
-  box-shadow: 0 4px 15px rgba(46, 213, 115, 0.4);
 }
 
 .approve-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(46, 213, 115, 0.6);
+  box-shadow: 0 6px 20px #3a6ea5;
 }
 
 .dismiss-btn {
-  background: linear-gradient(135deg, #ff4757 0%, #ff3838 100%);
+  background: #dc3545;
   color: white;
-  box-shadow: 0 4px 15px rgba(255, 71, 87, 0.4);
+ 
 }
 
 .dismiss-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 71, 87, 0.6);
+  box-shadow: 0 6px 20px #dc3545;
 }
 
 .approve-btn:disabled,

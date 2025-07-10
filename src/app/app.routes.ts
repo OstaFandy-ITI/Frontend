@@ -16,15 +16,17 @@ import { HandymanPendingComponent } from './Component/HandyMan/Layout/handyman-p
 import { HandymanRejectedComponent } from './Component/HandyMan/Layout/handyman-rejected/handyman-rejected.component';
 import { UnauthorizedComponent } from './auth/unauthorized/unauthorized.component';
 import { ForgetPasswordComponent } from './auth/forget-password/forget-password.component';
+import { VerifyEmailPendingComponent } from './auth/verify-email-pending/verify-email-pending.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
+  {path:'verifyemail',component:VerifyEmailPendingComponent},
   { path: 'registerHamdyMan', component: HandymanRegistrationComponent },
-  {path:'forgetPass',component:ForgetPasswordComponent},
+  { path: 'forgetPass', component: ForgetPasswordComponent },
   { path: 'handyman/pending', component: HandymanPendingComponent },
-    { path: 'handyman/rejected', component: HandymanRejectedComponent },
-    {path:'Unauthorized',component:UnauthorizedComponent},
+  { path: 'handyman/rejected', component: HandymanRejectedComponent },
+  { path: 'Unauthorized', component: UnauthorizedComponent },
 
   {
     path: 'admin',
