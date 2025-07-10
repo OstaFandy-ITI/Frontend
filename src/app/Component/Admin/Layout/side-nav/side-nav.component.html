@@ -7,6 +7,12 @@
   </button>
 
   <div class="d-flex align-items-center gap-3">
+    <!-- Theme Toggle Button -->
+    <button class="btn btn-light theme-toggle-btn" (click)="toggleTheme()" 
+            [attr.aria-label]="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
+      <i class="bi" [class.bi-moon-stars]="!isDarkMode" [class.bi-sun]="isDarkMode"></i>
+    </button>
+
     <!-- Notifications -->
     <div class="dropdown">
       <button class="btn btn-light position-relative dropdown-toggle" type="button" data-bs-toggle="dropdown"
@@ -25,7 +31,7 @@
       </ul>
     </div>
 
-  <!-- user prfile -->
+  <!-- user profile -->
     <div class="dropdown">
       <button class="btn btn-light dropdown-toggle p-0 border-0 rounded-circle" type="button" data-bs-toggle="dropdown"
         aria-expanded="false" style="width: 40px; height: 40px; overflow: hidden;">
@@ -35,8 +41,7 @@
       </button>
       <ul class="dropdown-menu dropdown-menu-end shadow">
         <li><a class="dropdown-item" routerLink="/admin/profile"><i class="bi bi-person me-2"></i>Profile</a></li>
-        <li><button class="dropdown-item" (click)="logout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
-        </li>
+        <li><button class="dropdown-item" (click)="logout()"><i class="bi bi-box-arrow-right me-2"></i>Logout</button></li>
       </ul>
     </div>
   </div>
