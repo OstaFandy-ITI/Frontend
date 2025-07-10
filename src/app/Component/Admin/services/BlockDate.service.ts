@@ -35,19 +35,14 @@ export class HandymanBlockDateService {
     if (categoryId) {
       params = params.set('categoryId', categoryId.toString());
     }
-
     return this.http.get<PaginationHelper<HandymanSummaryDTO>>(
       `${this.baseUrl}/GetAllHandymanData`, 
       { params }
     );
   }
-
-
   getCategoriesForDropdown(): Observable<Category[]> {
     return this.http.get<Category[]>(`${this.baseUrl}/GetCategoriesForDropdown`);
   }
-
-  // Get all block dates
   getAllBlockDates(
     searchString: string = '',
     pageNumber: number = 1,
@@ -73,7 +68,6 @@ export class HandymanBlockDateService {
     );
   }
 
-  // Add block date
   addBlockDate(request: AddBlockDateRequest): Observable<string> {
     let params = new HttpParams()
       .set('HandymanId', request.handymanId.toString())
@@ -86,26 +80,4 @@ export class HandymanBlockDateService {
     responseType: 'text' 
   });
 }
-
-// rejectBlockDate(handymanId: number, reason: string, startDate: string, endDate: string): Observable<any> {
-//     const params = {
-//       HandymanId: handymanId,
-//       Reason: reason,
-//       StartDate: startDate,
-//       EndDate: endDate
-//     };
-    
-//     return this.http.put(`${this.baseUrl}/RejectBlockDate`, null, { params });
-//   }
-// ApproveBlockDate(handymanId: number, reason: string, startDate: string, endDate: string): Observable<any> {
-//     const params = {
-//       HandymanId: handymanId,
-//       Reason: reason,
-//       StartDate: startDate,
-//       EndDate: endDate
-//     };
-    
-//     return this.http.put(`${this.baseUrl}/ApproveBlockDate`, null, { params });
-//   }
-
 }

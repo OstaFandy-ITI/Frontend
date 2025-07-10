@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import * as signalR from '@microsoft/signalr';
 import { map, Observable } from 'rxjs';
 import { Notification } from '../../../core/models/AdminNotification.model';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class AdminNotificationService {
   private hubConnection!: signalR.HubConnection;
   private readonly hubUrl: string;
 
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient, private authService: AuthService) { 
     this.hubUrl = `${URL.apiUrl.replace('/api', '')}/notificationHub` 
   }
 
@@ -22,12 +23,18 @@ export class AdminNotificationService {
       console.warn('Connection already established');
       return;
     }
+const token = this.authService.getToken();
+ if (!token) {
+    console.error('No authentication token found');
+    return;
+  }
 
-    this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${this.hubUrl}?userId=${userId}`)
-      .withAutomaticReconnect()
-      .build();
-
+   this.hubConnection = new signalR.HubConnectionBuilder()
+  .withUrl(`${this.hubUrl}?userId=${userId}`, {
+    accessTokenFactory: () => token
+  })
+  .withAutomaticReconnect()
+  .build();
     this.hubConnection
       .start()
       .then(() => {
@@ -45,9 +52,9 @@ export class AdminNotificationService {
     }
   }
 
-  public onVacationUpdate(callback: (jobId: number, status: string) => void): void {
-    this.hubConnection?.on('ReceiveNotificationhandyman', callback);
-  }
+  public onAdminNotification(callback: (message: string) => void): void {
+  this.hubConnection?.on('ReceiveNotificationAdmin', callback);
+}
 
   getNotifications(userId: number): Observable<Notification[]> {
     return this.http.get<Notification[]>(`${this.baseUrl}/AdminHandyMan/GetNotificationsOfAdmin/${userId}`);
