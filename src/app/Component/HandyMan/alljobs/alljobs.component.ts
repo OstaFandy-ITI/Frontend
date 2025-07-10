@@ -350,7 +350,6 @@ export class AllJobsComponent implements OnInit {
     }
 
     
-
     this.isSubmittingQuote = true;
 
     const quoteRequest: AddQuoteRequest = {

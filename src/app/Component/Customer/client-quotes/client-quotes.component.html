@@ -6,10 +6,9 @@
   </div>
 
   <div class="filter-container" *ngIf="!isLoading && !errorMessage && quotes.length > 0">
-    <label for="serviceFilter">Filter by Service:</label>
-    <select id="serviceFilter" [(ngModel)]="selectedService" (change)="applyFilter()">
-      <option value="">All</option>
-      <option *ngFor="let service of availableServices" [value]="service">{{ service }}</option>
+    <label for="statusFilter">Filter by Status:</label>
+    <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="currentPage = 1">
+      <option *ngFor="let status of uniqueStatuses" [value]="status">{{ status }}</option>
     </select>
   </div>
 
@@ -29,12 +28,12 @@
     <div class="empty-icon">
       <i class="fas fa-file-invoice-dollar"></i>
     </div>
-    <h3>No quotes found</h3>
-    <p>You don't have any quotes yet or no quotes match your current filter. Contact us to get started!</p>
+    <h3>No quotes found for selected status</h3>
+    <p>Try selecting a different status or "All" to see more quotes.</p>
   </div>
 
-  <div class="quotes-list" *ngIf="!isLoading && !errorMessage && filteredQuotes.length > 0">
-    <div *ngFor="let quote of pagedQuotes(); trackBy: trackByQuoteId" class="quote-card"
+  <div class="quotes-list" *ngFor="let quote of pagedQuotes(); trackBy: trackByQuoteId">
+    <div class="quote-card"
          [ngClass]="{
            'status-border-left-approved': quote.status === 'Approved',
            'status-border-left-pending': quote.status === 'Pending',

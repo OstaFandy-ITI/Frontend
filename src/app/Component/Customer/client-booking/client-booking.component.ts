@@ -3,12 +3,12 @@ import { ClientProfileService } from '../services/client-profile.service';
 import { BookingService } from '../../Admin/services/booking.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Import FormsModule
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-client-booking',
-  standalone: true, // Add standalone if it's a standalone component
-  imports: [CommonModule, FormsModule], // Add FormsModule here
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './client-booking.component.html',
   styleUrls: ['./client-booking.component.css']
 })
@@ -20,7 +20,7 @@ export class ClientBookingComponent implements OnInit {
 
   showCancelModal: boolean = false;
   bookingToCancelId: number | null = null;
-  selectedService: string = 'All'; // New property for service filtration
+  selectedStatus: string = 'All'; // Changed from selectedService to selectedStatus
 
   constructor(
     private clientProfileService: ClientProfileService,
@@ -46,26 +46,21 @@ export class ClientBookingComponent implements OnInit {
     });
   }
 
-  // New getter to filter orders based on selectedService
+  // Modified getter to filter orders based on selectedStatus
   get filteredOrders() {
-    if (this.selectedService === 'All') {
+    if (this.selectedStatus === 'All') {
       return this.orders;
     } else {
-      return this.orders.filter(order =>
-        order.services && order.services.length > 0 &&
-        order.services[0].serviceName === this.selectedService
-      );
+      return this.orders.filter(order => order.status === this.selectedStatus);
     }
   }
 
   pagedOrders() {
-    // Use filteredOrders for pagination
     const start = (this.currentPage - 1) * this.pageSize;
     return this.filteredOrders.slice(start, start + this.pageSize);
   }
 
   get totalPages() {
-    // Calculate total pages based on filteredOrders
     return Math.ceil(this.filteredOrders.length / this.pageSize);
   }
 
@@ -110,14 +105,12 @@ export class ClientBookingComponent implements OnInit {
     this.bookingToCancelId = null;
   }
 
-  // Method to get unique service names for the filter dropdown
-  get uniqueServices(): string[] {
-    const services = new Set<string>();
+  // Method to get unique statuses for the filter dropdown
+  get uniqueStatuses(): string[] {
+    const statuses = new Set<string>();
     this.orders.forEach(order => {
-      if (order.services && order.services.length > 0) {
-        services.add(order.services[0].serviceName);
-      }
+      statuses.add(order.status);
     });
-    return ['All', ...Array.from(services)];
+    return ['All', ...Array.from(statuses)];
   }
 }

@@ -9,6 +9,7 @@ import {
   AddQuoteResponse,
   JobAssignment
 } from '../../../core/models/Handyman.model';
+import * as signalR from '@microsoft/signalr';
 
 
 @Injectable({
@@ -17,9 +18,42 @@ import {
 export class AlljobsService {
   // private baseUrl = 'https://localhost:7187/api';
   private baseUrl = `${URL.apiUrl}`; 
+  private readonly hubUrl: string;
+  private hubConnection!: signalR.HubConnection;
+  private userId: number | null = null;
+  constructor(private http: HttpClient) {
+    this.hubUrl = `${URL.apiUrl.replace('/api', '')}/notificationHub`;
+  }
 
-  constructor(private http: HttpClient) { }
+public startConnection(userId: number): void {
+    if (this.hubConnection) {
+        console.warn('Connection already established');
+        return;
+    }
 
+    this.hubConnection = new signalR.HubConnectionBuilder()
+        .withUrl(`${this.hubUrl}?userId=${userId}`)
+        .withAutomaticReconnect()
+        .build();
+
+    this.hubConnection
+        .start()
+        .then(() => {
+            console.log('SignalR connected for user:', userId);
+        })
+        .catch(err => {
+            console.error('Error while starting SignalR connection:', err);
+        });
+}
+
+
+
+public stopConnection(): void {
+    if (this.hubConnection) {
+        this.hubConnection.stop();
+        this.hubConnection = null as any;
+    }
+}
   getAllJobs(
     handymanId: number,
     pageNumber: number = 1,
