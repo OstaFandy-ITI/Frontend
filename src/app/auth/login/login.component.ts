@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { JwtService } from '../../core/services/jwt.service';
 import { UserLoginDto, UserRegisterDto } from '../../core/models/user.model';
@@ -20,7 +20,7 @@ import { UserType } from '../../core/Shared/Enum';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   containerClass = '';
   loginForm: FormGroup;
   registerForm: FormGroup;
@@ -29,6 +29,7 @@ export class LoginComponent {
     private fb: FormBuilder,
     private _AuthService: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
     private _JwtService: JwtService,
     private toastr: ToastrService
   ) {
@@ -76,6 +77,13 @@ export class LoginComponent {
       ],
       confirmPassword: ['', Validators.required],
     });
+  }
+  ngOnInit(): void {
+     this.route.queryParams.subscribe(params => {
+    if (params['verified'] === 'true') {
+      this.toastr.success('Your email was verified successfully! You can now log in.');
+    }
+  });
   }
 
   //animation for the login and register panels
@@ -127,9 +135,9 @@ export class LoginComponent {
     this._JwtService.Register(registerData).subscribe({
       next: (response: ResponseDto<string>) => {
         if (response && response.data) {
-          this._AuthService.Login(response.data);
           this.toastr.success(response.message);
-          this.router.navigate(['/']);
+          localStorage.setItem("pendingUserEmail", response.data);
+          this.router.navigate(['/verifyemail']);
         } else {
           this.toastr.error(response.message);
         }

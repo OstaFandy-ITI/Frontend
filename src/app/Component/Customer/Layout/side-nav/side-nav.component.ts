@@ -7,7 +7,7 @@ import { NavbarComponent } from "../navbar/navbar.component";
 @Component({
   selector: 'app-side-nav',
   standalone: true, 
-  imports: [RouterModule, CommonModule, NavbarComponent],
+  imports: [RouterModule, CommonModule],
   templateUrl: './side-nav.component.html',
   styleUrl: './side-nav.component.css'
 })

@@ -205,8 +205,9 @@
                         class="time-slot-btn"
                         [class.selected]="selectedTime === slot.startTime"
                         (click)="selectedTime = slot.startTime">
-                        {{ slot.startTime }} - {{ slot.endTime }}
-                    </button>
+                        <!-- {{ slot.startTime }} - {{ slot.endTime }} -->
+                        {{ formatTimeOnly(slot.startTime) }} - {{ formatTimeOnly(slot.endTime) }}
+                      </button>
                 </div>
             </div>
         </div>

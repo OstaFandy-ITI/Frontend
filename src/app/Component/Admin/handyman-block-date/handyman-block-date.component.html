@@ -1,0 +1,291 @@
+<!-- handyman-block-date.component.html -->
+<div class="container-fluid">
+  <!-- Header -->
+  <div class="page-header">
+    <h1>Handyman Block Date Management</h1>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="tab-navigation">
+    <button 
+      class="tab-btn" 
+      [class.active]="activeTab === 'handymen'"
+      (click)="switchTab('handymen')">
+      Add Block Date
+    </button>
+    <button 
+      class="tab-btn" 
+      [class.active]="activeTab === 'blockDates'"
+      (click)="switchTab('blockDates')">
+      View Block Dates
+    </button>
+  </div>
+
+  <!-- Handymen Tab -->
+  <div class="tab-content" *ngIf="activeTab === 'handymen'">
+    <!-- Filters -->
+    <div class="filters-section">
+      <div class="filter-row">
+        <div class="filter-group">
+          <label>Filter by Category</label>
+          <select 
+            class="form-control" 
+            [(ngModel)]="selectedCategoryId" 
+            (change)="onCategoryChange()">
+            <option [value]="null">All Categories</option>
+            <option *ngFor="let category of categories" [value]="category.id">
+              {{category.name}}
+            </option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label>Search by Client Name</label>
+          <div class="search-input-container">
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Enter client name..." 
+              [(ngModel)]="searchString"
+              (input)="onSearch()">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Handymen Table -->
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>USER ID</th>
+            <th>NAME</th>
+            <th>EMAIL</th>
+            <th>PHONE</th>
+            <th>SPECIALIZATION</th>
+            <th>ADD BLOCK DATE</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let handyman of handymen" class="table-row">
+            <td>{{handyman.userId}}</td>
+            <td>{{handyman.name}}</td>
+            <td>{{handyman.email}}</td>
+            <td>{{handyman.phone}}</td>
+            <td>{{handyman.specialization}}</td>
+            <td>
+              <button 
+                class="btn btn-primary"
+                (click)="openBlockDateModal(handyman)">
+                + Add Block Date
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- Loading state -->
+      <!-- <div *ngIf="isLoading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading handymen...</p>
+      </div> -->
+      
+      <!-- Empty state -->
+      <!-- <div *ngIf="!isLoading && handymen.length === 0" class="empty-state">
+        <p>No handymen found</p>
+      </div> -->
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container" *ngIf="totalPages > 1">
+      <button 
+        class="btn btn-outline-primary" 
+        [disabled]="currentPage === 1"
+        (click)="onPageChange(currentPage - 1)">
+        Previous
+      </button>
+      
+      <button 
+        *ngFor="let page of getPageNumbers()" 
+        class="btn"
+        [class.btn-primary]="page === currentPage"
+        [class.btn-outline-primary]="page !== currentPage"
+        (click)="onPageChange(page)">
+        {{page}}
+      </button>
+      
+      <button 
+        class="btn btn-outline-primary" 
+        [disabled]="currentPage === totalPages"
+        (click)="onPageChange(currentPage + 1)">
+        Next
+      </button>
+    </div>
+  </div>
+
+  <!-- Block Dates Tab -->
+  <div class="tab-content" *ngIf="activeTab === 'blockDates'">
+    <!-- Filters -->
+    <div class="filters-section">
+      <div class="filter-row">
+        <div class="filter-group">
+          <label>Filter by Status</label>
+          <select 
+            class="form-control" 
+            [(ngModel)]="statusFilter" 
+            (change)="onStatusFilterChange()">
+            <option value="">All Status</option>
+            <option value="Approved">Approved</option>
+            <option value="Denied">Denied</option>
+            <option value="Pending">Pending</option>
+          </select>
+        </div>
+        
+        <div class="filter-group">
+          <label>Filter by Date</label>
+          <input 
+            type="date" 
+            class="form-control" 
+            [(ngModel)]="dateFilter"
+            (change)="onDateFilterChange()">
+        </div>
+        
+        <div class="filter-group">
+          <label>Search by Handyman</label>
+          <div class="search-input-container">
+            <input 
+              type="text" 
+              class="form-control" 
+              placeholder="Enter handyman name..." 
+              [(ngModel)]="blockDatesSearchString"
+              (input)="onBlockDatesSearch()">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Block Dates Table -->
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>HANDYMAN NAME</th>
+            <th>EMAIL</th>
+            <th>PHONE</th>
+            <th>REASON</th>
+            <th>START DATE</th>
+            <th>END DATE</th>
+            <th>STATUS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let blockDate of blockDates" class="table-row">
+            <td>{{blockDate.name}}</td>
+            <td>{{blockDate.email}}</td>
+            <td>{{blockDate.phone}}</td>
+            <td>{{blockDate.reason}}</td>
+            <td>{{formatDate(blockDate.startDate)}}</td>
+            <td>{{formatDate(blockDate.endDate)}}</td>
+            <td>
+              <span class="status-badge" [class]="getStatusClass(blockDate.status)">
+                {{blockDate.status}}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <!-- Loading state -->
+      <div *ngIf="isBlockDatesLoading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Loading block dates...</p>
+      </div>
+      
+      <!-- Empty state -->
+      <div *ngIf="!isBlockDatesLoading && blockDates.length === 0" class="empty-state">
+        <p>No block dates found</p>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-container" *ngIf="blockDatesTotalPages > 1">
+      <button 
+        class="btn btn-outline-primary" 
+        [disabled]="blockDatesCurrentPage === 1"
+        (click)="onBlockDatesPageChange(blockDatesCurrentPage - 1)">
+        Previous
+      </button>
+      
+      <button 
+        *ngFor="let page of getPageNumbers()" 
+        class="btn"
+        [class.btn-primary]="page === blockDatesCurrentPage"
+        [class.btn-outline-primary]="page !== blockDatesCurrentPage"
+        (click)="onBlockDatesPageChange(page)">
+        {{page}}
+      </button>
+      
+      <button 
+        class="btn btn-outline-primary" 
+        [disabled]="blockDatesCurrentPage === blockDatesTotalPages"
+        (click)="onBlockDatesPageChange(blockDatesCurrentPage + 1)">
+        Next
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Block Date Modal -->
+<div class="modal fade" id="blockDateModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Add Block Date</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Handyman</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            [value]="selectedHandyman?.name" 
+            readonly>
+        </div>
+        
+        <div class="form-group">
+          <label>Reason <span class="required">*</span></label>
+          <textarea 
+            class="form-control" 
+            [(ngModel)]="blockDateForm.reason" 
+            placeholder="Enter reason for block date"
+            rows="3"></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label>Start Date <span class="required">*</span></label>
+          <input 
+            type="date" 
+            class="form-control" 
+            [(ngModel)]="blockDateForm.startDate">
+        </div>
+        
+        <div class="form-group">
+          <label>End Date <span class="required">*</span></label>
+          <input 
+            type="date" 
+            class="form-control" 
+            [(ngModel)]="blockDateForm.endDate">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-primary" (click)="submitBlockDate()">
+          Create Block Date
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

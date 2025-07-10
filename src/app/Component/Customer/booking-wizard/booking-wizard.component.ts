@@ -549,5 +549,9 @@ console.log(this.categoryId);
       });
   }
 
+
+  goToHome(){
+    this.router.navigate(['/']);
+  }
   //#endregion
 }

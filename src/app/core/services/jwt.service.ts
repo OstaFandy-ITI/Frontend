@@ -14,15 +14,15 @@ import { URL } from '../Shared/URL';
 export class JwtService {
   private BaseUrl = `${URL.apiUrl}/Auth`;
   constructor(private http: HttpClient) { }
-///api/Auth/login
+//Auth/login
 Login(data: UserLoginDto): Observable<ResponseDto<string>> {
   return this.http.post<ResponseDto<string>>(`${this.BaseUrl}/login`, data);
 }
-///api/Auth/register-Customer
+//Auth/register-Customer
   Register(data: UserRegisterDto): Observable<ResponseDto<string>> {
     return this.http.post<ResponseDto<string>>(`${this.BaseUrl}/register-Customer`, data);
   }
-  ///api/Auth/forgot-password
+  //Auth/forgot-password
   ForgetPass(email:string):Observable<ResponseDto<string>>
   {
     return this.http.post<ResponseDto<string>>(`${this.BaseUrl}/forgot-password`,JSON.stringify(email), 
@@ -32,9 +32,17 @@ Login(data: UserLoginDto): Observable<ResponseDto<string>> {
 
   }
 
-  ///api/Auth/reset-password
+  //Auth/reset-password
   ResetPass(ResetPass:ResetPasswordDto):Observable<ResponseDto<string>>
   {
     return this.http.post<ResponseDto<string>>(`${this.BaseUrl}/reset-password`,ResetPass);
+  }
+  //Auth/resend-verification
+  ResendVerification(useremail:string):Observable<ResponseDto<string>>
+  {
+    return this.http.post<ResponseDto<string>>(`${this.BaseUrl}/resend-verification`,JSON.stringify(useremail), 
+  {
+    headers: { 'Content-Type': 'application/json' }
+  });
   }
 }
