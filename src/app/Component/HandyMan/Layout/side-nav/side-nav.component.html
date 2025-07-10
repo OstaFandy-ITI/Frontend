@@ -7,6 +7,11 @@
   </button>
 
   <div class="d-flex align-items-center gap-3">
+    <!-- Theme Toggle Button -->
+    <button class="btn btn-light theme-toggle-btn" (click)="toggleTheme()" 
+            [attr.aria-label]="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
+      <i class="bi" [class.bi-moon-stars]="!isDarkMode" [class.bi-sun]="isDarkMode"></i>
+    </button>
 
 <!-- Chat -->
 <button class="icon-btn chat" [routerLink]="['/handyman/chatlist']" aria-label="Go to Chat">

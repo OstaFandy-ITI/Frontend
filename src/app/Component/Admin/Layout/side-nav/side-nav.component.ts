@@ -1,8 +1,11 @@
-import { Component } from '@angular/core';
-import { Router,RouterModule } from '@angular/router';
-import{ AuthService} from "../../../../core/services/auth.service"
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from "../../../../core/services/auth.service";
+import { ThemeService } from "../../../../core/services/theme.service"; 
 import { CommonModule } from '@angular/common';
-import { AdminNotificationComponent } from "../../admin-notification/admin-notification.component";
+import { Subscription } from 'rxjs';
+import { AdminNotificationComponent } from '../../admin-notification/admin-notification.component'; 
+
 
 @Component({
   selector: 'app-side-nav',
@@ -10,11 +13,30 @@ import { AdminNotificationComponent } from "../../admin-notification/admin-notif
   templateUrl: './side-nav.component.html',
   styleUrl: './side-nav.component.css'
 })
-export class SideNavComponent {
+export class SideNavComponent implements OnInit, OnDestroy {
   sidebarOpen = true;
   handymanDropdownOpen = false;
+  isDarkMode = false;
+  private themeSubscription?: Subscription;
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(
+    private router: Router, 
+    private authService: AuthService,
+    private themeService: ThemeService
+  ) {}
+
+  ngOnInit(): void {
+    // الاشتراك في تغييرات الtheme
+    this.themeSubscription = this.themeService.isDarkMode$.subscribe(
+      isDark => this.isDarkMode = isDark
+    );
+  }
+
+  ngOnDestroy(): void {
+    if (this.themeSubscription) {
+      this.themeSubscription.unsubscribe();
+    }
+  }
 
   toggleSidebar() {
     this.sidebarOpen = !this.sidebarOpen;
@@ -25,6 +47,10 @@ export class SideNavComponent {
 
   toggleHandymanDropdown() {
     this.handymanDropdownOpen = !this.handymanDropdownOpen;
+  }
+
+  toggleTheme() {
+    this.themeService.toggleTheme();
   }
 
   logout() {
