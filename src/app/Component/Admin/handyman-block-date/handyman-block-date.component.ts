@@ -49,7 +49,7 @@ export class HandymanBlockDateComponent implements OnInit, OnDestroy  {
     endDate: ''
   };
 
-  isLoading = false;
+  // isLoading = false;
   isBlockDatesLoading = false;
 
   constructor(private handymanService: HandymanBlockDateService, private toastr: ToastrService) {}
@@ -105,7 +105,7 @@ ngOnDestroy(): void {
 
 
   loadHandymen(): void {
-    this.isLoading = true;
+    // this.isLoading = true;
     this.handymanService.getAllHandymanData(
       this.searchString,
       this.currentPage,
@@ -117,12 +117,12 @@ ngOnDestroy(): void {
         this.currentPage = result.currentPage;
         this.totalPages = result.totalPages;
         this.totalCount = result.totalCount;
-        this.isLoading = false;
+        // this.isLoading = false;
       },
       error: (error) => {
         console.error('Error loading handymen:', error);
         this.toastr.error('Error loading handymen', 'Error');
-        this.isLoading = false;
+        // this.isLoading = false;
       }
     });
   }

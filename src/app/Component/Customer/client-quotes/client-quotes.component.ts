@@ -82,6 +82,16 @@ approveQuote(quote: ClientQuote) {
     this.selectedQuoteId = quote.quoteId;
     this.showRejectModal = true;
   }
+formatTimeOnly(timeString: string): string {
+  if (!timeString) return '';
+  
+  const date = new Date(timeString);
+  return date.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
+}
 
   confirmQuoteRejection() {
     if (!this.selectedQuote) {

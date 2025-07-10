@@ -37,29 +37,64 @@ export class NotificationComponent implements OnInit {
         
     }
 
+// ngOnInit() {
+//     this.loadNotifications();
+    
+//     const userId = this.authService.getCurrentUserId() ?? 0;  
+//     this.notificationService.startConnection(userId);
+//     if (userId) {
+//     this.notificationService.startConnection(userId);
+//     this.notificationService.onQuoteNotification((message: string) => {
+//       this.toastr.success(message, 'New Quote');
+//       // Refresh quotes or update UI
+//     });}
+    
+//     // this.notificationService.onQuoteUpdate((message: string) => {
+//     //     console.log('Quote notification received:', message);
+//     //     this.toastr.info(message, 'Quote Updated');
+//     //     this.loadNotifications();
+//     // });
+
+//     this.notificationService.onJobUpdate((jobId: number, status: string) => {
+//         console.log('Job status update received:', jobId, status);
+//         this.toastr.info(`Job ${jobId} status changed to ${status}`, 'Job Status Updated');
+//         this.loadNotifications();
+//     });
+
+//     // this.notificationService.onQuoteResponse((quoteId: number, action: string) => {
+//     //     console.log('Quote response received:', quoteId, action);
+//     //     this.toastr.info(`Quote ${quoteId} has been ${action}`, 'Quote Response');
+//     //     this.loadNotifications();
+//     // });
+// }
 ngOnInit() {
     this.loadNotifications();
     
     const userId = this.authService.getCurrentUserId() ?? 0;  
     this.notificationService.startConnection(userId);
     
-    // this.notificationService.onQuoteUpdate((message: string) => {
-    //     console.log('Quote notification received:', message);
-    //     this.toastr.info(message, 'Quote Updated');
-    //     this.loadNotifications();
-    // });
-
+    if (userId) {
+        this.notificationService.startConnection(userId);
+        
+        // Listen for quote notifications (from SendNotificationToClient)
+        this.notificationService.onQuoteNotification((message: string) => {
+            this.toastr.success(message, 'New Quote');
+            this.loadNotifications(); // Refresh notifications list
+        });
+        
+        // Listen for quote responses (from SendQuoteResponse)
+        this.notificationService.onQuoteResponse((quoteId: number, action: string, message: string) => {
+            console.log('Quote response received:', quoteId, action, message);
+            this.toastr.success(message, 'Quote Update');
+            this.loadNotifications(); // Refresh notifications list
+        });
+    }
+    
     this.notificationService.onJobUpdate((jobId: number, status: string) => {
         console.log('Job status update received:', jobId, status);
         this.toastr.info(`Job ${jobId} status changed to ${status}`, 'Job Status Updated');
         this.loadNotifications();
     });
-
-    // this.notificationService.onQuoteResponse((quoteId: number, action: string) => {
-    //     console.log('Quote response received:', quoteId, action);
-    //     this.toastr.info(`Quote ${quoteId} has been ${action}`, 'Quote Response');
-    //     this.loadNotifications();
-    // });
 }
 
 
