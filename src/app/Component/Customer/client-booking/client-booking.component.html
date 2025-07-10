@@ -4,9 +4,9 @@
   <h1 class="page-title header">My Bookings</h1>
 
   <div class="filter-container" *ngIf="orders.length > 0">
-    <label for="serviceFilter" class="filter-label">Filter by Service:</label>
-    <select id="serviceFilter" class="form-select filter-select" [(ngModel)]="selectedService" (change)="currentPage = 1">
-      <option *ngFor="let service of uniqueServices" [value]="service">{{ service }}</option>
+    <label for="statusFilter" class="filter-label">Filter by Status:</label>
+    <select id="statusFilter" class="form-select filter-select" [(ngModel)]="selectedStatus" (change)="currentPage = 1">
+      <option *ngFor="let status of uniqueStatuses" [value]="status">{{ status }}</option>
     </select>
   </div>
 
@@ -105,8 +105,8 @@
     <div class="empty-state-icon">
       <i class="fas fa-search"></i>
     </div>
-    <h3 class="empty-state-title">No bookings found for selected service</h3>
-    <p class="empty-state-text">Try selecting a different service or "All" to see more bookings.</p>
+    <h3 class="empty-state-title">No bookings found for selected status</h3>
+    <p class="empty-state-text">Try selecting a different status or "All" to see more bookings.</p>
   </div>
 
   <div class="pagination-container" *ngIf="totalPages > 1">

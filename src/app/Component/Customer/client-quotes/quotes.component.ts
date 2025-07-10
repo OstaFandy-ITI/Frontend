@@ -4,27 +4,24 @@ import { Subject, takeUntil } from 'rxjs';
 import { ClientProfileService } from '../../Customer/services/client-profile.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ClientQuote } from '../../../core/models/ClientProfile.model';
-import { FormsModule } from '@angular/forms'; // Import FormsModule for ngModel
+import { FormsModule } from '@angular/forms'; 
 
 @Component({
   selector: 'app-client-quotes',
-  standalone: true, // Mark component as standalone
-  imports: [CommonModule, FormsModule], // Add FormsModule here
+  standalone: true,
+  imports: [CommonModule, FormsModule], 
   templateUrl: './client-quotes.component.html',
   styleUrls: ['./client-quotes.component.css']
 })
 export class ClientQuotesComponent implements OnInit, OnDestroy {
   quotes: ClientQuote[] = [];
-  filteredQuotes: ClientQuote[] = []; // New array for filtered quotes
   currentPage = 1;
   pageSize = 2;
   isLoading = false;
   errorMessage = '';
   private destroy$ = new Subject<void>();
 
-  // New property for service filter
-  selectedService: string = '';
-  availableServices: string[] = []; // To store unique services for the dropdown
+  selectedStatus: string = 'All'; 
 
   constructor(
     private clientProfileService: ClientProfileService,
@@ -58,8 +55,6 @@ export class ClientQuotesComponent implements OnInit, OnDestroy {
           this.isLoading = false;
           if (response.isSuccess && response.data) {
             this.quotes = response.data;
-            this.extractAvailableServices(this.quotes); // Extract services after loading quotes
-            this.applyFilter(); // Apply initial filter (no filter)
           } else {
             this.errorMessage = response.message || 'Failed to load quotes';
           }
@@ -72,39 +67,39 @@ export class ClientQuotesComponent implements OnInit, OnDestroy {
       });
   }
 
-  private extractAvailableServices(quotes: ClientQuote[]) {
-    const services = new Set<string>();
-    quotes.forEach(quote => {
-      quote.services.forEach(service => services.add(service));
-    });
-    this.availableServices = Array.from(services).sort();
-  }
-
-  applyFilter() {
-    this.currentPage = 1; // Reset to first page on filter change
-    if (this.selectedService) {
-      this.filteredQuotes = this.quotes.filter(quote => 
-        quote.services.includes(this.selectedService)
-      );
+  get filteredQuotes(): ClientQuote[] { 
+    if (this.selectedStatus === 'All') {
+      return this.quotes;
     } else {
-      this.filteredQuotes = [...this.quotes]; // If no service selected, show all quotes
+      return this.quotes.filter(quote => quote.status === this.selectedStatus);
     }
   }
 
-  pagedQuotes() {
+  get uniqueStatuses(): string[] {
+    const statuses = new Set<string>();
+    this.quotes.forEach(quote => {
+      if (quote.status !== 'Approved') {
+        statuses.add(quote.status);
+      }
+    });
+    const sortedStatuses = Array.from(statuses).sort();
+    return ['All', ...sortedStatuses]; 
+  }
+
+  pagedQuotes(): ClientQuote[] {
     const start = (this.currentPage - 1) * this.pageSize;
     return this.filteredQuotes.slice(start, start + this.pageSize);
   }
 
-  get totalPages() {
+  get totalPages(): number {
     return Math.ceil(this.filteredQuotes.length / this.pageSize);
   }
 
-  nextPage() {
+  nextPage(): void {
     if (this.currentPage < this.totalPages) this.currentPage++;
   }
 
-  prevPage() {
+  prevPage(): void {
     if (this.currentPage > 1) this.currentPage--;
   }
 
@@ -120,7 +115,6 @@ export class ClientQuotesComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Track by function for ngFor to improve performance
   trackByQuoteId(index: number, quote: ClientQuote): number {
     return quote.quoteId;
   }
