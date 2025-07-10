@@ -10,6 +10,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ClientListComponent } from '../Admin/Client/client-list/client-list.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
 import { HandymanListComponent } from './HandyMan/handyman-list/handyman-list.component';
+import { HandymanBlockDateComponent } from './handyman-block-date/handyman-block-date.component';
 
 
 
@@ -27,7 +28,8 @@ export const adminRoutes: Routes = [
       {path: 'AdminDashboard', component: DashboardComponent},
       {path: 'AdminClient', component: ClientListComponent}, 
       {path: 'analytics', component: AnalyticsComponent},
-      {path: 'allhandymen', component: HandymanListComponent}
+      {path: 'allhandymen', component: HandymanListComponent},
+      {path: 'handymanblockdate', component: HandymanBlockDateComponent}
 
     ]
   }

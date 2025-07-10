@@ -1,0 +1,104 @@
+<div class="notification-container">
+  <!-- Notification Bell Icon -->
+  <div class="icon-btn notification" (click)="toggleDropdown()">
+    <i class="fas fa-bell"></i>
+    <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+  </div>
+
+  <!-- Notification Dropdown -->
+  <div class="dropdown" *ngIf="isDropdownOpen">
+    <div class="dropdown-content">
+      <!-- Loading State -->
+      <!-- <div  class="loading-state"> -->
+        <!-- <i class="fas fa-spinner fa-spin"></i> -->
+        <!-- <span>Loading notifications...</span> -->
+      <!-- </div> -->
+
+      <!-- Empty State -->
+      <!-- <div *ngIf="!isLoading && notifications.length === 0" class="empty-state">
+        <i class="fas fa-bell-slash"></i>
+        <span>No notifications yet</span>
+      </div> -->
+
+      <!-- Notification Items -->
+      <div *ngFor="let notification of notifications" class="notification-item">
+        <div class="notification-content">
+          <!-- <div *ngIf="isVacationNotification(notification)"> -->
+            <!-- <h4>/
+            <!-- <div class="action-buttons" *ngIf="!notification.actionTaken">
+              <button 
+                class="approve-btn" 
+                (click)="approveVacation(notification)"
+                [disabled]="notification.actionTaken">
+                <i class="fas fa-check"></i>
+                Approve
+              </button>
+              <button 
+                class="dismiss-btn" 
+                (click)="rejectVacation(notification)"
+                [disabled]="notification.actionTaken">
+                <i class="fas fa-times"></i>
+                Reject
+              </button>
+            </div> -->
+<div *ngIf="isVacationNotification(notification)">
+  <h4>
+    <i class="fas fa-calendar-times"></i>
+    Vacation Request
+  </h4>
+  <p>{{ formatVacationMessage(notification) }}</p>
+  <small>{{ formatTimeAgo(notification.createdAt) }}</small>
+  
+  <!-- Action Buttons (shown only if no action taken) -->
+  <div class="action-buttons" *ngIf="!notification.actionStatus">
+    <button
+      class="approve-btn"
+      (click)="approveVacation(notification)"
+      [disabled]="isProcessing">
+      <i class="fas fa-check"></i>
+      Approve
+    </button>
+    <button
+      class="dismiss-btn"
+      (click)="rejectVacation(notification)"
+      [disabled]="isProcessing">
+      <i class="fas fa-times"></i>
+      Reject
+    </button>
+  </div>
+            <!-- <div class="action-result" *ngIf="notification.actionTaken">
+              <div class="action-result approved" *ngIf="notification.actionTaken === 'approved'">
+                <i class="fas fa-check-circle"></i>
+                Vacation Approved
+              </div>
+              <div class="action-result rejected" *ngIf="notification.actionTaken === 'rejected'">
+                <i class="fas fa-times-circle"></i>
+                Vacation Rejected
+              </div>
+            </div> -->
+            <div class="action-result" *ngIf="notification.actionStatus">
+    <div class="action-result approved" *ngIf="notification.actionStatus === 'approved'">
+      <i class="fas fa-check-circle"></i>
+      Vacation Approved
+    </div>
+    <div class="action-result rejected" *ngIf="notification.actionStatus === 'rejected'">
+      <i class="fas fa-times-circle"></i>
+      Vacation Rejected
+    </div>
+  </div>
+          </div>
+
+          <!-- Regular Notifications -->
+          <div *ngIf="!isVacationNotification(notification)">
+            <h4>{{ notification.title }}</h4>
+            <p>{{ notification.message }}</p>
+            <small>{{ formatTimeAgo(notification.createdAt) }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- </div> -->
+
+<!-- Overlay to close dropdown when clicking outside -->
+<div class="modal-overlay" *ngIf="isDropdownOpen" (click)="toggleDropdown()"></div>

@@ -121,67 +121,75 @@
     </div>
   </div>
 
-  <!-- Data Table -->
-  <div class="table-container">
-    <div class="table-wrapper">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>Service</th>
-            <th>Location</th>
-            <th>Client</th>
-            <th>Handyman</th>
-            <th>Review</th>
-            <th>Revenue</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngIf="isLoading">
-            <td colspan="6" class="loading-cell">Loading...</td>
-          </tr>
-          <tr *ngIf="!isLoading && dashboardData.length === 0">
-            <td colspan="6" class="no-data-cell">No data available</td>
-          </tr>
-          <tr *ngFor="let item of dashboardData">
-            <td>{{ item.service }}</td>
-            <td>{{ item.location }}</td>
-            <td>{{ item.client }}</td>
-            <td>{{ item.handyman }}</td>
-            <td>{{ item.review }}</td>
-            <td>${{ item.revenue | number:'1.2-2' }}</td>
-          </tr>
-        </tbody>
-      </table>
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="d-flex justify-content-center py-4">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
     </div>
+  </div>
 
-    <!-- Pagination -->
-    <div class="pagination-container" *ngIf="totalPages > 1">
-      <div class="pagination-info">
-        Showing {{ ((currentPage - 1) * pageSize) + 1 }} to {{ (currentPage * pageSize) < totalCount ? (currentPage * pageSize) : totalCount }} of {{ totalCount }} results
-      </div>
-      <div class="pagination">
-        <button 
-          class="pagination-button"
-          [disabled]="currentPage === 1"
-          (click)="onPageChange(currentPage - 1)">
+  <!-- Data Table -->
+  <div *ngIf="!isLoading" class="table-responsive custom-table">
+    <table class="table table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>Service</th>
+          <th>Location</th>
+          <th>Client</th>
+          <th>Handyman</th>
+          <th>Review</th>
+          <th>Revenue</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngIf="dashboardData.length === 0">
+          <td colspan="6" class="text-center py-4">
+            <em>No data available</em>
+          </td>
+        </tr>
+        <tr *ngFor="let item of dashboardData">
+          <td>{{ item.service }}</td>
+          <td>{{ item.location }}</td>
+          <td>{{ item.client }}</td>
+          <td>{{ item.handyman }}</td>
+          <td>{{ item.review }}</td>
+          <td>${{ item.revenue | number:'1.2-2' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <nav *ngIf="!isLoading && totalPages > 1" aria-label="Dashboard pagination">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <a class="page-link" (click)="onPageChange(currentPage - 1)" 
+           [style.cursor]="currentPage === 1 ? 'not-allowed' : 'pointer'">
           Previous
-        </button>
-        
-        <button 
-          *ngFor="let page of getPaginationNumbers()"
-          class="pagination-button"
-          [class.active]="page === currentPage"
-          (click)="onPageChange(page)">
+        </a>
+      </li>
+
+      <li *ngFor="let page of getPaginationNumbers()" class="page-item"
+          [class.active]="page === currentPage">
+        <a class="page-link" (click)="onPageChange(page)" style="cursor: pointer">
           {{ page }}
-        </button>
-        
-        <button 
-          class="pagination-button"
-          [disabled]="currentPage === totalPages"
-          (click)="onPageChange(currentPage + 1)">
+        </a>
+      </li>
+
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <a class="page-link" (click)="onPageChange(currentPage + 1)" 
+           [style.cursor]="currentPage === totalPages ? 'not-allowed' : 'pointer'">
           Next
-        </button>
-      </div>
-    </div>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Pagination Info -->
+  <div *ngIf="!isLoading && dashboardData.length > 0" class="text-center mt-2">
+    <small class="text-muted">
+      Showing {{ ((currentPage - 1) * pageSize) + 1 }} to
+      {{ (currentPage * pageSize) < totalCount ? (currentPage * pageSize) : totalCount }} of {{ totalCount }} results
+    </small>
   </div>
 </div>

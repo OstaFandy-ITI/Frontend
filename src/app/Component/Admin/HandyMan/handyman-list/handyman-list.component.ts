@@ -8,6 +8,8 @@ import { HandymanEditComponent } from '../handyman-edit/handyman-edit.component'
 import { Subject, debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 
+declare var bootstrap: any;
+
 @Component({
   selector: 'app-handyman-list',
   templateUrl: './handyman-list.component.html',
@@ -36,6 +38,10 @@ export class HandymanListComponent implements OnInit, OnDestroy {
   // Edit modal properties
   selectedHandymanForEdit: AdminHandyManDTO | null = null;
   isEditModalVisible = false;
+  
+  // Delete modal properties
+  selectedHandymanForDelete: AdminHandyManDTO | null = null;
+  private deleteModalInstance: any;
   
   // Math object for template
   Math = Math;
@@ -82,6 +88,11 @@ export class HandymanListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    
+    // Clean up modal instances
+    if (this.deleteModalInstance) {
+      this.deleteModalInstance.dispose();
+    }
   }
 
   loadHandymen(): void {
@@ -111,7 +122,6 @@ export class HandymanListComponent implements OnInit, OnDestroy {
       error: (error) => {
         console.error('Error loading handymen:', error);
         this.loading = false;
-
       }
     });
   }
@@ -157,34 +167,54 @@ export class HandymanListComponent implements OnInit, OnDestroy {
       this.handymen[index] = updatedHandyman;
     }
     this.closeEditModal();
-  // Reload the list to ensure all data is up-to-date
+    // Reload the list to ensure all data is up-to-date
     this.loadHandymen();
   }
 
-  deleteHandyman(handyman: AdminHandyManDTO): void {
-    const confirmMessage = `Are you sure you want to delete ${handyman.firstName} ${handyman.lastName}?`;
-    
-    if (confirm(confirmMessage)) {
-      this.loading = true;
-      this.handymanService.deleteHandyman(handyman.userId).subscribe({
-        next: () => {
-          if (this.handymen.length === 1 && this.currentPage > 1) {
-            this.currentPage--;
-          }
-          this.loadHandymen();
-          this.toastr.success('Handyman deleted successfully.', 'Success', {
-            timeOut: 3000,
-          });
-        },
-        error: (error) => {
-          console.error('Error deleting handyman:', error);
-          this.loading = false;
-          this.toastr.error('Failed to delete handyman. Please try again.', 'Error', {
-            timeOut: 3000,
-          });
-        }
-      });
+  // Updated delete methods with Bootstrap modal
+  confirmDeleteHandyman(handyman: AdminHandyManDTO): void {
+    this.selectedHandymanForDelete = handyman;
+
+    const modalElement = document.getElementById('deleteConfirmModal');
+    if (modalElement) {
+      if (this.deleteModalInstance) {
+        this.deleteModalInstance.dispose();
+      }
+      this.deleteModalInstance = new bootstrap.Modal(modalElement);
+      this.deleteModalInstance.show();
     }
+  }
+
+  proceedDelete(): void {
+    if (!this.selectedHandymanForDelete) return;
+
+    this.deleteHandyman(this.selectedHandymanForDelete.userId);
+
+    if (this.deleteModalInstance) {
+      this.deleteModalInstance.hide();
+    }
+  }
+
+  private deleteHandyman(userId: number): void {
+    this.loading = true;
+    
+    this.handymanService.deleteHandyman(userId).subscribe({
+      next: () => {
+        // Check if this is the last item on the current page
+        const remainingHandymenOnCurrentPage = this.handymen.length - 1;
+        if (remainingHandymenOnCurrentPage === 0 && this.currentPage > 1) {
+          this.currentPage = this.currentPage - 1;
+        }
+        
+        this.loadHandymen();
+        this.toastr.success('Handyman deleted successfully', 'Success');
+      },
+      error: (error) => {
+        console.error('Error deleting handyman:', error);
+        this.toastr.error('Failed to delete handyman', 'Error');
+        this.loading = false;
+      }
+    });
   }
 
   refreshList(): void {

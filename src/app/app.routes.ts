@@ -15,11 +15,13 @@ import { CareersComponent } from './Component/Customer/careers/careers.component
 import { HandymanPendingComponent } from './Component/HandyMan/Layout/handyman-pending/handyman-pending.component';
 import { HandymanRejectedComponent } from './Component/HandyMan/Layout/handyman-rejected/handyman-rejected.component';
 import { UnauthorizedComponent } from './auth/unauthorized/unauthorized.component';
+import { ForgetPasswordComponent } from './auth/forget-password/forget-password.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'registerHamdyMan', component: HandymanRegistrationComponent },
+  {path:'forgetPass',component:ForgetPasswordComponent},
   { path: 'handyman/pending', component: HandymanPendingComponent },
     { path: 'handyman/rejected', component: HandymanRejectedComponent },
     {path:'Unauthorized',component:UnauthorizedComponent},

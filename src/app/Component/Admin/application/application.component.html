@@ -32,9 +32,9 @@
     <table class="table table-hover">
       <thead class="table-dark">
         <tr>
-          <th class="sortable-header"
+          <th class="sortable-header" 
               [class.sorted]="getSortIcon('fullName').includes('up') || getSortIcon('fullName').includes('down')"
-              (click)="sortBy('fullName')">
+              (click)="sortBy('fullName')" >
             Name
             <i [class]="getSortIcon('fullName')" class="text-white"></i>
           </th>
@@ -55,12 +55,12 @@
 
           <td>
             <button
-              class="btn custom-view-btn btn-sm text-white"
+              class="btn btn-outline-info btn-sm"
               (click)="openHandymanDetailsModal(application)"
               data-bs-toggle="modal"
               data-bs-target="#handymanDetailsModal"
               title="View Handyman Details">
-              View
+              <i class="bi bi-eye" style="margin: auto;"></i>
             </button>
           </td>
         </tr>

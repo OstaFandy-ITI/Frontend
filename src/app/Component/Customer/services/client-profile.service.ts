@@ -9,7 +9,9 @@ import {
   ApiResponse,
   AddAddressRequest,
   AddAddressResponse,
-  ClientQuote
+  ClientQuote,
+  CreateReviewRequest,
+  ReviewResponse
 } from '../../../core/models/ClientProfile.model';
 
 @Injectable({
@@ -116,4 +118,12 @@ export class ClientProfileService {
 
     return this.http.get(searchUrl);
   }
+
+  createReview(reviewData: CreateReviewRequest): Observable<ApiResponse<ReviewResponse>> {
+  return this.http.post<ApiResponse<ReviewResponse>>(
+    `${URL.apiUrl}/Review`,
+    reviewData,
+    this.getHttpOptions()
+  );
+}
 }

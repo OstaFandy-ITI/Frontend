@@ -8,15 +8,6 @@
   --card-bg: linear-gradient(135deg, #3A6EA5 0%, #004E98 100%);
 }
 
-
-/* Main Content */
-.main-content {
-  padding: 30px;
-  width: 100%;
-  min-height: 100vh;
-  background-color: var(--light-gray);
-}
-
 /* Top bar (if used in this component) */
 .top-bar {
   display: flex;
@@ -75,34 +66,12 @@
   font-size: 0.9rem;
 }
 
-/* Table Styling */
-.custom-table {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+.category-img { 
+  width: 50px; 
+  height: 50px; 
+  object-fit: cover; 
+  border-radius: 6px; 
 }
-
-.custom-table thead th {
-  background-color: var(--blue-dark);
-  color: white;
-}
-
-.table thead th {
-  vertical-align: middle;
-  font-weight: 600;
-  padding: 1rem;
-  font-size: 0.9rem;
-  border: none;
-}
-
-.table tbody td {
-  vertical-align: middle;
-  background-color: white;
-  padding: 0.9rem 1rem;
-  font-size: 0.875rem;
-}
-.category-img { width: 50px; height: 50px; object-fit: cover; border-radius: 6px; }
 
 .table tbody tr:hover {
   background-color: rgba(58, 110, 165, 0.05);
@@ -125,56 +94,11 @@
   cursor: pointer;
 }
 
-/* Modal Custom */
-.modal-header {
-  background-color: var(--blue-dark);
-  color: white;
-}
-
-.modal-footer .btn-primary {
-  background-color: var(--orange);
-  border: none;
-}
-
-.modal-footer .btn-primary:hover {
-  background-color: #e6b800;
-}
-
 .table thead th i {
   margin-left: 2px;
   font-size: 0.8rem;
   color: white; /* Always white */
 }
-
-.pagination .page-link {
-  color: var(--blue-dark);
-  border-radius: 6px;
-  margin: 0 2px;
-  border: 1px solid var(--gray);
-  background: #fff;
-  transition: background 0.2s, color 0.2s;
-}
-
-.pagination .page-item.active .page-link,
-.pagination .page-link:hover {
-  background: var(--blue-dark);
-  color: #fff;
-  border-color: var(--blue-dark);
-}
-
-.pagination .page-item.disabled .page-link {
-  color: var(--gray);
-  background: #f8f9fa;
-  border-color: var(--gray);
-}
-
-.form-select {
-  border-radius: 6px;
-  border: 1px solid var(--gray);
-  font-size: 0.95rem;
-}
-
-
 
 /* Status Button Styling inside table */
 .status-btn {
