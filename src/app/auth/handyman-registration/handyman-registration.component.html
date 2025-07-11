@@ -1,6 +1,13 @@
 <app-navbar></app-navbar>
 <div class="container-fluid" style="--bs-gutter-x: 0rem;">
 
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="spinner-container">
+      <div class="spinner"></div>
+      <p>Loading, please wait...</p>
+    </div>
+  </div>
+
   <div class="gradiant">
     <ng-container *ngIf="step === 1">
       <div class="container py-5">
