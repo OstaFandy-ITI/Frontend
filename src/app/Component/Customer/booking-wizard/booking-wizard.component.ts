@@ -24,16 +24,22 @@ import { Stripe } from '@stripe/stripe-js';
 import { PaymentService } from '../services/payment.service';
 import { HandymanService } from '../../Admin/services/handyman.service';
 import { AdminHandyManDTO } from '../../../core/models/Adminhandyman.model';
-import { NavbarComponent } from "../Layout/navbar/navbar.component";
+import { NavbarComponent } from '../Layout/navbar/navbar.component';
 import { FooterComponent } from '../Layout/footer/footer.component';
-
 
 @Component({
   selector: 'app-booking-wizard',
   templateUrl: './booking-wizard.component.html',
   styleUrls: ['./booking-wizard.component.css'],
   standalone: true,
-  imports: [FormsModule, CommonModule, ChatComponent, ReactiveFormsModule, NavbarComponent,FooterComponent],
+  imports: [
+    FormsModule,
+    CommonModule,
+    ChatComponent,
+    ReactiveFormsModule,
+    NavbarComponent,
+    FooterComponent,
+  ],
 })
 export class BookingWizardComponent implements OnInit {
   currentStep = 1;
@@ -44,7 +50,7 @@ export class BookingWizardComponent implements OnInit {
   currentUser!: LoggedInUser | null;
   today!: string;
   cashConfirmed: boolean = false;
-  categoryId:any;
+  categoryId: any;
 
   constructor(
     private authService: AuthService,
@@ -79,14 +85,53 @@ export class BookingWizardComponent implements OnInit {
     });
 
     // Step 1: Load categoryId from query params
-    this.route.queryParams.subscribe((params: { categoryId?: string }) => {
-      if (!params['categoryId']) {
-        this.toastr.error('Please select a category to proceed.');
-        this.router.navigate(['/']); // or redirect to homepage
-        return;
+    this.route.queryParams.subscribe((params) => {
+      const newCategoryId = +params['categoryId'] || 0;
+      const oldCategoryId = +localStorage.getItem('currentCategoryId')! || 0;
+      if (newCategoryId !== oldCategoryId) {
+        const hasCachedData =
+          localStorage.getItem('selectedServices') ||
+          localStorage.getItem('bookingData');
+
+        if (hasCachedData) {
+          var confirmChange = window.confirm(
+            `You have saved data in another category. Do you want to clear it and proceed to the new category?`
+          );
+
+          if (confirmChange) {
+            localStorage.removeItem('selectedServices');
+            localStorage.removeItem('bookingData');
+            localStorage.setItem('currentCategoryId', newCategoryId.toString());
+
+            this.SelectedItem = [];
+            this.bookingData = new CreateBookingVM();
+            this.categoryId = newCategoryId;
+            this.Getservices(this.categoryId);
+          } else {
+            this.router.navigate([], {
+              queryParams: { categoryId: oldCategoryId },
+              replaceUrl: true,
+              queryParamsHandling: 'merge',
+            });
+            return;
+          }
+        } else {
+          localStorage.setItem('currentCategoryId', newCategoryId.toString());
+          this.SelectedItem = [];
+          this.bookingData = new CreateBookingVM();
+          this.categoryId = newCategoryId;
+          this.Getservices(this.categoryId);
+        }
+      } else {
+        const savedServices = localStorage.getItem('selectedServices');
+        if (savedServices) this.SelectedItem = JSON.parse(savedServices);
+
+        const savedBooking = localStorage.getItem('bookingData');
+        if (savedBooking) this.bookingData = JSON.parse(savedBooking);
+
+        this.categoryId = newCategoryId;
+        this.Getservices(this.categoryId);
       }
-      this.categoryId = +params['categoryId'];
-      this.Getservices(this.categoryId);
     });
     // Step 1.5: Load selected services from localStorage
     const saved = localStorage.getItem('selectedServices');
@@ -108,15 +153,6 @@ export class BookingWizardComponent implements OnInit {
     }
   }
 
-  //#region Navigation
-  // goToStep(step: number): void {
-  //   if (step >= 1 && step <= 5) {
-  //     this.updateStepData(this.currentStep);
-  //     this.currentStep = step;
-  //     window.scrollTo(0, 0);
-  //     this.initializeStripeIfNeeded();
-  //   }
-  // }
   goToStep(step: number): void {
     this.updateStepData(this.currentStep);
 
@@ -314,10 +350,9 @@ export class BookingWizardComponent implements OnInit {
     const estimatedMinutes = this.bookingData.estimatedMinutes;
     const day = new Date(this.preferredDate).toISOString();
 
-    
     const categoryId = this.categoryId;
-console.log('categoryId:', categoryId);
-console.log(this.categoryId);
+    console.log('categoryId:', categoryId);
+    console.log(this.categoryId);
     this.BookingService.getFreeSlot(
       categoryId,
       day,
@@ -334,6 +369,7 @@ console.log(this.categoryId);
         }
       },
       error: (err) => {
+        this.availableSlots=[];
         this.toastr.error(err.error.message || 'Error fetching slots');
       },
     });
@@ -549,8 +585,7 @@ console.log(this.categoryId);
       });
   }
 
-
-  goToHome(){
+  goToHome() {
     this.router.navigate(['/']);
   }
   //#endregion

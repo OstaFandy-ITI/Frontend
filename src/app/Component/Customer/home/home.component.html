@@ -1,34 +1,34 @@
 <app-navbar></app-navbar>
 <router-outlet></router-outlet>
 <section class="hero-section bg-light py-5">
-    <div class="container">
-        <div class="row align-items-center">
+  <div class="container">
+    <div class="row align-items-center">
 
-            <!-- Left Text & CTA -->
-            <div class="col-md-6 text-center text-md-start mb-4 mb-md-0">
-                <h1 class="display-5 fw-bold">Skilled Help..Trusted Hands.</h1>
-                <p class="lead text-muted">
-                    Find expert handymen for plumbing, carpentry, repairs, and more — all in one place.
-                </p>
-                <a routerLink="/registerHamdyMan" class="btn Join-btn me-2">Join as Handyman</a>
-                <a routerLink="/about" class="btn Explore-btn ">Learn more</a>
+      <!-- Left Text & CTA -->
+      <div class="col-md-6 text-center text-md-start mb-4 mb-md-0">
+        <h1 class="display-5 fw-bold">Skilled Help..Trusted Hands.</h1>
+        <p class="lead text-muted">
+          Find expert handymen for plumbing, carpentry, repairs, and more — all in one place.
+        </p>
+        <a routerLink="/registerHamdyMan" class="btn Join-btn me-2">Join as Handyman</a>
+        <a routerLink="/about" class="btn Explore-btn ">Learn more</a>
 
-                <!-- Category Icons -->
-                <div class="d-flex flex-wrap gap-3 mt-4 justify-content-center justify-content-md-start">
-                    <div *ngFor="let cat of categories" class="text-center" style="width: 70px; cursor: pointer;"
-                        (click)="goToBooking(cat.id)">
-                        <img [src]="cat.iconImg" [alt]="cat.name" class="img-fluid rounded icon-shadow" />
-                        <small class="d-block text-muted mt-1">{{ cat.name }}</small>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right Handyman Image -->
-            <div class="col-md-6 text-center">
-                <img src="assets/handyhero.png" alt="Handyman" class="img-fluid hero-img" />
-            </div>
+        <!-- Category Icons -->
+        <div class="d-flex flex-wrap gap-3 mt-4 justify-content-center justify-content-md-start">
+          <div *ngFor="let cat of categories" class="text-center" style="width: 70px; cursor: pointer;"
+            (click)="goToBooking(cat.id)">
+            <img [src]="cat.iconImg" [alt]="cat.name" class="img-fluid rounded icon-shadow" />
+            <small class="d-block text-muted mt-1">{{ cat.name }}</small>
+          </div>
         </div>
+      </div>
+
+      <!-- Right Handyman Image -->
+      <div class="col-md-6 text-center">
+        <img src="assets/handyhero.png" alt="Handyman" class="img-fluid hero-img" />
+      </div>
     </div>
+  </div>
 </section>
 
 
@@ -48,7 +48,8 @@
             <i class="bi bi-patch-check-fill"></i>
           </div>
           <h5 class="fw-bold mb-2">Vetted Professionals</h5>
-          <p class="text-muted">Each handyman is background-checked, skilled, and trained to deliver top-quality results.</p>
+          <p class="text-muted">Each handyman is background-checked, skilled, and trained to deliver top-quality
+            results.</p>
         </div>
       </div>
 
@@ -110,145 +111,87 @@
   </div>
 </section>
 <section class="py-5 bg-white marquee-wrapper">
-    <div class="marquee-track">
-        <img src="assets/img.jpg" class="circle-img" alt="Dad and Daughter" />
-        <img src="assets/img1.jpg" class="circle-img" alt="Cleaner Lady" />
-        <img src="assets/img3.jpg" class="circle-img" alt="Window Repair" />
-        <img src="assets/img4.jpg" class="circle-img" alt="Plumber Sink" />
+  <div class="marquee-track">
+    <img src="assets/img.jpg" class="circle-img" alt="Dad and Daughter" />
+    <img src="assets/img1.jpg" class="circle-img" alt="Cleaner Lady" />
+    <img src="assets/img3.jpg" class="circle-img" alt="Window Repair" />
+    <img src="assets/img4.jpg" class="circle-img" alt="Plumber Sink" />
 
-        <!-- Repeat for smooth looping -->
-        <img src="assets/img.jpg" class="circle-img" alt="Dad and Daughter" />
-        <img src="assets/img1.jpg" class="circle-img" alt="Cleaner Lady" />
-        <img src="assets/img3.jpg" class="circle-img" alt="Window Repair" />
-        <img src="assets/img4.jpg" class="circle-img" alt="Plumber Sink" />
+    <!-- Repeat for smooth looping -->
+    <img src="assets/img.jpg" class="circle-img" alt="Dad and Daughter" />
+    <img src="assets/img1.jpg" class="circle-img" alt="Cleaner Lady" />
+    <img src="assets/img3.jpg" class="circle-img" alt="Window Repair" />
+    <img src="assets/img4.jpg" class="circle-img" alt="Plumber Sink" />
 
-        <img src="assets/img.jpg" class="circle-img" alt="Dad and Daughter" />
-        <img src="assets/img1.jpg" class="circle-img" alt="Cleaner Lady" />
-        <img src="assets/img3.jpg" class="circle-img" alt="Window Repair" />
-        <img src="assets/img4.jpg" class="circle-img" alt="Plumber Sink" />
-    </div>
+    <img src="assets/img.jpg" class="circle-img" alt="Dad and Daughter" />
+    <img src="assets/img1.jpg" class="circle-img" alt="Cleaner Lady" />
+    <img src="assets/img3.jpg" class="circle-img" alt="Window Repair" />
+    <img src="assets/img4.jpg" class="circle-img" alt="Plumber Sink" />
+  </div>
 </section>
 
 
 <section class="review-section bg-white py-5">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="section-title text-ostafandy fw-bold">These reviews say it better.</h2>
-            <p class="text-muted">Real stories from satisfied customers.</p>
-        </div>
-
-        <div id="reviewsCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#reviewsCarousel" data-bs-slide-to="0" class="active"></button>
-                <button type="button" data-bs-target="#reviewsCarousel" data-bs-slide-to="1"></button>
-                <button type="button" data-bs-target="#reviewsCarousel" data-bs-slide-to="2"></button>
-            </div>
-
-            <div class="carousel-inner">
-                <!-- Slide 1 -->
-                <div class="carousel-item active">
-                    <div class="row justify-content-center">
-                        <div class="col-md-10 col-lg-8">
-                            <div class="review-card bg-light rounded p-4 shadow-sm position-relative">
-                                <div class="review-date">10th Feb, 2023</div>
-                                <div class="stars mb-3">
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                </div>
-                                <p class="review-text">
-                                    "The service was amazing! The handyman arrived on time and did a great job. I’ll
-                                    definitely use OstaFandy again."
-                                </p>
-                                <div class="reviewer-info mt-4">
-                                    <div class="reviewer-avatar">
-                                        <i class="fas fa-user"></i>
-                                    </div>
-                                    <div class="reviewer-details">
-                                        <h6>Ray Robertson</h6>
-                                        <small>CEO, HomeFix</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide 2 -->
-                <div class="carousel-item">
-                    <div class="row justify-content-center">
-                        <div class="col-md-10 col-lg-8">
-                            <div class="review-card bg-light rounded p-4 shadow-sm position-relative">
-                                <div class="review-date">15th Jan, 2023</div>
-                                <div class="stars mb-3">
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                </div>
-                                <p class="review-text">
-                                    "Booking was simple, service was smooth, and the team was polite and skilled. Highly
-                                    recommend!"
-                                </p>
-                                <div class="reviewer-info mt-4">
-                                    <div class="reviewer-avatar">
-                                        <i class="fas fa-user"></i>
-                                    </div>
-                                    <div class="reviewer-details">
-                                        <h6>Sarah Johnson</h6>
-                                        <small>Marketing Director</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slide 3 -->
-                <div class="carousel-item">
-                    <div class="row justify-content-center">
-                        <div class="col-md-10 col-lg-8">
-                            <div class="review-card bg-light rounded p-4 shadow-sm position-relative">
-                                <div class="review-date">22nd Dec, 2022</div>
-                                <div class="stars mb-3">
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                    <i class="fas fa-star text-warning"></i>
-                                </div>
-                                <p class="review-text">
-                                    "Quick, affordable, and trustworthy. It's hard to find quality service like this
-                                    elsewhere!"
-                                </p>
-                                <div class="reviewer-info mt-4">
-                                    <div class="reviewer-avatar">
-                                        <i class="fas fa-user"></i>
-                                    </div>
-                                    <div class="reviewer-details">
-                                        <h6>Michael Chen</h6>
-                                        <small>Product Manager</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Controls -->
-            <button class="carousel-control-prev" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon"></span>
-            </button>
-        </div>
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title text-ostafandy fw-bold">These reviews say it better.</h2>
+      <p class="text-muted">Real stories from satisfied customers.</p>
     </div>
+
+    <div id="reviewsCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        @for (item of allOrdersFeedback; track $index) {
+        <button type="button" data-bs-target="#reviewsCarousel" [attr.data-bs-slide-to]="$index"
+          [class.active]="!$index">
+        </button>
+        }
+      </div>
+
+      <div class="carousel-inner">
+        <!-- Slide 1 -->
+        @for (item of allOrdersFeedback; track $index) {
+        <div class="carousel-item active">
+          <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8">
+              <div class="review-card bg-light rounded p-4 shadow-sm position-relative">
+                <div class="review-date">{{ item.reviewCreatedAt | date:'short' }}</div>
+                <div class="stars mb-3">
+
+                  @for (_ of createRange(item.rating); track $index) {
+                  <i class="fas fa-star text-warning"></i>
+                  }
+                  @for (_ of createRange(5 - item.rating); track $index) {
+                  <i class="far fa-star text-warning"></i>
+                  }
+                </div>
+                <p class="review-text">
+                  {{item.comment}}
+                </p>
+                <div class="reviewer-info mt-4">
+                  <div class="reviewer-avatar">
+                    <i class="fas fa-user"></i>
+                  </div>
+                  <div class="reviewer-details">
+                    <h6>{{item.clientName}}</h6>
+                    <small>{{item.handymanSpecialty}}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+
+      <!-- Controls -->
+      <button class="carousel-control-prev" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#reviewsCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon"></span>
+      </button>
+    </div>
+  </div>
 </section>
 
 <section class="bg-white py-5 story-section">
@@ -317,14 +260,12 @@
 
 
 <!-- Floating chatbot Button -->
-<a href="javascript:void(0)" 
-   class="floating-cta-btn d-flex align-items-center" 
-   (click)="toggleChat()"
-   [class.hidden]="showChat">
+<a href="javascript:void(0)" class="floating-cta-btn d-flex align-items-center" (click)="toggleChat()"
+  [class.hidden]="showChat">
   <i class="fas fa-robot me-2"></i>Chat with us
 </a>
 
-<div class="chat-container" [class.open]="showChat" >
+<div class="chat-container" [class.open]="showChat">
   <app-chatbot *ngIf="showChat" (closed)="closeChat()"></app-chatbot>
 </div>
 <app-footer></app-footer>

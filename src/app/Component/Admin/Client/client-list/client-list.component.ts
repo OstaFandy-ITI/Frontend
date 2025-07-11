@@ -27,7 +27,7 @@ export class ClientListComponent implements OnInit {
   currentPage = 1;
   totalPages = 1;
   totalCount = 0;
-  pageSize = 2;
+  pageSize = 5;
   
   searchControl = new FormControl('');
   statusFilter: boolean | null = null;
