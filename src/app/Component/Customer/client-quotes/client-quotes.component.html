@@ -5,13 +5,6 @@
     <h1 class="page-title">My Quotes</h1>
   </div>
 
-  <div class="filter-container" *ngIf="!isLoading && !errorMessage && quotes.length > 0">
-    <label for="statusFilter">Filter by Status:</label>
-    <select id="statusFilter" [(ngModel)]="selectedStatus" (change)="currentPage = 1">
-      <option *ngFor="let status of uniqueStatuses" [value]="status">{{ status }}</option>
-    </select>
-  </div>
-
   <div *ngIf="isLoading" class="loading-container">
     <div class="loading-spinner"></div>
     <p class="loading-text">Loading your quotes...</p>
@@ -24,22 +17,16 @@
     <p class="error-message">{{ errorMessage }}</p>
   </div>
 
-  <div *ngIf="!isLoading && !errorMessage && filteredQuotes.length === 0" class="empty-state">
-
   <div *ngIf="!isLoading && !errorMessage && quotes.length === 0" class="empty-state">
-
     <div class="empty-icon">
       <i class="fas fa-file-invoice-dollar"></i>
     </div>
-    <h3>No quotes found for selected status</h3>
-    <p>Try selecting a different status or "All" to see more quotes.</p>
+    <h3>No quotes found</h3>
+    <p>You don't have any quotes yet. Contact us to get started!</p>
   </div>
-
-  <div class="quotes-list" *ngFor="let quote of pagedQuotes(); trackBy: trackByQuoteId">
 
   <div class="quotes-list" *ngIf="!isLoading && !errorMessage && quotes.length > 0">
     <div *ngFor="let quote of quotes; trackBy: trackByQuoteId" class="quote-card"
-
          [ngClass]="{
            'status-border-left-approved': quote.status === 'Approved',
            'status-border-left-pending': quote.status === 'Pending',
@@ -152,26 +139,6 @@
       </div>
     </div>
   </div>
-
-
-  <div class="pagination-container" *ngIf="totalPages > 1">
-    <button class="pagination-btn" 
-            (click)="prevPage()" 
-            [disabled]="currentPage === 1">
-      <i class="fas fa-chevron-left"></i>
-    </button>
-    
-    <div class="pagination-info">
-       {{ currentPage }} 
-    </div>
-    
-    <button class="pagination-btn" 
-            (click)="nextPage()" 
-            [disabled]="currentPage === totalPages">
-      <i class="fas fa-chevron-right"></i>
-    </button>
-  </div>
-
 </div>
 
 <div class="modal-overlay" *ngIf="showDatePicker" (click)="closeAllModals()">

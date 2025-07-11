@@ -13,12 +13,10 @@ import { ToastrService } from 'ngx-toastr';
   selector: 'app-client-quotes',
   imports: [CommonModule, FormsModule],
   templateUrl: './client-quotes.component.html',
-  styleUrls: ['./clinet-quotes.component.css']
+  styleUrls: ['./client-quotes.component.css']
 })
 export class ClientQuotesComponent implements OnInit, OnDestroy {
   quotes: ClientQuote[] = [];
-  currentPage = 1;
-  pageSize = 2;
   // notifications: Notification[] = [];
   availableTimeSlots: any[] = [];
   isLoading = false;
@@ -36,8 +34,6 @@ export class ClientQuotesComponent implements OnInit, OnDestroy {
   showTimeSlots = false;
   showRejectModal = false;
   rejectionReason: string = '';
-
-  selectedStatus: string = 'All'; 
 
   constructor(
     private clientProfileService: ClientProfileService,
@@ -345,9 +341,7 @@ onDateSelected() {
           this.isLoading = false;
           if (response.isSuccess && response.data) {
             this.quotes = response.data;
-
             console.log('Loaded quotes:', this.quotes.map(q => ({ id: q.bookingId, status: q.status })));
-
           } else {
             this.errorMessage = response.message || 'Failed to load quotes';
           }
@@ -358,42 +352,6 @@ onDateSelected() {
           console.error('Error loading quotes:', error);
         }
       });
-  }
-
-  get filteredQuotes(): ClientQuote[] { 
-    if (this.selectedStatus === 'All') {
-      return this.quotes;
-    } else {
-      return this.quotes.filter(quote => quote.status === this.selectedStatus);
-    }
-  }
-
-  get uniqueStatuses(): string[] {
-    const statuses = new Set<string>();
-    this.quotes.forEach(quote => {
-      if (quote.status !== 'Approved') {
-        statuses.add(quote.status);
-      }
-    });
-    const sortedStatuses = Array.from(statuses).sort();
-    return ['All', ...sortedStatuses]; 
-  }
-
-  pagedQuotes(): ClientQuote[] {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.filteredQuotes.slice(start, start + this.pageSize);
-  }
-
-  get totalPages(): number {
-    return Math.ceil(this.filteredQuotes.length / this.pageSize);
-  }
-
-  nextPage(): void {
-    if (this.currentPage < this.totalPages) this.currentPage++;
-  }
-
-  prevPage(): void {
-    if (this.currentPage > 1) this.currentPage--;
   }
 
   formatDate(dateString: string): string {
