@@ -12,8 +12,8 @@ body {
   min-height: 100vh;
 }
 
-/* Main Container for Client Profile */
-.client-profile-container {
+/* Main Container for Handyman Profile */
+.handyman-profile-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
@@ -184,7 +184,7 @@ body {
   transform: none;
 }
 
-/* Detail Cards (for profile details and default address) */
+/* Detail Cards */
 .detail-card {
   background: white;
   padding: 32px;
@@ -220,7 +220,55 @@ body {
   font-weight: 500;
 }
 
-/* Form Modals (Update Profile, Add Address) */
+/* Address Section */
+.address-section {
+  margin-top: 24px;
+}
+
+.address-card {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 78, 152, 0.1);
+  border: 1px solid #ebebeb;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.address-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 78, 152, 0.15);
+}
+
+.address-content {
+  color: #3a6ea5;
+}
+
+.address-text {
+  margin: 0 0 8px 0;
+  font-weight: 500;
+  color: #004e98;
+  font-size: 16px;
+}
+
+.city {
+  margin: 0 0 12px 0;
+  color: #3a6ea5;
+  font-weight: 500;
+}
+
+.coordinates {
+  margin: 12px 0;
+  padding: 8px 12px;
+  background: #ebebeb;
+  border-radius: 6px;
+}
+
+.coordinates small {
+  color: #3a6ea5;
+  font-weight: 500;
+}
+
+/* Modal Styles - Updated to match client profile */
 .modal-backdrop.show {
   backdrop-filter: none;
   background: rgba(0, 78, 152, 0.3);
@@ -322,310 +370,101 @@ body {
   transform: translateY(-1px);
 }
 
-/* Geolocation Section Styles */
-.geolocation-section {
+/* Upload Area Styles */
+.upload-area {
+  border: 2px dashed #3a6ea5;
+  border-radius: 12px;
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-area:hover {
+  border-color: #004e98;
+  background: #e3f2fd;
+}
+
+.upload-area.dragover {
+  border-color: #004e98;
+  background: #e3f2fd;
+  transform: scale(1.02);
+}
+
+.upload-placeholder {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  padding: 20px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-radius: 12px;
-  border: 2px dashed #3a6ea5;
-  margin-bottom: 16px;
+  color: #3a6ea5;
 }
 
-.btn-location {
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-  color: white;
-  border: none;
-  padding: 14px 28px;
-  border-radius: 25px;
-  font-weight: 600;
-  font-size: 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 16px rgba(40, 167, 69, 0.3);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.upload-placeholder i {
+  font-size: 48px;
+  color: #3a6ea5;
 }
 
-.btn-location:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
-  background: linear-gradient(135deg, #218838 0%, #1e9e8a 100%);
-}
-
-.btn-location:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-.location-help-text {
-  color: #6c757d;
-  font-size: 13px;
-  text-align: center;
-  font-style: italic;
-}
-
-/* Location Input Group Styles */
-.location-input-group {
-  position: relative;
-}
-
-.location-input-group .form-control {
-  background-color: #f8f9fa;
-  border: 2px solid #dee2e6;
-  cursor: not-allowed;
-}
-
-.location-input-group .form-control:focus {
-  background-color: #f8f9fa;
-  border-color: #3a6ea5;
-  cursor: not-allowed;
-}
-
-/* Location Icon Animation */
-.btn-location i {
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-/* Loading state for location button */
-.btn-location .spinner-sm {
-  width: 16px;
-  height: 16px;
-  border: 2px solid transparent;
-  border-top: 2px solid currentColor;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-right: 8px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .geolocation-section {
-    padding: 16px;
-  }
-
-  .btn-location {
-    padding: 12px 24px;
-    font-size: 14px;
-  }
-
-  .custom-modal-footer {
-    flex-direction: column;
-  }
-}
-
-.form-group {
-  margin-bottom: 24px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #004e98;
-}
-
-.form-control {
-  width: 100%;
-  padding: 12px 16px;
-  border: 2px solid #ebebeb;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: border-color 0.3s ease;
-  background: white;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.form-control:focus {
-  outline: none;
-  border-color: #004e98;
-  box-shadow: 0 0 0 3px rgba(0, 78, 152, 0.1);
-}
-
-.form-control.is-invalid {
-  border-color: #ff6b6b;
-}
-
-.invalid-feedback {
-  color: #ff6b6b;
-  font-size: 12px;
-  margin-top: 6px;
-  font-weight: 500;
-}
-
-.form-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-end;
-}
-
-.form-row {
-  display: flex;
-  gap: 20px;
-  padding: 0 32px;
-}
-
-.col-md-6 {
-  flex: 1;
-}
-
-.form-check-group {
-  padding: 0 32px;
-  margin-bottom: 24px;
-}
-
-.form-check {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.form-check-input {
+.upload-placeholder p {
   margin: 0;
-  width: 18px;
-  height: 18px;
-  accent-color: #004e98;
-}
-
-.form-check-label {
-  color: #004e98;
+  font-size: 16px;
   font-weight: 500;
 }
 
-/* Addresses Section */
-.addresses-section {
-  margin-top: 24px;
+.upload-placeholder small {
+  color: #666;
+  font-size: 12px;
 }
 
-.addresses-section h3 {
-  margin-bottom: 24px;
-  color: #004e98;
-  font-size: 22px;
-  font-weight: 600;
-}
-
-.addresses-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 20px;
-}
-
-.address-card {
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 78, 152, 0.1);
-  border: 1px solid #ebebeb;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.address-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 78, 152, 0.15);
-}
-
-.address-header {
+.file-selected {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-  margin-bottom: 16px;
-}
-
-.address-type {
-  font-weight: 600;
+  gap: 12px;
   color: #004e98;
-  font-size: 16px;
 }
 
-.address-badges {
+.file-selected i {
+  font-size: 48px;
+  color: #004e98;
+}
+
+.file-selected p {
+  margin: 0;
+  font-weight: 500;
+}
+
+.image-preview {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }
 
-.badge {
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+.preview-image {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 4px 16px rgba(0, 78, 152, 0.2);
 }
 
-.default-badge {
-  background: linear-gradient(135deg, #004e98 0%, #3a6ea5 100%);
-  color: white;
+.preview-info {
+  text-align: center;
 }
 
-.active-badge {
-  background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
-  color: white;
-}
-
-.inactive-badge {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-  color: white;
-}
-
-.address-content {
-  color: #3a6ea5;
-}
-
-.address-text {
-  margin: 0 0 8px 0;
+.preview-info p {
+  margin: 0;
   font-weight: 500;
   color: #004e98;
-  font-size: 16px;
 }
 
-.city {
-  margin: 0 0 12px 0;
-  color: #3a6ea5;
-  font-weight: 500;
-}
-
-.coordinates {
-  margin: 12px 0;
-  padding: 8px 12px;
-  background: #ebebeb;
-  border-radius: 6px;
-}
-
-.coordinates small {
-  color: #3a6ea5;
-  font-weight: 500;
-}
-
-.address-dates {
-  margin-top: 16px;
-  padding-top: 12px;
-  border-top: 1px solid #ebebeb;
-}
-
-.address-dates small {
-  display: block;
-  color: #3a6ea5;
-  margin-bottom: 4px;
-  font-weight: 500;
+.preview-info small {
+  color: #666;
 }
 
 /* Small Spinner for Buttons */
@@ -637,72 +476,6 @@ body {
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-right: 8px;
-}
-
-/* Styling for the default address card */
-.default-address {
-  border: 2px solid #ffa94d;
-  background: linear-gradient(135deg, #fff 0%, #ffa94d08 100%);
-}
-
-/* No addresses message styling */
-.no-addresses {
-  text-align: center;
-  padding: 40px;
-  color: #3a6ea5;
-  font-style: italic;
-}
-
-/* Form Control Styling (including select dropdowns) */
-.form-control {
-  width: 100%;
-  padding: 12px 16px;
-  border: 2px solid #ebebeb;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: border-color 0.3s ease;
-  background: white;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.form-control:focus {
-  outline: none;
-  border-color: #004e98;
-  box-shadow: 0 0 0 3px rgba(0, 78, 152, 0.1);
-}
-
-.form-control.is-invalid {
-  border-color: #ff6b6b;
-}
-
-/* Specific styling for select dropdowns */
-.form-control select,
-select.form-control {
-  cursor: pointer;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23004e98' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 12px center;
-  background-repeat: no-repeat;
-  background-size: 16px;
-  padding-right: 40px;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-}
-
-/* Select dropdown options styling */
-.form-control option {
-  padding: 8px 12px;
-  background: white;
-  color: #004e98;
-}
-
-.form-control option:hover {
-  background: #f8f9fa;
-}
-
-.form-control option:disabled {
-  color: #6c757d;
-  background: #f8f9fa;
 }
 
 /* Responsive Design */
@@ -719,13 +492,14 @@ select.form-control {
     width: 100%;
   }
 
-  .addresses-grid {
-    grid-template-columns: 1fr;
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
   }
 
-  .form-row {
-    flex-direction: column;
-    gap: 0;
+  .detail-row .label {
+    width: auto;
   }
 
   .custom-modal-footer {

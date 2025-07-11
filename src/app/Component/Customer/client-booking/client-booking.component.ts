@@ -8,6 +8,7 @@ import { CreateReviewRequest } from '../../../core/models/ClientProfile.model';
 
 @Component({
   selector: 'app-client-booking',
+
   imports: [CommonModule, FormsModule],
   templateUrl: './client-booking.component.html',
   styleUrls: ['./client-booking.component.css']
@@ -20,6 +21,8 @@ export class ClientBookingComponent implements OnInit {
 
   showCancelModal: boolean = false;
   bookingToCancelId: number | null = null;
+  selectedStatus: string = 'All'; // Changed from selectedService to selectedStatus
+
   
   // Review Modal Properties
   showReviewModal: boolean = false;
@@ -36,7 +39,7 @@ export class ClientBookingComponent implements OnInit {
 
   constructor(
     private clientProfileService: ClientProfileService,
-    private bookingService: BookingService, 
+    private bookingService: BookingService,
     private authService: AuthService
   ) {}
 
@@ -58,13 +61,22 @@ export class ClientBookingComponent implements OnInit {
     });
   }
 
+  // Modified getter to filter orders based on selectedStatus
+  get filteredOrders() {
+    if (this.selectedStatus === 'All') {
+      return this.orders;
+    } else {
+      return this.orders.filter(order => order.status === this.selectedStatus);
+    }
+  }
+
   pagedOrders() {
     const start = (this.currentPage - 1) * this.pageSize;
-    return this.orders.slice(start, start + this.pageSize);
+    return this.filteredOrders.slice(start, start + this.pageSize);
   }
 
   get totalPages() {
-    return Math.ceil(this.orders.length / this.pageSize);
+    return Math.ceil(this.filteredOrders.length / this.pageSize);
   }
 
   nextPage() {
@@ -89,10 +101,10 @@ export class ClientBookingComponent implements OnInit {
           this.orders = this.orders.map(order =>
             order.bookingId === this.bookingToCancelId ? { ...order, status: 'Cancelled' } : order
           );
-          
+
           this.cancellingId = null;
           this.closeCancelModal();
-          
+
           console.log(`Booking ${this.bookingToCancelId} cancelled successfully.`, response);
         },
         error: (error) => {
@@ -105,7 +117,16 @@ export class ClientBookingComponent implements OnInit {
 
   closeCancelModal() {
     this.showCancelModal = false;
-    this.bookingToCancelId = null; 
+    this.bookingToCancelId = null;
+  }
+
+  // Method to get unique statuses for the filter dropdown
+  get uniqueStatuses(): string[] {
+    const statuses = new Set<string>();
+    this.orders.forEach(order => {
+      statuses.add(order.status);
+    });
+    return ['All', ...Array.from(statuses)];
   }
 
   // Review Modal Methods

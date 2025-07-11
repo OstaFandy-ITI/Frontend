@@ -1,20 +1,24 @@
 <div class="container">
-  <!-- Font Awesome CDN for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
-  <h1 class="page-title">My Bookings</h1>
 
-  <!-- Empty State -->
+  <h1 class="page-title header">My Bookings</h1>
+
+  <div class="filter-container" *ngIf="orders.length > 0">
+    <label for="statusFilter" class="filter-label">Filter by Status:</label>
+    <select id="statusFilter" class="form-select filter-select" [(ngModel)]="selectedStatus" (change)="currentPage = 1">
+      <option *ngFor="let status of uniqueStatuses" [value]="status">{{ status }}</option>
+    </select>
+  </div>
+
   <div *ngIf="orders.length === 0" class="empty-state">
     <div class="empty-state-icon">
       <i class="fas fa-calendar-times"></i>
     </div>
     <h3 class="empty-state-title">No bookings found</h3>
-    <p class="empty-state-text">You haven't made any bookings yet. Start by browsing our available services!</p>
+    <p class="empty-state-text">You haven't made any bookings yet. Start by Browse our available services!</p>
   </div>
 
-  <!-- Bookings Grid -->
-  <div class="bookings-grid" *ngIf="orders.length > 0">
+  <div class="bookings-grid" *ngIf="filteredOrders.length > 0">
     <div *ngFor="let booking of pagedOrders()" class="booking-card"
          [ngClass]="{
            'status-border-left-completed': booking.status === 'Completed',
@@ -22,8 +26,7 @@
            'status-border-left-confirmed': booking.status === 'Confirmed',
            'status-border-left-cancelled': booking.status === 'Cancelled'
          }">
-      
-      <!-- Booking Header -->
+
       <div class="booking-header">
         <span>Booking #{{ booking.bookingId }}</span>
         <span class="ms-auto"
@@ -37,7 +40,6 @@
         </span>
       </div>
 
-      <!-- Booking Details Grid -->
       <div class="booking-details">
         <div class="booking-detail-item">
           <i class="fas fa-user booking-detail-icon"></i>
@@ -90,6 +92,9 @@
         </div>
       </div>
 
+
+      <div class="d-flex justify-content-end" *ngIf="booking.status === 'Pending' || booking.status === 'Confirmed'">
+        <button class="cancel-btn" (click)="cancelBooking(booking.bookingId)" [disabled]="cancellingId === booking.bookingId" [ngClass]="{'loading': cancellingId === booking.bookingId}"></button>
       <!-- Action Buttons -->
       <div class="d-flex justify-content-between align-items-center mt-3">
         <!-- Review Button (only for completed bookings) -->
@@ -106,6 +111,7 @@
                 (click)="cancelBooking(booking.bookingId)"
                 [disabled]="cancellingId === booking.bookingId"
                 [ngClass]="{'loading': cancellingId === booking.bookingId}">
+
           <i class="fas fa-times me-2"></i>
           {{ cancellingId === booking.bookingId ? 'Cancelling...' : 'Cancel Booking' }}
         </button>
@@ -113,28 +119,34 @@
     </div>
   </div>
 
-  <!-- Enhanced Pagination -->
+
+  <div *ngIf="orders.length > 0 && filteredOrders.length === 0" class="empty-state">
+    <div class="empty-state-icon">
+      <i class="fas fa-search"></i>
+    </div>
+    <h3 class="empty-state-title">No bookings found for selected status</h3>
+    <p class="empty-state-text">Try selecting a different status or "All" to see more bookings.</p>
+  </div>
+
   <div class="pagination-container" *ngIf="totalPages > 1">
-    <button class="pagination-btn" 
-            (click)="prevPage()" 
+    <button class="pagination-btn"
+            (click)="prevPage()"
             [disabled]="currentPage === 1">
       <i class="fas fa-chevron-left"></i>
     </button>
-    
+
     <div class="pagination-info">
-       {{ currentPage }} 
+      {{ currentPage }}
     </div>
-    
-    <button class="pagination-btn" 
-            (click)="nextPage()" 
+
+    <button class="pagination-btn"
+            (click)="nextPage()"
             [disabled]="currentPage === totalPages">
       <i class="fas fa-chevron-right"></i>
     </button>
   </div>
 
-  <!-- Enhanced Cancel Confirmation Modal -->
-  <div class="modal-backdrop" [ngClass]="{'show': showCancelModal}" *ngIf="showCancelModal"></div>
-  <div class="modal" tabindex="-1" role="dialog" [ngClass]="{'show d-block': showCancelModal}" *ngIf="showCancelModal">
+  <div class="modal fade" [ngClass]="{'show d-block': showCancelModal}" *ngIf="showCancelModal">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content custom-modal-content">
         <div class="modal-header custom-modal-header">
@@ -142,7 +154,7 @@
             <i class="fas fa-exclamation-triangle me-2"></i>
             Confirm Cancellation
           </h5>
-          <button type="button" class="btn-close custom-btn-close" 
+          <button type="button" class="btn-close custom-btn-close"
                   aria-label="Close" (click)="closeCancelModal()"></button>
         </div>
         <div class="modal-body custom-modal-body">
@@ -153,12 +165,12 @@
           <small class="text-muted">This action cannot be undone and may affect your booking history.</small>
         </div>
         <div class="modal-footer custom-modal-footer">
-          <button type="button" class="btn custom-modal-btn-secondary" 
+          <button type="button" class="btn custom-modal-btn-secondary"
                   (click)="closeCancelModal()">
             <i class="fas fa-times me-2"></i>
             No, Keep Booking
           </button>
-          <button type="button" class="btn custom-modal-btn-danger" 
+          <button type="button" class="btn custom-modal-btn-danger"
                   (click)="confirmCancel()">
             <i class="fas fa-check me-2"></i>
             Yes, Cancel Booking
@@ -167,6 +179,9 @@
       </div>
     </div>
   </div>
+
+  <div class="modal-backdrop fade" [ngClass]="{'show': showCancelModal}" *ngIf="showCancelModal"></div>
+
 
   <!-- Review Modal -->
   <div class="modal-backdrop" [ngClass]="{'show': showReviewModal}" *ngIf="showReviewModal"></div>
@@ -284,4 +299,5 @@
       </div>
     </div>
   </div>
+
 </div>

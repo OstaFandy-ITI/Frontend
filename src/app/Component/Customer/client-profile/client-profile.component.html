@@ -1,4 +1,5 @@
 <div class="client-profile-container">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <div *ngIf="loading && (!clientProfile || clientProfile.addresses.length === 0)" class="loading-spinner">
     <div class="spinner"></div>
     <p>Loading client profile...</p>
@@ -18,7 +19,7 @@
     </div>
   </div>
 
-  <div *ngIf="clientProfile && !loading" class="profile-content">
+  <div *ngIf="clientProfile && !loading" class="profile-content header">
 
     <div class="profile-header">
       <div class="profile-avatar">
@@ -26,7 +27,6 @@
       </div>
       <div class="profile-info">
         <h2>{{ clientProfile.firstName }} {{ clientProfile.lastName }}</h2>
-        <!-- <p class="user-id">User ID: {{ clientProfile.userId }}</p> -->
         <span class="status-badge" [class.active]="clientProfile.isActive">
           {{ clientProfile.isActive ? 'Active' : 'Inactive' }}
         </span>
@@ -101,9 +101,8 @@
               <small>Lat: {{ address.latitude }}, Lng: {{ address.longitude }}</small>
             </div>
           </div>
-          <!-- Add Set as Default button if more than one address and not already default -->
           <div *ngIf="addresses.length > 1 && !address.isDefault" class="set-default-btn">
-            <button 
+            <button
               class="btn btn-sm"
               style="
                 background: linear-gradient(90deg, #3A6EA5 0%, #0056b3 100%);
@@ -129,188 +128,195 @@
           <p>No addresses found. Click "Add Address" to create your first address.</p>
         </div>
       </ng-template>
-</div>
-  </div>
-
-  <div *ngIf="showUpdateForm" class="form-modal">
-    <div class="modal-backdrop" (click)="toggleUpdateForm()"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Update Profile</h3>
-        <button class="close-btn" (click)="toggleUpdateForm()">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <form [formGroup]="updateProfileForm" (ngSubmit)="onUpdateProfile()">
-        <div class="form-group">
-          <label for="firstName">First Name *</label>
-          <input
-            type="text"
-            id="firstName"
-            formControlName="firstName"
-            class="form-control"
-            placeholder="Enter your first name"
-            [class.is-invalid]="hasError('update', 'firstName', 'required') || hasError('update', 'firstName', 'minlength')">
-          <div *ngIf="hasError('update', 'firstName', 'required')" class="invalid-feedback">
-            First name is required
-          </div>
-          <div *ngIf="hasError('update', 'firstName', 'minlength')" class="invalid-feedback">
-            First name must be at least 2 characters
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="lastName">Last Name *</label>
-          <input
-            type="text"
-            id="lastName"
-            formControlName="lastName"
-            class="form-control"
-            placeholder="Enter your last name"
-            [class.is-invalid]="hasError('update', 'lastName', 'required') || hasError('update', 'lastName', 'minlength')">
-          <div *ngIf="hasError('update', 'lastName', 'required')" class="invalid-feedback">
-            Last name is required
-          </div>
-          <div *ngIf="hasError('update', 'lastName', 'minlength')" class="invalid-feedback">
-            Last name must be at least 2 characters
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="email">Email *</label>
-          <input
-            type="email"
-            id="email"
-            formControlName="email"
-            class="form-control"
-            placeholder="Enter your email address"
-            [class.is-invalid]="hasError('update', 'email', 'required') || hasError('update', 'email', 'email')">
-          <div *ngIf="hasError('update', 'email', 'required')" class="invalid-feedback">
-            Email is required
-          </div>
-          <div *ngIf="hasError('update', 'email', 'email')" class="invalid-feedback">
-            Please enter a valid email address
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="phone">Phone *</label>
-          <input
-            type="tel"
-            id="phone"
-            formControlName="phone"
-            class="form-control"
-            placeholder="Enter your phone number"
-            [class.is-invalid]="hasError('update', 'phone', 'required') || hasError('update', 'phone', 'pattern')">
-          <div *ngIf="hasError('update', 'phone', 'required')" class="invalid-feedback">
-            Phone number is required
-          </div>
-          <div *ngIf="hasError('update', 'phone', 'pattern')" class="invalid-feedback">
-            Please enter a valid phone number (at least 10 digits)
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn btn-secondary" (click)="toggleUpdateForm()">
-            Cancel
-          </button>
-          <button type="submit" class="btn btn-primary" [disabled]="!updateProfileForm.valid || loading">
-            <span *ngIf="loading" class="spinner-sm"></span>
-            Update Profile
-          </button>
-        </div>
-      </form>
     </div>
   </div>
 
-  <div *ngIf="showAddressForm" class="form-modal">
-    <div class="modal-backdrop" (click)="toggleAddressForm()"></div>
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Add New Address</h3>
-        <button class="close-btn" (click)="toggleAddressForm()">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <form [formGroup]="addAddressForm" (ngSubmit)="onAddAddress()">
-        <div class="form-group">
-          <label for="addressType">Address Type *</label>
-          <select id="addressType" formControlName="addressType" class="form-control">
-            <option value="Home">Home</option>
-            <option value="Work">Work</option>
-            <option value="Other">Other</option>
-          </select>
+  <div class="modal fade" [ngClass]="{'show d-block': showUpdateForm}" *ngIf="showUpdateForm">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content custom-modal-content">
+        <div class="modal-header custom-modal-header">
+          <h5 class="modal-title">
+            <i class="fas fa-edit me-2"></i> Update Profile
+          </h5>
+          <button type="button" class="btn-close custom-btn-close"
+                  aria-label="Close" (click)="toggleUpdateForm()"></button>
         </div>
+        <form [formGroup]="updateProfileForm" (ngSubmit)="onUpdateProfile()">
+          <div class="modal-body custom-modal-body">
+            <div class="form-group">
+              <label for="firstName">First Name *</label>
+              <input
+                type="text"
+                id="firstName"
+                formControlName="firstName"
+                class="form-control"
+                placeholder="Enter your first name"
+                [class.is-invalid]="hasError('update', 'firstName', 'required') || hasError('update', 'firstName', 'minlength')">
+              <div *ngIf="hasError('update', 'firstName', 'required')" class="invalid-feedback">
+                First name is required
+              </div>
+              <div *ngIf="hasError('update', 'firstName', 'minlength')" class="invalid-feedback">
+                First name must be at least 2 characters
+              </div>
+            </div>
 
-        <div class="form-group">
-          <label for="address">Address *</label>
-          <input
-            type="text"
-            id="address"
-            formControlName="address"
-            class="form-control"
-            placeholder="Enter full address"
-            [class.is-invalid]="hasError('address', 'address', 'required') || hasError('address', 'address', 'minlength')">
-          <div *ngIf="hasError('address', 'address', 'required')" class="invalid-feedback">
-            Address is required
-          </div>
-          <div *ngIf="hasError('address', 'address', 'minlength')" class="invalid-feedback">
-            Address must be at least 5 characters
-          </div>
-        </div>
+            <div class="form-group">
+              <label for="lastName">Last Name *</label>
+              <input
+                type="text"
+                id="lastName"
+                formControlName="lastName"
+                class="form-control"
+                placeholder="Enter your last name"
+                [class.is-invalid]="hasError('update', 'lastName', 'required') || hasError('update', 'lastName', 'minlength')">
+              <div *ngIf="hasError('update', 'lastName', 'required')" class="invalid-feedback">
+                Last name is required
+              </div>
+              <div *ngIf="hasError('update', 'lastName', 'minlength')" class="invalid-feedback">
+                Last name must be at least 2 characters
+              </div>
+            </div>
 
-        
-        <div class="form-group">
-          <label for="city">City *</label>
-          <select 
-            id="city" 
-            formControlName="city" 
-            class="form-control"
-            [class.is-invalid]="hasError('address', 'city', 'required')">
-            <option value="" disabled>Select a city</option>
-            <option value="Cairo">Cairo</option>
-            <option value="Alexandria">Alexandria</option>
-            <option value="Mansoura">Mansoura</option>
-          </select>
-          <div *ngIf="hasError('address', 'city', 'required')" class="invalid-feedback">
-            City is required
-          </div>
-        </div>
+            <div class="form-group">
+              <label for="email">Email *</label>
+              <input
+                type="email"
+                id="email"
+                formControlName="email"
+                class="form-control"
+                placeholder="Enter your email address"
+                [class.is-invalid]="hasError('update', 'email', 'required') || hasError('update', 'email', 'email')">
+              <div *ngIf="hasError('update', 'email', 'required')" class="invalid-feedback">
+                Email is required
+              </div>
+              <div *ngIf="hasError('update', 'email', 'email')" class="invalid-feedback">
+                Please enter a valid email address
+              </div>
+            </div>
 
-        <div class="form-group">
-          <div class="geolocation-section">
-            <button 
-              type="button" 
-              class="btn btn-location" 
-              (click)="getCurrentLocation()"
-              [disabled]="loadingLocation">
-              <span *ngIf="loadingLocation" class="spinner-sm"></span>
-              <i *ngIf="!loadingLocation" class="fas fa-map-marker-alt"></i>
-              {{ loadingLocation ? 'Getting Location...' : 'Use My Current Location' }}
+            <div class="form-group">
+              <label for="phone">Phone *</label>
+              <input
+                type="tel"
+                id="phone"
+                formControlName="phone"
+                class="form-control"
+                placeholder="Enter your phone number"
+                [class.is-invalid]="hasError('update', 'phone', 'required') || hasError('update', 'phone', 'pattern')">
+              <div *ngIf="hasError('update', 'phone', 'required')" class="invalid-feedback">
+                Phone number is required
+              </div>
+              <div *ngIf="hasError('update', 'phone', 'pattern')" class="invalid-feedback">
+                Please enter a valid phone number (at least 10 digits)
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer custom-modal-footer">
+            <button type="button" class="btn custom-modal-btn-secondary" (click)="toggleUpdateForm()">
+              <i class="fas fa-times me-2"></i> Cancel
             </button>
-            <small class="location-help-text">
-              Click to automatically fill latitude and longitude with your current location
-            </small>
+            <button type="submit" class="btn custom-modal-btn-primary" [disabled]="!updateProfileForm.valid || loading">
+              <span *ngIf="loading" class="spinner-sm"></span>
+              <i *ngIf="!loading" class="fas fa-save me-2"></i> Update Profile
+            </button>
           </div>
-        </div>
-
-        <div class="form-check-group">
-          <div class="form-check">
-            <input type="checkbox" id="isDefault" formControlName="isDefault" class="form-check-input">
-            <label for="isDefault" class="form-check-label">Set as Default Address</label>
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn btn-secondary" (click)="toggleAddressForm()">
-            Cancel
-          </button>
-          <button type="submit" class="btn btn-primary" [disabled]="!addAddressForm.valid || loading">
-            <span *ngIf="loading" class="spinner-sm"></span>
-            Add Address
-          </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
+  <div class="modal-backdrop fade" [ngClass]="{'show': showUpdateForm}" *ngIf="showUpdateForm"></div>
+
+  <div class="modal fade" [ngClass]="{'show d-block': showAddressForm}" *ngIf="showAddressForm">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content custom-modal-content">
+        <div class="modal-header custom-modal-header">
+          <h5 class="modal-title">
+            <i class="fas fa-plus-circle me-2"></i> Add New Address
+          </h5>
+          <button type="button" class="btn-close custom-btn-close"
+                  aria-label="Close" (click)="toggleAddressForm()"></button>
+        </div>
+        <form [formGroup]="addAddressForm" (ngSubmit)="onAddAddress()">
+          <div class="modal-body custom-modal-body">
+            <div class="form-group">
+              <label for="addressType">Address Type *</label>
+              <select id="addressType" formControlName="addressType" class="form-control">
+                <option value="Home">Home</option>
+                <option value="Work">Work</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="address">Address *</label>
+              <input
+                type="text"
+                id="address"
+                formControlName="address"
+                class="form-control"
+                placeholder="Enter full address"
+                [class.is-invalid]="hasError('address', 'address', 'required') || hasError('address', 'address', 'minlength')">
+              <div *ngIf="hasError('address', 'address', 'required')" class="invalid-feedback">
+                Address is required
+              </div>
+              <div *ngIf="hasError('address', 'address', 'minlength')" class="invalid-feedback">
+                Address must be at least 5 characters
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="city">City *</label>
+              <select
+                id="city"
+                formControlName="city"
+                class="form-control"
+                [class.is-invalid]="hasError('address', 'city', 'required')">
+                <option value="" disabled>Select a city</option>
+                <option value="Cairo">Cairo</option>
+                <option value="Alexandria">Alexandria</option>
+                <option value="Mansoura">Mansoura</option>
+              </select>
+              <div *ngIf="hasError('address', 'city', 'required')" class="invalid-feedback">
+                City is required
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="geolocation-section">
+                <button
+                  type="button"
+                  class="btn btn-location"
+                  (click)="getCurrentLocation()"
+                  [disabled]="loadingLocation">
+                  <span *ngIf="loadingLocation" class="spinner-sm"></span>
+                  <i *ngIf="!loadingLocation" class="fas fa-map-marker-alt"></i>
+                  {{ loadingLocation ? 'Getting Location...' : 'Use My Current Location' }}
+                </button>
+                <small class="location-help-text">
+                  Click to automatically fill latitude and longitude with your current location
+                </small>
+              </div>
+            </div>
+
+            <div class="form-check-group">
+              <div class="form-check">
+                <input type="checkbox" id="isDefault" formControlName="isDefault" class="form-check-input">
+                <label for="isDefault" class="form-check-label">Set as Default Address</label>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer custom-modal-footer">
+            <button type="button" class="btn custom-modal-btn-secondary" (click)="toggleAddressForm()">
+              <i class="fas fa-times me-2"></i> Cancel
+            </button>
+            <button type="submit" class="btn custom-modal-btn-primary" [disabled]="!addAddressForm.valid || loading">
+              <span *ngIf="loading" class="spinner-sm"></span>
+              <i *ngIf="!loading" class="fas fa-plus me-2"></i> Add Address
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade" [ngClass]="{'show': showAddressForm}" *ngIf="showAddressForm"></div>
 </div>
