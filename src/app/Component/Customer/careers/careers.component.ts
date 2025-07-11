@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavbarComponent } from "../Layout/navbar/navbar.component";
 import { FooterComponent } from "../Layout/footer/footer.component";
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-careers',
@@ -10,7 +11,8 @@ import { CommonModule } from '@angular/common';
 imports: [
     CommonModule,
     NavbarComponent,
-    FooterComponent
+    FooterComponent,
+    RouterModule
   ]
 })
 export class CareersComponent {

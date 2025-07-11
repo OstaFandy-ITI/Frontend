@@ -248,7 +248,7 @@ export class PaymentsComponent implements OnInit {
   getStatusBadgeClass(status: string): string {
     switch (status.toLowerCase()) {
       case 'paid': return 'badge bg-success';
-      case 'pending': return 'badge bg-secondary';
+      case 'pending': return 'badge bg-warning';
       case 'failed': return 'badge bg-danger';
       case 'refunded': return 'badge bg-info';
       default: return 'badge bg-secondary';
