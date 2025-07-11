@@ -8,12 +8,14 @@ import {
   PagedPaymentResponseDto, 
   PaymentDetailsDto 
 } from '../../../core/models/payment.model';
+import { URL } from '../../../core/Shared/URL';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class PaymentService {
-  private baseUrl = 'https://localhost:7187/api/Payment';
+  private baseUrl = `${URL.apiUrl}/Payment`;
 
   constructor(private http: HttpClient) {}
 
