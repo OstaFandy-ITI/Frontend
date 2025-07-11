@@ -369,6 +369,7 @@ export class BookingWizardComponent implements OnInit {
         }
       },
       error: (err) => {
+        this.availableSlots=[];
         this.toastr.error(err.error.message || 'Error fetching slots');
       },
     });
