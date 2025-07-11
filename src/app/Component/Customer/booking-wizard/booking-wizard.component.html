@@ -230,6 +230,15 @@
 
             </ul>
 
+            <div class="alert alert-warning d-flex align-items-left" role="alert">
+              <i class="bi bi-info-circle-fill me-3"></i>
+              If the handyman finds during inspection that the requested service requires additional or different work
+              than what was booked,
+              you will not be charged the full amount. Only 35 EGP will be deducted as an inspection
+              fee, and you can then accept the new quote or book another service.
+            </div>
+
+
             <p class="mb-2 text-muted">Select Payment Method:</p>
             <div class="d-flex gap-3">
               <div class="payment-method" [class.active]="selectedPayment === 'card'" (click)="selectPayment('card')">
@@ -299,26 +308,26 @@
 
 
     <!-- Step 5: Confirmation -->
-  <div *ngIf="currentStep === 5">
-  <div class="handyman-card text-center mx-auto p-4 shadow-sm">
-    <img [src]="handydata!.img" class="rounded-circle handyman-img mb-3" />
-    <h5 class="text-blue">{{handydata.firstName}} {{handydata.lastName}}</h5>
-    <p class="text-muted">{{handydata.specializationCategory}}</p>
-    <p><i class="bi bi-telephone"></i> {{handydata.phone}}</p>
+    <div *ngIf="currentStep === 5">
+      <div class="handyman-card text-center mx-auto p-4 shadow-sm">
+        <img [src]="handydata!.img" class="rounded-circle handyman-img mb-3" />
+        <h5 class="text-blue">{{handydata.firstName}} {{handydata.lastName}}</h5>
+        <p class="text-muted">{{handydata.specializationCategory}}</p>
+        <p><i class="bi bi-telephone"></i> {{handydata.phone}}</p>
 
-    <!-- Stack the buttons vertically -->
-    <div class="d-grid gap-2">
-      <button class="btn btn-outline-primary" (click)="chatVisible = !chatVisible">
-        <i class="bi bi-chat-dots"></i> Chat with Handyman
-      </button>
-      <button class="btn btn-outline-secondary" (click)="goToHome()">
-        <i class="bi bi-house-door"></i> Back to Home
-      </button>
+        <!-- Stack the buttons vertically -->
+        <div class="d-grid gap-2">
+          <button class="btn btn-outline-primary" (click)="chatVisible = !chatVisible">
+            <i class="bi bi-chat-dots"></i> Chat with Handyman
+          </button>
+          <button class="btn btn-outline-secondary" (click)="goToHome()">
+            <i class="bi bi-house-door"></i> Back to Home
+          </button>
+        </div>
+      </div>
+
+      <app-chat *ngIf="chatVisible" [chatId]="chatId" [userId]="userId"></app-chat>
     </div>
-  </div>
-
-  <app-chat *ngIf="chatVisible" [chatId]="chatId" [userId]="userId"></app-chat>
-</div>
 
   </div>
 

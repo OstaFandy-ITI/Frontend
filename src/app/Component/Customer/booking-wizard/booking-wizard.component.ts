@@ -86,52 +86,10 @@ export class BookingWizardComponent implements OnInit {
 
     // Step 1: Load categoryId from query params
     this.route.queryParams.subscribe((params) => {
-      const newCategoryId = +params['categoryId'] || 0;
-      const oldCategoryId = +localStorage.getItem('currentCategoryId')! || 0;
-      if (newCategoryId !== oldCategoryId) {
-        const hasCachedData =
-          localStorage.getItem('selectedServices') ||
-          localStorage.getItem('bookingData');
+      const categoryId = +params['categoryId'] || 0;
 
-        if (hasCachedData) {
-          var confirmChange = window.confirm(
-            `You have saved data in another category. Do you want to clear it and proceed to the new category?`
-          );
-
-          if (confirmChange) {
-            localStorage.removeItem('selectedServices');
-            localStorage.removeItem('bookingData');
-            localStorage.setItem('currentCategoryId', newCategoryId.toString());
-
-            this.SelectedItem = [];
-            this.bookingData = new CreateBookingVM();
-            this.categoryId = newCategoryId;
-            this.Getservices(this.categoryId);
-          } else {
-            this.router.navigate([], {
-              queryParams: { categoryId: oldCategoryId },
-              replaceUrl: true,
-              queryParamsHandling: 'merge',
-            });
-            return;
-          }
-        } else {
-          localStorage.setItem('currentCategoryId', newCategoryId.toString());
-          this.SelectedItem = [];
-          this.bookingData = new CreateBookingVM();
-          this.categoryId = newCategoryId;
-          this.Getservices(this.categoryId);
-        }
-      } else {
-        const savedServices = localStorage.getItem('selectedServices');
-        if (savedServices) this.SelectedItem = JSON.parse(savedServices);
-
-        const savedBooking = localStorage.getItem('bookingData');
-        if (savedBooking) this.bookingData = JSON.parse(savedBooking);
-
-        this.categoryId = newCategoryId;
-        this.Getservices(this.categoryId);
-      }
+      this.categoryId = categoryId;
+      this.Getservices(this.categoryId);
     });
     // Step 1.5: Load selected services from localStorage
     const saved = localStorage.getItem('selectedServices');
@@ -221,7 +179,6 @@ export class BookingWizardComponent implements OnInit {
     this.serviceService.GetServiceByCategoryId(categoryId).subscribe({
       next: (response) => {
         this.ServicesItem = response;
-        console.log(this.ServicesItem);
       },
     });
   }
@@ -369,7 +326,7 @@ export class BookingWizardComponent implements OnInit {
         }
       },
       error: (err) => {
-        this.availableSlots=[];
+        this.availableSlots = [];
         this.toastr.error(err.error.message || 'Error fetching slots');
       },
     });
@@ -402,25 +359,20 @@ export class BookingWizardComponent implements OnInit {
         padding: '10px',
         borderRadius: '6px',
         backgroundColor: '#f6f9fc',
-        // تقدر تضيف حاجات CSS هنا كمان
       },
       invalid: {
         color: '#fa755a',
         iconColor: '#fa755a',
       },
     };
-
-    // أنشئ كل عنصر لوحده مع نفس الستايل أو مختلف لو حبيت
     this.cardNumberElement = elements.create('cardNumber', { style });
     this.cardExpiryElement = elements.create('cardExpiry', { style });
     this.cardCvcElement = elements.create('cardCvc', { style });
 
-    // ركب كل عنصر في الـ div الخاص بيه
     this.cardNumberElement.mount('#card-number-element');
     this.cardExpiryElement.mount('#card-expiry-element');
     this.cardCvcElement.mount('#card-cvc-element');
 
-    // حدث تغيرات الخطأ لجميع العناصر
     const displayError = document.getElementById('card-errors');
     const onChangeHandler = (event: any) => {
       if (displayError) {
@@ -443,6 +395,10 @@ export class BookingWizardComponent implements OnInit {
 
   //confirm payment
   async confirmCardPayment() {
+    if (this.selectedSlot == null) {
+      this.toastr.warning('Kindly choose a time slot to continue.');
+      return;
+    }
     this.isLoading = true;
     if (this.selectedPayment === 'card') {
       if (!this.stripe || !this.cardNumberElement) {
