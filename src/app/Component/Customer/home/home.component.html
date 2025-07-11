@@ -265,6 +265,53 @@
   <i class="fas fa-robot me-2"></i>Chat with us
 </a>
 
+<!-- confirm model -->
+ <div
+  class="modal fade"
+  id="confirmChangeModal"
+  tabindex="-1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-dark">
+        <h5 class="modal-title">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          Confirm Category Change
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p class="text-center mb-3">
+          You have saved data in another category. Do you want to clear it and
+          proceed to the new category?
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          No
+        </button>
+        <button
+          type="button"
+          class="btn btn-warning"
+          (click)="proceedCategoryChange()"
+        >
+          Yes, Clear and Proceed
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="chat-container" [class.open]="showChat">
   <app-chatbot *ngIf="showChat" (closed)="closeChat()"></app-chatbot>
 </div>
