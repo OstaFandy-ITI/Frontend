@@ -15,6 +15,8 @@ export class HandymanNotificationsComponent implements OnInit, OnDestroy {
 private handymanUserId: number = 0;
   notifications: any[] = [];
 showNotifications: boolean = false;
+unreadCount: number = 0;
+allNotifications: any[] = [];
   constructor(
     private handymanNotificationService: HandymanNotificationService,
     private authService: AuthService,
@@ -22,21 +24,22 @@ showNotifications: boolean = false;
     private ngZone: NgZone
   ) {}
 
-  ngOnInit(): void {
-    this.handymanUserId = this.authService.getCurrentUserId() ?? 0;
-    if (this.handymanUserId === 0) {
-      this.toastr.error('Unable to get user ID', 'Connection Error');
-      return;
-    }
-    
-    this.handymanNotificationService.startConnection(this.handymanUserId);
-    this.setupSignalRListeners();
-
+ngOnInit(): void {
+  this.handymanUserId = this.authService.getCurrentUserId() ?? 0;
+  if (this.handymanUserId === 0) {
+    this.toastr.error('Unable to get user ID', 'Connection Error');
+    return;
   }
-
+  
+  this.handymanNotificationService.startConnection(this.handymanUserId);
+  this.setupSignalRListeners();
+  
+   this.loadNotifications();
+}
   ngOnDestroy(): void {
     this.handymanNotificationService.stopConnection();
   }
+
 private setupSignalRListeners(): void {
   this.handymanNotificationService.onHandymanNotification((message: string) => {
     this.ngZone.run(() => {
@@ -60,7 +63,10 @@ private setupSignalRListeners(): void {
       else {
         console.log(' DEBUG: NO CONDITION MATCHED - DEFAULTING TO INFO');
       }
+      
       this.showNotificationToast(title, message, toastType);
+      
+       this.addNewNotification(message);
     });
   });
 }
@@ -89,13 +95,34 @@ private setupSignalRListeners(): void {
         break;
     }
   }
-  toggleNotifications(): void {
+
+toggleNotifications(): void {
   this.showNotifications = !this.showNotifications;
   if (this.showNotifications) {
     this.loadNotifications();
+    this.markAllAsRead();
   }
 }
 
+markAllAsRead(): void {
+  if (this.unreadCount > 0) {
+    this.handymanNotificationService.markAllNotificationsAsRead(this.handymanUserId)
+      .subscribe({
+        next: () => {
+          this.allNotifications.forEach(notification => {
+            if (!notification.isRead) {
+              notification.isRead = true;
+              notification.isActive = false;
+            }
+          });
+          this.unreadCount = 0;
+        },
+        error: (error) => {
+          console.error('Error marking notifications as read:', error);
+        }
+      });
+  }
+}
 closeNotifications(): void {
   this.showNotifications = false;
 }
@@ -104,7 +131,10 @@ loadNotifications(): void {
   this.handymanNotificationService.GetNotificationsOfHandyman(this.handymanUserId)
     .subscribe({
       next: (data: any) => {
+        console.log('Notifications data:', data); 
         this.notifications = data || [];
+        this.allNotifications = data || [];
+        this.unreadCount = this.notifications.filter(n => !n.isRead).length;
       },
       error: (error) => {
         console.error('Error loading notifications:', error);
@@ -112,7 +142,18 @@ loadNotifications(): void {
       }
     });
 }
-
+private addNewNotification(message: string): void {
+  const newNotification = {
+    id: Date.now(),
+    message: message,
+    timestamp: new Date().toISOString(),
+    isRead: false
+  };
+  
+  this.notifications.unshift(newNotification);
+  this.allNotifications.unshift(newNotification);
+  this.unreadCount = this.notifications.filter(n => !n.isRead).length;
+}
 getNotificationTitle(message: string): string {
   const messageContent = message.toLowerCase();
   

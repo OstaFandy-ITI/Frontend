@@ -11,6 +11,7 @@ import {
   AddBlockDateRequest 
 } from '../../../core/models/BlockDate.model';
 import { URL } from '../../../core/Shared/URL'; 
+// import { url } from 'node:inspector/promises';
 
 @Injectable({
   providedIn: 'root'
@@ -32,9 +33,9 @@ export class HandymanBlockDateService {
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', pageSize.toString());
     
-    if (categoryId) {
+    if (categoryId && categoryId > 0) {
       params = params.set('categoryId', categoryId.toString());
-    }
+  }
     return this.http.get<PaginationHelper<HandymanSummaryDTO>>(
       `${this.baseUrl}/GetAllHandymanData`, 
       { params }

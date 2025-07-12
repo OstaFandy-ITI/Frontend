@@ -90,4 +90,7 @@ public stopConnection(): void {
   markNotificationAsRead(notificationId: number): Observable<any> {
     return this.http.put(`${this.baseUrl}/new/MarkAsRead/${notificationId}`, {});
   }
+  markAllNotificationsAsRead(clientUserId: number): Observable<any> {
+  return this.http.post(`${this.baseUrl}/HandymanJobs/MarkAllNotificationsAsRead/${clientUserId}`, {});
+}
 }

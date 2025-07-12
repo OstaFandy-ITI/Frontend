@@ -1,7 +1,9 @@
+
+
 <div class="notification-container">
   <button class="notification-bell" (click)="toggleNotifications()" [class.active]="showNotifications">
     <i class="fas fa-bell"></i>
-    <span class="notification-count" *ngIf="notifications.length > 0">{{ notifications.length }}</span>
+     <span class="notification-count" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
   </button>
 
   <div class="notification-dropdown" [class.show]="showNotifications">
@@ -19,14 +21,14 @@
       </div>
 
       <div class="notification-list" *ngIf="notifications.length > 0">
-        <div class="notification-item" *ngFor="let notification of notifications; trackBy: trackByFn">
-          <div class="notification-icon" [ngClass]="getNotificationIconClass(notification.message)">
-            <i [class]="getNotificationIcon(notification.message)"></i>
+        <div class="notification-item" *ngFor="let notification of notifications; trackBy: trackByFn" [class.unread]="!notification.isRead">
+          <div class="notification-icon alarm" [ngClass]="getNotificationIconClass(notification.message)">
+             <i class="fas fa-bell" [class]="getNotificationIcon(notification.message)"></i>
           </div>
           <div class="notification-body">
             <h4 class="notification-title">{{ getNotificationTitle(notification.message) }}</h4>
             <p class="notification-message">{{ notification.message }}</p>
-            <span class="notification-time">{{ getTimeAgo(notification.timestamp) }}</span>
+            <span class="notification-time">{{ getTimeAgo(notification.createdAt) }}</span>
           </div>
         </div>
       </div>

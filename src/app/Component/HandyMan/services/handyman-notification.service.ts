@@ -76,4 +76,7 @@ const token = this.authService.getToken();
 
     return this.http.get<any[]>(`${URL.apiUrl}/HandymanJobs/GetNotificationsOfHandyman/${handymanUserId}`);
  }
+ markAllNotificationsAsRead(handymanUserId: number) {
+  return this.http.post(`${URL.apiUrl}/HandymanJobs/MarkAllNotificationsAsRead/${handymanUserId}`, {});
+}
 }
