@@ -31,7 +31,11 @@
   box-sizing: border-box;
   transition: width 0.3s ease, padding 0.3s ease;
 }
-
+.notification-item.newly-read {
+  background-color: #f8f9fa;
+  border-left: 3px solid #6c757d;
+  opacity: 0.8;
+}
 .sidebar.sidebar-collapsed {
   width: 0 !important;
   padding: 0 !important;

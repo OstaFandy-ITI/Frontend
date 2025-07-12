@@ -22,7 +22,6 @@
       </div>
 
       <div class="tab-content">
-        <!-- Personal Information Tab -->
         <div *ngIf="activeTab === 'personal'" class="personal-info">
           <div class="handyman-header">
             <h3>{{ handyman.firstName || 'N/A' }} {{ handyman.lastName || '' }}</h3>
@@ -67,33 +66,32 @@
             </div>
           </div>
           <div class="info-grid">
-  <div class="info-item">
-    <label>Profile Image:</label>
-    <div class="image-row">
-      <span class="image-container">
-        <img [src]="handyman.img || ''"
-             alt="{{ handyman.firstName }}"
-             class="handyman-image"
-             (error)="$any($event.target).src=''" />
-      </span>
-    </div>
-  </div>
+          <div class="info-item">
+            <label>Profile Image:</label>
+            <div class="image-row">
+              <span class="image-container">
+                <img [src]="handyman.img || ''"
+                    alt="{{ handyman.firstName }}"
+                    class="handyman-image"
+                    (error)="$any($event.target).src=''" />
+              </span>
+            </div>
+          </div>
 
-  <div class="info-item">
-    <label>National ID Image:</label>
-    <div class="image-row">
-      <span class="image-container">
-        <img [src]="handyman.nationalIdImg || ''"
-             alt="{{ handyman.firstName }}"
-             class="handyman-image"
-             (error)="$any($event.target).src=''" />
-      </span>
-    </div>
-  </div>
-</div>
+          <div class="info-item">
+            <label>National ID Image:</label>
+            <div class="image-row">
+              <span class="image-container">
+                <img [src]="handyman.nationalIdImg || ''"
+                    alt="{{ handyman.firstName }}"
+                    class="handyman-image"
+                    (error)="$any($event.target).src=''" />
+              </span>
+            </div>
+          </div>
+        </div>
 
-
-          <div class="addresses-section" *ngIf="handyman.defaultAddress">
+        <div class="addresses-section" *ngIf="handyman.defaultAddress">
             <h4>  Default Address</h4>
             <div class="address-card">
               <div class="address-header">
@@ -112,7 +110,6 @@
             </div>
           </div>
 
-          <!-- Show coordinates from handyman if no default address -->
           <div class="addresses-section" *ngIf="!handyman.defaultAddress && (handyman.latitude || handyman.longitude)">
             <h4>  Location Coordinates</h4>
             <div class="address-card">
@@ -125,7 +122,6 @@
           </div>
         </div>
 
-        <!-- Statistics Tab -->
         <div *ngIf="activeTab === 'statistics'" class="statistics">
           <div class="stats-grid">
             <div class="stat-card">
@@ -136,11 +132,6 @@
               <h4>{{ getActiveBookings() }}</h4>
               <p>Active Bookings</p>
             </div>
-            <!-- LATTER CAN IMPLEMENT THIS ONE -->
-            <!-- <div class="stat-card">
-              <h4>${{ getTotalSpent() }}</h4>
-              <p>Total Spent</p>
-            </div> -->
           </div>
 
           <div class="block-dates" *ngIf="handyman.adminBlockDateDTO && handyman.adminBlockDateDTO.length > 0">
@@ -158,7 +149,6 @@
             </div>
           </div>
 
-          <!-- No block dates message -->
           <div *ngIf="!handyman.adminBlockDateDTO || handyman.adminBlockDateDTO.length === 0" class="empty-state">
             <p>No block dates found for this handyman.</p>
           </div>

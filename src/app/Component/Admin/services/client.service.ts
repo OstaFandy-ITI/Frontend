@@ -49,8 +49,7 @@ export class ClientService {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
-  // Future endpoint for client bookings
-  getClientBookings(clientId: number, searchString = '', pageNumber = 1, pageSize = 5): Observable<any> {
+   getClientBookings(clientId: number, searchString = '', pageNumber = 1, pageSize = 5): Observable<any> {
     const params = new HttpParams()
       .set('searchString', searchString)
       .set('pageNumber', pageNumber.toString())

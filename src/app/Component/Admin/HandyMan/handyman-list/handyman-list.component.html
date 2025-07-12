@@ -1,7 +1,6 @@
 <div class="handyman-list-container">
   <h2 class="mb-4">Handyman Management</h2>
   
-  <!-- Search and Filter Section -->
   <div class="search-filter-section">
     <div class="search-box">
       <input 
@@ -12,7 +11,6 @@
         class="search-input">
     </div>
     
-    <!-- Status Filter Dropdown -->
     <div class="filter-dropdown">
       <select 
         [(ngModel)]="statusFilter"
@@ -25,13 +23,11 @@
     </div>
   </div>
   
-  <!-- Loading Indicator -->
   <div *ngIf="loading" class="text-center py-5">
     <div class="spinner-border" role="status">
     </div>
   </div>
   
-  <!-- Handymen Table -->
   <div *ngIf="!loading" class="table-container">
     <table class="handymen-table">
       <thead>
@@ -48,7 +44,6 @@
         <tr *ngFor="let handyman of handymen">
           <td>
             <div class="fw-medium">{{ handyman.firstName }} {{ handyman.lastName }}</div>
-                <!-- <div class="text-muted">ID: {{ handyman.userId }}</div> -->
           </td>
           <td> 
             <div class="d-flex align-items-center">
@@ -93,13 +88,11 @@
     
   </div>
   
-  <!-- Empty State -->
   <div *ngIf="!loading && handymen.length === 0" class="empty-state">
     <div class="display-1">📋</div>
     <p class="mt-3">No handymen found.</p>
   </div>
   
-  <!-- Pagination -->
     <div class="pagination d-flex justify-content-center align-items-center" *ngIf="totalPages > 1">
       <button 
         (click)="onPageChange(currentPage - 1)"
@@ -125,12 +118,10 @@
         Next
       </button>
     </div>
-  <!-- Pagination Info -->
   <div *ngIf="!loading && handymen.length > 0" class="text-center text-muted mt-3">
     Showing {{ (currentPage - 1) * pageSize + 1 }} to {{ Math.min(currentPage * pageSize, totalCount) }} of {{ totalCount }} entries
   </div>
   
-  <!-- Details Modal -->
   <app-handyman-details
     [handyman]="selectedHandyman!"
     [isVisible]="isDetailsModalVisible"
@@ -138,7 +129,6 @@
     *ngIf="selectedHandyman">
   </app-handyman-details>
   
-  <!-- Edit Modal -->
   <app-handyman-edit
     [handyman]="selectedHandymanForEdit!"
     [isVisible]="isEditModalVisible"
@@ -148,7 +138,6 @@
   </app-handyman-edit>
 </div>
 
-<!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">

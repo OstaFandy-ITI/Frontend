@@ -13,7 +13,7 @@
 }
 
 .page-header h1 {
-  color: #2c3e50;
+  color: #004888;
   font-size: 2.5rem;
   font-weight: 600;
   margin: 0;
@@ -29,7 +29,7 @@
 
 .add-vacation-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+  box-shadow: 0 4px 8px rgba(0, 72, 136, 0.3);
 }
 
 /* Filters */
@@ -67,9 +67,9 @@
 }
 
 .form-control:focus {
-  border-color: #007bff;
+  border-color: #3A6EA5;
   outline: none;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(58, 110, 165, 0.25);
 }
 
 /* Table */
@@ -87,7 +87,7 @@
 }
 
 .data-table thead {
-  background:  #3a6ea5;
+  background: #004888;
   color: white;
 }
 
@@ -111,17 +111,22 @@
 
 /* Status badges */
 .status-badge {
-  padding: 6px 12px;
-  border-radius: 20px;
+  padding: 8px 16px;
+  border-radius: 25px;
   font-size: 0.875rem;
   font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  text-transform: none;
+  letter-spacing: 0;
+  color: white;
+  border: none;
+  min-width: 80px;
+  text-align: center;
+  display: inline-block;
 }
 
 .badge-success {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: #FF9A4D;
+  color: white;
 }
 
 .badge-danger {
@@ -130,13 +135,13 @@
 }
 
 .badge-warning {
-  background-color: #fff3cd;
-  color: #856404;
+  background-color: #FF9A4D;
+  color: white;
 }
 
 .badge-secondary {
-  background-color: #e2e3e5;
-  color: #383d41;
+  background-color: #C0C0C0;
+  color: white;
 }
 
 /* Loading and Empty States */
@@ -151,7 +156,7 @@
   width: 40px;
   height: 40px;
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #007bff;
+  border-top: 4px solid #3A6EA5;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 20px;
@@ -190,18 +195,18 @@
 }
 
 .btn-primary {
-  background: #007bff;
+  background: #3A6EA5;
   color: white;
-  border-color: #007bff;
+  border-color: #3A6EA5;
 }
 
 .btn-outline-primary {
-  border-color: #007bff;
-  color: #007bff;
+  border-color: #3A6EA5;
+  color: #3A6EA5;
 }
 
 .btn-outline-primary:hover {
-  background: #007bff;
+  background: #3A6EA5;
   color: white;
 }
 
@@ -213,7 +218,7 @@
 }
 
 .modal-header {
-  background: #007bff;
+  background: #3A6EA5;
   color: white;
   border-radius: 8px 8px 0 0;
   padding: 20px;
@@ -261,14 +266,14 @@
 }
 
 .btn-secondary {
-  background: #6c757d;
-  color: white;
-  border-color: #6c757d;
+  background: #C0C0C0;
+  color: #383d41;
+  border-color: #C0C0C0;
 }
 
 .btn-secondary:hover {
-  background: #5a6268;
-  border-color: #5a6268;
+  background: #B0B0B0;
+  border-color: #B0B0B0;
 }
 
 /* Responsive Design */
