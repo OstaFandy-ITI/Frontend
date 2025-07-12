@@ -110,15 +110,14 @@
             </div>
           </div>
           <div *ngIf="!address.isDefault" class="set-default-btn">
-  <button class="btn btn-sm" 
-          (click)="setDefaultAddress(address.id)"
-          [disabled]="loading || isAddressBeingProcessed(address.id)">
-    <span *ngIf="isAddressBeingProcessed(address.id)" class="spinner-sm"></span>
-    <i *ngIf="!isAddressBeingProcessed(address.id)" class="fas fa-star"></i>
-    {{ isAddressBeingProcessed(address.id) ? 'Setting...' : 'Set as Default' }}
-  </button>
-</div>
-
+            <button class="btn btn-sm" 
+                    (click)="setDefaultAddress(address.id)"
+                    [disabled]="loading || isAddressBeingProcessed(address.id)">
+              <span *ngIf="isAddressBeingProcessed(address.id)" class="spinner-sm"></span>
+              <i *ngIf="!isAddressBeingProcessed(address.id)" class="fas fa-star"></i>
+              {{ isAddressBeingProcessed(address.id) ? 'Setting...' : 'Set as Default' }}
+            </button>
+          </div>
         </div>
       </div>
       <ng-template #noAddresses>
@@ -201,87 +200,6 @@
                 </div>
               </div>
             </div>
-
-            <!-- Address Section -->
-            <!-- <h4 class="mb-3 mt-4">Default Address</h4>
-            <div class="form-group">
-              <label for="addressType">Address Type *</label>
-              <select id="addressType" formControlName="addressType" class="form-control">
-                <option value="Home">Home</option>
-                <option value="Work">Work</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="address">Address *</label>
-              <input type="text" id="address" formControlName="address" class="form-control"
-                     [class.is-invalid]="hasError('update', 'address', 'required') || hasError('update', 'address', 'minlength')">
-              <div *ngIf="hasError('update', 'address', 'required')" class="invalid-feedback">
-                Address is required
-              </div>
-              <div *ngIf="hasError('update', 'address', 'minlength')" class="invalid-feedback">
-                Address must be at least 5 characters
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="city">City *</label>
-              <select id="city" formControlName="city" class="form-control"
-                      [class.is-invalid]="hasError('update', 'city', 'required')">
-                <option value="" disabled>Select a city</option>
-                <option value="Cairo">Cairo</option>
-                <option value="Alexandria">Alexandria</option>
-                <option value="Mansoura">Mansoura</option>
-              </select>
-              <div *ngIf="hasError('update', 'city', 'required')" class="invalid-feedback">
-                City is required
-              </div>
-            </div>
-
-            <div class="form-group">
-              <div class="geolocation-section">
-                <button type="button" class="btn btn-location" 
-                        (click)="getCurrentLocation('update')"
-                        [disabled]="loadingLocation">
-                  <span *ngIf="loadingLocation" class="spinner-sm"></span>
-                  <i *ngIf="!loadingLocation" class="fas fa-map-marker-alt"></i>
-                  {{ loadingLocation ? 'Getting Location...' : 'Use My Current Location' }}
-                </button>
-                <small class="location-help-text">
-                  Click to automatically fill latitude and longitude with your current location
-                </small>
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="latitude">Latitude *</label>
-                  <input type="number" id="latitude" formControlName="latitude" class="form-control" step="0.000001"
-                         [class.is-invalid]="hasError('update', 'latitude', 'required') || hasError('update', 'latitude', 'min') || hasError('update', 'latitude', 'max')">
-                  <div *ngIf="hasError('update', 'latitude', 'required')" class="invalid-feedback">
-                    Latitude is required
-                  </div>
-                  <div *ngIf="hasError('update', 'latitude', 'min') || hasError('update', 'latitude', 'max')" class="invalid-feedback">
-                    Latitude must be between -90 and 90
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group">
-                  <label for="longitude">Longitude *</label>
-                  <input type="number" id="longitude" formControlName="longitude" class="form-control" step="0.000001"
-                         [class.is-invalid]="hasError('update', 'longitude', 'required') || hasError('update', 'longitude', 'min') || hasError('update', 'longitude', 'max')">
-                  <div *ngIf="hasError('update', 'longitude', 'required')" class="invalid-feedback">
-                    Longitude is required
-                  </div>
-                  <div *ngIf="hasError('update', 'longitude', 'min') || hasError('update', 'longitude', 'max')" class="invalid-feedback">
-                    Longitude must be between -180 and 180
-                  </div>
-                </div>
-              </div>
-            </div> -->
           </div>
           <div class="modal-footer custom-modal-footer">
             <button type="button" class="btn custom-modal-btn-secondary" (click)="toggleUpdateForm()">
@@ -403,7 +321,7 @@
             </button>
             <button type="submit" class="btn custom-modal-btn-primary" [disabled]="!addAddressForm.valid || loading">
               <span *ngIf="loading" class="spinner-sm"></span>
-              <i *ngIf="!loading" class="fas fa-plus me-2"></i> Add Address
+              <i *ngIf="!loading" class="fas fa-save me-2"></i> Add Address
             </button>
           </div>
         </form>

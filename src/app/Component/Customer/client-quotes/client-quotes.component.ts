@@ -13,7 +13,7 @@ import { ToastrService } from 'ngx-toastr';
   selector: 'app-client-quotes',
   imports: [CommonModule, FormsModule],
   templateUrl: './client-quotes.component.html',
-  styleUrls: ['./clinet-quotes.component.css']
+  styleUrls: ['./client-quotes.component.css']
 })
 export class ClientQuotesComponent implements OnInit, OnDestroy {
   quotes: ClientQuote[] = [];

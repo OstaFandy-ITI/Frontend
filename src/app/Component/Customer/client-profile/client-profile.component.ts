@@ -307,6 +307,20 @@ export class ClientProfileComponent implements OnInit {
     }
   }
 
+  // toggleAddressForm(): void {
+  //   this.showAddressForm = !this.showAddressForm;
+  //   this.error = null;
+  //   this.successMessage = null;
+
+  //   if (!this.showAddressForm) {
+  //     this.addAddressForm.reset({
+  //       addressType: 'Home',
+  //       isDefault: false,
+  //       isActive: true
+  //     });
+  //   }
+  // }
+
 onUpdateProfile(): void {
   if (this.updateProfileForm.valid && !this.loading) {
     this.loading = true;

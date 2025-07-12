@@ -2,12 +2,13 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Category, CategoryCreate, PaginatedResult } from '../../../core/models/category.models';  
+import { URL } from '../../../core/Shared/URL';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategoryService {
-  private apiUrl = 'https://localhost:7187/api/category';
+  private apiUrl = `${URL.apiUrl}/category`;
 
   constructor(private http: HttpClient) {}
 

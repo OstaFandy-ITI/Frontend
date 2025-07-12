@@ -27,7 +27,7 @@ export class OrderFeedbackComponent implements OnInit, OnDestroy {
   currentPage = 1;
   totalPages = 1;
   totalCount = 0;
-  pageSize = 1;
+  pageSize = 5;
   paginationPages: number[] = [];
   
   searchControl = new FormControl('');

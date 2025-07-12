@@ -31,6 +31,7 @@ export class HandymanRegistrationComponent implements OnInit {
   addressTypes: string[] = [];
   cites: string[] = ['Cairo', 'Alexandria', 'Mansoura'];
   step = 1;
+  isLoading: boolean = false;
 
   statistics: DashboardStatistics = {
     completedJobCount: 0,
@@ -222,6 +223,7 @@ export class HandymanRegistrationComponent implements OnInit {
   //submit registration
   submit() {
     if (this.userForm.valid && this.handymanForm.valid) {
+      this.isLoading = true;
       const handymanData = {
         ...this.userForm.value,
         ...this.handymanForm.value,
@@ -233,17 +235,21 @@ export class HandymanRegistrationComponent implements OnInit {
       this.registerService.RegisterHandyMan(handymanData).subscribe({
         next: (response: ResponseDto<string>) => {
           if (response && response.data) {
-            this._AuthService.Login(response.data);
+            this.isLoading = false;
             this.toastr.success(response.message);
             this.router.navigate(['/handyman/pending']);
           } else {
+            this.isLoading = false;
             this.toastr.error(response.message);
           }
         },
         error: (error) => {
+          this.isLoading = false;
           this.toastr.error(error.error.message);
         },
       });
+    }else{
+      this.toastr.warning("Kindly complete all required fields.")
     }
   }
 
@@ -255,7 +261,10 @@ export class HandymanRegistrationComponent implements OnInit {
         this.statistics = data;
 
         this.animateCounter('activeClients', this.statistics.activeClientCount);
-        this.animateCounter('completedBookings',this.statistics.completedJobCount);
+        this.animateCounter(
+          'completedBookings',
+          this.statistics.completedJobCount
+        );
       },
       error: (error) => {
         console.error('Error loading statistics:', error);
@@ -265,26 +274,25 @@ export class HandymanRegistrationComponent implements OnInit {
 
   //animation
   animateCounter(elementId: string, target: number, duration: number = 1500) {
-  const element = document.getElementById(elementId)?.querySelector('.count');
-  if (!element) return;
+    const element = document.getElementById(elementId)?.querySelector('.count');
+    if (!element) return;
 
-  const startTime = performance.now();
-  
+    const startTime = performance.now();
 
-  const updateCount = (currentTime: number) => {
-    const elapsed = currentTime - startTime;
-    const progress = Math.min(elapsed / duration, 1); 
-    const currentCount = Math.floor(progress * target);
+    const updateCount = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const currentCount = Math.floor(progress * target);
 
-    element.textContent = currentCount.toLocaleString();
+      element.textContent = currentCount.toLocaleString();
 
-    if (progress < 1) {
-      requestAnimationFrame(updateCount);
-    } else {
-      element.textContent = target.toLocaleString(); 
-    }
-  };
+      if (progress < 1) {
+        requestAnimationFrame(updateCount);
+      } else {
+        element.textContent = target.toLocaleString();
+      }
+    };
 
-  requestAnimationFrame(updateCount);
-}
+    requestAnimationFrame(updateCount);
+  }
 }
