@@ -7,7 +7,7 @@
   <div class="dropdown" *ngIf="isDropdownOpen">
     <div class="dropdown-content">
       
-      <div *ngFor="let notification of notifications" class="notification-item">
+      <div *ngFor="let notification of notifications" class="notification-item" [class.newly-read]="isNewlyRead(notification.id)">
         <div class="notification-content">
          
 <div *ngIf="isVacationNotification(notification)">

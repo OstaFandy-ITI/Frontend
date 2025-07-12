@@ -11,7 +11,7 @@
             <div *ngIf="!loading && notifications.length === 0">No notifications</div>
             
             <div *ngIf="!loading && notifications.length > 0">
-                <div class="notification-item" *ngFor="let n of notifications">
+                <div class="notification-item" *ngFor="let n of notifications" [class.newly-read]="isNewlyRead(n.id)">
                     <div class="notification-content">
                         <h4>{{ n.title }}</h4>
                         <p>{{ n.message }}</p>

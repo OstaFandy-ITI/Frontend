@@ -16,8 +16,7 @@ import * as signalR from '@microsoft/signalr';
   providedIn: 'root'
 })
 export class AlljobsService {
-  // private baseUrl = 'https://localhost:7187/api';
-  private baseUrl = `${URL.apiUrl}`; 
+   private baseUrl = `${URL.apiUrl}`; 
   private readonly hubUrl: string;
   private hubConnection!: signalR.HubConnection;
   private userId: number | null = null;

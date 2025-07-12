@@ -1,7 +1,5 @@
-<!-- handyman-block-date.component.html -->
-<div class="container-fluid">
-  <!-- Header with Add Button -->
-  <div class="page-header">
+ <div class="container-fluid">
+   <div class="page-header">
     <h1>My Vacation Requests</h1>
     <button 
       class="btn btn-lg add-vacation-btn"
@@ -10,8 +8,7 @@
     </button>
   </div>
 
-  <!-- Filters -->
-  <div class="filters-section">
+   <div class="filters-section">
     <div class="filter-row">
       <div class="filter-group">
         <label>Filter by Status</label>
@@ -37,8 +34,7 @@
     </div>
   </div>
 
-  <!-- Block Dates Table -->
-  <div class="table-container">
+   <div class="table-container">
     <table class="data-table">
       <thead>
         <tr>
@@ -62,20 +58,17 @@
       </tbody>
     </table>
     
-    <!-- Loading state -->
-    <div *ngIf="isLoading" class="loading-state">
+     <div *ngIf="isLoading" class="loading-state">
       <div class="spinner"></div>
       <p>Loading vacation requests...</p>
     </div>
     
-    <!-- Empty state -->
-    <div *ngIf="!isLoading && blockDates.length === 0" class="empty-state">
+     <div *ngIf="!isLoading && blockDates.length === 0" class="empty-state">
       <p>No vacation requests found</p>
     </div>
   </div>
 
-  <!-- Pagination -->
-  <div class="pagination-container" *ngIf="totalPages > 1">
+   <div class="pagination-container" *ngIf="totalPages > 1">
     <button 
       class="btn btn-outline-primary" 
       [disabled]="currentPage === 1"
@@ -101,8 +94,7 @@
   </div>
 </div>
 
-<!-- Apply Block Date Modal -->
-<div class="modal fade" id="applyBlockDateModal" tabindex="-1">
+ <div class="modal fade" id="applyBlockDateModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">

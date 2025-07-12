@@ -1,4 +1,4 @@
-/* Updated CSS File with Alarm Shake Effect */
+/* Updated CSS File with Clean Notification Design */
 
 /* Notification Component Styles */
 .notification-container {
@@ -7,7 +7,7 @@
 }
 
 .notification-bell {
-  background: linear-gradient(white);
+  background: white;
   border: none;
   border-radius: 50%;
   width: 45px;
@@ -30,19 +30,11 @@
 .notification-bell:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  /* change background to white on hover */
   background: white;
 }
 
 .notification-bell:hover i {
   animation: shake 0.5s ease-in-out;
-  /* change icon color to yellow on hover */
-  color: #ffc107;
-}
-
-.notification-bell:hover i {
-  animation: shake 0.5s ease-in-out;
-  /* change icon color on hover */
   color: #ffeb3b;
 }
 
@@ -51,7 +43,7 @@
 }
 
 .notification-bell.active {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  background: white;
 }
 
 .notification-count {
@@ -93,21 +85,29 @@
   transform: translateY(0);
 }
 
+/* Clean header - no purple background */
 .notification-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 20px;
   border-bottom: 1px solid #e1e8ed;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: white;
+  color: #14171a;
   border-radius: 12px 12px 0 0;
+}
+
+.notification-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #14171a;
 }
 
 .close-btn {
   background: none;
   border: none;
-  color: white;
+  color: #657786;
   cursor: pointer;
   font-size: 16px;
   padding: 5px;
@@ -116,7 +116,8 @@
 }
 
 .close-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #f1f3f4;
+  color: #14171a;
 }
 
 .notification-content {
@@ -182,6 +183,7 @@
   border-radius: 0 0 12px 12px;
 }
 
+/* Clean notification icon styles - no gradients */
 .notification-icon {
   width: 40px;
   height: 40px;
@@ -198,10 +200,19 @@
   color: white;
 }
 
-.notification-icon.success { background: linear-gradient(135deg, #2ed573 0%, #1e90ff 100%); }
-.notification-icon.error   { background: linear-gradient(135deg, #ff4757 0%, #ff3838 100%); }
-.notification-icon.warning { background: linear-gradient(135deg, #ffa726 0%, #ff9800 100%); }
-.notification-icon.info    { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.notification-icon.success { background: #2ed573; }
+.notification-icon.error   { background: #ff4757; }
+.notification-icon.warning { background: #ffc107; }
+.notification-icon.info    { background: #667eea; }
+
+/* Specific styling for alarm/bell icon */
+.notification-icon.alarm {
+  background: #ffc107;
+}
+
+.notification-icon.alarm i {
+  color: white;
+}
 
 .notification-body {
   flex: 1;
@@ -227,6 +238,47 @@
   font-size: 12px;
   color: #8899a6;
   font-weight: 500;
+}
+
+/* Action buttons for notifications - clean style */
+.notification-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.notification-action-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 15px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.notification-action-btn.approve {
+  background: #d4edda;
+  color: #155724;
+}
+
+.notification-action-btn.approve:hover {
+  background: #c3e6cb;
+}
+
+.notification-action-btn.reject {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.notification-action-btn.reject:hover {
+  background: #f5c6cb;
+}
+
+.notification-action-btn.approved {
+  background: #d4edda;
+  color: #155724;
+  cursor: default;
 }
 
 .notification-overlay {

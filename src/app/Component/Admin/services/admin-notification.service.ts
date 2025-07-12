@@ -81,4 +81,7 @@ const token = this.authService.getToken();
     
     return this.http.put(`${this.baseUrl}/AdminHandyMan/ApproveBlockDate`, null, { params });
   }
+  markAllNotificationsAsRead(userId: number): Observable<any> {
+  return this.http.post(`${this.baseUrl}/AdminHandyMan/MarkNotificationAsRead/${userId}`, {});
+}
 }

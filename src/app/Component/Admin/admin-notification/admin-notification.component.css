@@ -290,7 +290,11 @@
   .icon-btn i { 
     font-size: 1.2rem; 
   }
-  
+  .notification-item.newly-read {
+  background-color: #f8f9fa;
+  border-left: 3px solid #6c757d;
+  opacity: 0.8;
+}
   .icon-btn .badge { 
     width: 14px; 
     height: 14px; 
