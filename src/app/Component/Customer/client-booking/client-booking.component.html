@@ -94,7 +94,6 @@
 
 
       <div class="d-flex justify-content-end" *ngIf="booking.status === 'Pending' || booking.status === 'Confirmed'">
-        <button class="cancel-btn" (click)="cancelBooking(booking.bookingId)" [disabled]="cancellingId === booking.bookingId" [ngClass]="{'loading': cancellingId === booking.bookingId}"></button>
       <!-- Action Buttons -->
       <div class="d-flex justify-content-between align-items-center mt-3">
         <!-- Review Button (only for completed bookings) -->

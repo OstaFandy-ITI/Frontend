@@ -55,15 +55,22 @@ export interface UpdateClientProfileRequest {
   lastName?: string;
   email?: string;
   phone?: string;
+  address?: {
+    address1: string;
+    city: string;
+    latitude: number;
+    longitude: number;
+    addressType: string;
+  };
 }
 
 export interface AddAddressRequest {
   userId: number;
   address1: string; 
   city: string;
-  latitude: number;
-  longitude: number;
-  addressType: string;
+  latitude?: number;  // Made optional
+  longitude?: number; // Made optional
+  addressType?: string;
   isDefault: boolean;
   isActive: boolean;
   createdAt: string;

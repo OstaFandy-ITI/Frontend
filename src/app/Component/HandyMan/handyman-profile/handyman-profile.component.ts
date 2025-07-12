@@ -1,12 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HandymanProfileService } from '../services/handyman-profile.service';
-import { HandymanProfile } from '../../../core/models/HandymanProfile.model';
+import { 
+  HandymanProfile, 
+  UpdateHandymanProfileRequest 
+} from '../../../core/models/HandymanProfile.model';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-handyman-profile',
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './handyman-profile.component.html',
   styleUrls: ['./handyman-profile.component.css']
 })
@@ -34,15 +38,20 @@ export class HandymanProfileComponent implements OnInit {
   selectedFile: File | null = null;
   uploadingPhoto = false;
   showPhotoModal = false;
+  showUpdateForm = false;
   imagePreview: string | null = null;
   isDragOver = false;
 
+  updateProfileForm!: FormGroup;
   handymanId: number = 0;
 
   constructor(
     private handymanProfileService: HandymanProfileService,
-    private authService: AuthService
-  ) {}
+    private authService: AuthService,
+    private fb: FormBuilder
+  ) {
+    this.initializeForm();
+  }
 
   ngOnInit(): void {
     const userId = this.authService.getCurrentUserId();
@@ -54,6 +63,16 @@ export class HandymanProfileComponent implements OnInit {
     }
   }
 
+  private initializeForm(): void {
+    // Remove required validators to make inputs optional
+    this.updateProfileForm = this.fb.group({
+      firstName: ['', [Validators.minLength(2)]],
+      lastName: ['', [Validators.minLength(2)]],
+      phone: ['', [Validators.pattern(/^\d{10,}$/)]],
+      experienceYears: ['', [Validators.min(0), Validators.max(50)]]
+    });
+  }
+
   loadHandymanProfile(): void {
     this.loading = true;
     this.error = null;
@@ -62,6 +81,7 @@ export class HandymanProfileComponent implements OnInit {
     this.handymanProfileService.getHandymanProfile(this.handymanId).subscribe({
       next: (profile: HandymanProfile) => {
         this.handymanProfile = profile;
+        this.populateUpdateForm();
         this.loading = false;
       },
       error: (error) => {
@@ -69,6 +89,125 @@ export class HandymanProfileComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  private populateUpdateForm(): void {
+    if (this.handymanProfile) {
+      this.updateProfileForm.patchValue({
+        firstName: this.handymanProfile.firstName,
+        lastName: this.handymanProfile.lastName,
+        phone: this.handymanProfile.phone,
+        experienceYears: this.handymanProfile.experienceYears
+      });
+    }
+  }
+
+  toggleUpdateForm(): void {
+    this.showUpdateForm = !this.showUpdateForm;
+    this.error = null;
+    this.successMessage = null;
+
+    if (this.showUpdateForm) {
+      this.populateUpdateForm();
+    }
+  }
+
+  onUpdateProfile(): void {
+  if (this.updateProfileForm.invalid || this.loading) {
+    return;
+  }
+
+  this.loading = true;
+  this.error = null;
+  this.successMessage = null;
+
+  const formValues = this.updateProfileForm.value;
+  const updateData: UpdateHandymanProfileRequest = {firstName: '', lastName: '', phone: '', experienceYears: 0};
+
+  // Only include fields that have values
+  if (formValues.firstName && formValues.firstName.trim()) {
+    updateData.firstName = formValues.firstName.trim();
+  }
+  if (formValues.lastName && formValues.lastName.trim()) {
+    updateData.lastName = formValues.lastName.trim();
+  }
+  if (formValues.phone && formValues.phone.trim()) {
+    updateData.phone = formValues.phone.trim();
+  }
+  if (formValues.experienceYears !== null && formValues.experienceYears !== undefined) {
+    updateData.experienceYears = Number(formValues.experienceYears);
+  }
+
+  this.handymanProfileService.updateHandymanProfile(this.handymanId, updateData)
+    .subscribe({
+      next: (response) => {
+        this.handleUpdateSuccess(response);
+      },
+      error: (error) => {
+        this.handleUpdateError(error);
+      }
+    });
+}
+
+
+
+private handleUpdateSuccess(response: any): void {
+  this.loading = false;
+  
+  if (response.message && response.message.includes('successfully')) {
+    this.successMessage = response.message;
+    this.showUpdateForm = false;
+    
+    // Update local profile data if needed
+    if (response.date) {
+      this.handymanProfile = {
+        ...this.handymanProfile,
+        ...response.date,
+        // Map any mismatched property names
+        experienceYears: response.date.experienceYear,
+        latitude: response.date.initName
+      };
+    }
+    
+    // Optional: Reload the profile
+    this.loadHandymanProfile();
+  } else {
+    this.error = response.message || 'Profile update failed';
+  }
+}
+
+ private handleUpdateError(error: any): void {
+  this.loading = false;
+  
+  if (error.error && error.error.message) {
+    this.error = error.error.message;
+  } else if (error.message) {
+    this.error = error.message;
+  } else {
+    this.error = 'An unknown error occurred during update';
+  }
+  
+  console.error('Update error:', error);
+}
+
+  private hasValidationErrors(): boolean {
+    const controls = this.updateProfileForm.controls;
+    
+    // Check each control for errors only if it has a value
+    for (const [key, control] of Object.entries(controls)) {
+      if (control.value && control.value.toString().trim() && control.errors) {
+        control.markAsTouched();
+        return true;
+      }
+    }
+    return false;
+  }
+
+  hasError(controlName: string, errorType: string): boolean {
+    const control = this.updateProfileForm.get(controlName);
+    // Only show error if field has a value and has an error
+    return !!(control && control.value && control.value.toString().trim() && 
+             control.hasError(errorType) && (control.dirty || control.touched));
   }
 
   openPhotoModal(): void {

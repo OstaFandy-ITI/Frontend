@@ -1,10 +1,13 @@
 <div class="client-profile-container">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Loading Spinner -->
   <div *ngIf="loading && (!clientProfile || clientProfile.addresses.length === 0)" class="loading-spinner">
     <div class="spinner"></div>
     <p>Loading client profile...</p>
   </div>
 
+  <!-- Error Message -->
   <div *ngIf="error" class="error-message">
     <div class="alert alert-danger">
       <i class="fas fa-exclamation-triangle"></i>
@@ -12,6 +15,7 @@
     </div>
   </div>
 
+  <!-- Success Message -->
   <div *ngIf="successMessage" class="success-message">
     <div class="alert alert-success">
       <i class="fas fa-check-circle"></i>
@@ -19,8 +23,9 @@
     </div>
   </div>
 
+  <!-- Main Profile Content -->
   <div *ngIf="clientProfile && !loading" class="profile-content header">
-
+    <!-- Profile Header -->
     <div class="profile-header">
       <div class="profile-avatar">
         <img [src]="'/assets/profile.png'" alt="Profile Picture" class="avatar-img">
@@ -41,6 +46,7 @@
       </div>
     </div>
 
+    <!-- Contact Information -->
     <div class="profile-details">
       <div class="detail-card">
         <h3>Contact Information</h3>
@@ -63,6 +69,7 @@
       </div>
     </div>
 
+    <!-- Default Address -->
     <div *ngIf="clientProfile.defaultAddress" class="address-section detail-card">
       <h3>Default Address</h3>
       <div class="address-card default-address">
@@ -74,13 +81,14 @@
           <p class="address-text">{{ clientProfile.defaultAddress.address }}</p>
           <p class="city">{{ clientProfile.defaultAddress.city }}</p>
           <div class="coordinates">
-            <small>Lat: {{ clientProfile.defaultAddress.latitude }},
-                  Lng: {{ clientProfile.defaultAddress.longitude }}</small>
+            <small>Lat: {{ clientProfile.defaultAddress.latitude | number:'1.4-4' }}, 
+                  Lng: {{ clientProfile.defaultAddress.longitude | number:'1.4-4' }}</small>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- All Addresses -->
     <div class="addresses-section">
       <h3>All Addresses ({{ addresses.length }})</h3>
       <div *ngIf="addresses.length > 0; else noAddresses" class="addresses-grid">
@@ -98,29 +106,19 @@
             <p class="address-text">{{ address.address1 }}</p>
             <p class="city">{{ address.city }}</p>
             <div class="coordinates">
-              <small>Lat: {{ address.latitude }}, Lng: {{ address.longitude }}</small>
+              <small>Lat: {{ address.latitude | number:'1.4-4' }}, Lng: {{ address.longitude | number:'1.4-4' }}</small>
             </div>
           </div>
-          <div *ngIf="addresses.length > 1 && !address.isDefault" class="set-default-btn">
-            <button
-              class="btn btn-sm"
-              style="
-                background: linear-gradient(90deg, #3A6EA5 0%, #0056b3 100%);
-                color: #fff;
-                border: none;
-                border-radius: 20px;
-                padding: 5px 18px;
-                font-weight: 600;
-                box-shadow: 0 2px 8px rgba(58,110,165,0.12);
-                transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
-                display: flex;
-                align-items: center;
-                gap: 6px;
-              "
-             (click)="setDefaultAddress(address.id)">
-              Set as Default
-            </button>
-          </div>
+          <div *ngIf="!address.isDefault" class="set-default-btn">
+  <button class="btn btn-sm" 
+          (click)="setDefaultAddress(address.id)"
+          [disabled]="loading || isAddressBeingProcessed(address.id)">
+    <span *ngIf="isAddressBeingProcessed(address.id)" class="spinner-sm"></span>
+    <i *ngIf="!isAddressBeingProcessed(address.id)" class="fas fa-star"></i>
+    {{ isAddressBeingProcessed(address.id) ? 'Setting...' : 'Set as Default' }}
+  </button>
+</div>
+
         </div>
       </div>
       <ng-template #noAddresses>
@@ -131,6 +129,7 @@
     </div>
   </div>
 
+  <!-- Update Profile Modal -->
   <div class="modal fade" [ngClass]="{'show d-block': showUpdateForm}" *ngIf="showUpdateForm">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content custom-modal-content">
@@ -143,73 +142,146 @@
         </div>
         <form [formGroup]="updateProfileForm" (ngSubmit)="onUpdateProfile()">
           <div class="modal-body custom-modal-body">
-            <div class="form-group">
-              <label for="firstName">First Name *</label>
-              <input
-                type="text"
-                id="firstName"
-                formControlName="firstName"
-                class="form-control"
-                placeholder="Enter your first name"
-                [class.is-invalid]="hasError('update', 'firstName', 'required') || hasError('update', 'firstName', 'minlength')">
-              <div *ngIf="hasError('update', 'firstName', 'required')" class="invalid-feedback">
-                First name is required
+            <!-- Personal Info Section -->
+            <h4 class="mb-3">Personal Information</h4>
+            <div class="form-row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="firstName">First Name *</label>
+                  <input type="text" id="firstName" formControlName="firstName" class="form-control"
+                         [class.is-invalid]="hasError('update', 'firstName', 'required') || hasError('update', 'firstName', 'minlength')">
+                  <div *ngIf="hasError('update', 'firstName', 'required')" class="invalid-feedback">
+                    First name is required
+                  </div>
+                  <div *ngIf="hasError('update', 'firstName', 'minlength')" class="invalid-feedback">
+                    First name must be at least 2 characters
+                  </div>
+                </div>
               </div>
-              <div *ngIf="hasError('update', 'firstName', 'minlength')" class="invalid-feedback">
-                First name must be at least 2 characters
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="lastName">Last Name *</label>
+                  <input type="text" id="lastName" formControlName="lastName" class="form-control"
+                         [class.is-invalid]="hasError('update', 'lastName', 'required') || hasError('update', 'lastName', 'minlength')">
+                  <div *ngIf="hasError('update', 'lastName', 'required')" class="invalid-feedback">
+                    Last name is required
+                  </div>
+                  <div *ngIf="hasError('update', 'lastName', 'minlength')" class="invalid-feedback">
+                    Last name must be at least 2 characters
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="email">Email *</label>
+                  <input type="email" id="email" formControlName="email" class="form-control"
+                         [class.is-invalid]="hasError('update', 'email', 'required') || hasError('update', 'email', 'email')">
+                  <div *ngIf="hasError('update', 'email', 'required')" class="invalid-feedback">
+                    Email is required
+                  </div>
+                  <div *ngIf="hasError('update', 'email', 'email')" class="invalid-feedback">
+                    Please enter a valid email address
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="phone">Phone *</label>
+                  <input type="tel" id="phone" formControlName="phone" class="form-control"
+                         [class.is-invalid]="hasError('update', 'phone', 'required') || hasError('update', 'phone', 'pattern')">
+                  <div *ngIf="hasError('update', 'phone', 'required')" class="invalid-feedback">
+                    Phone number is required
+                  </div>
+                  <div *ngIf="hasError('update', 'phone', 'pattern')" class="invalid-feedback">
+                    Please enter a valid phone number (at least 10 digits)
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Address Section -->
+            <!-- <h4 class="mb-3 mt-4">Default Address</h4>
+            <div class="form-group">
+              <label for="addressType">Address Type *</label>
+              <select id="addressType" formControlName="addressType" class="form-control">
+                <option value="Home">Home</option>
+                <option value="Work">Work</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="address">Address *</label>
+              <input type="text" id="address" formControlName="address" class="form-control"
+                     [class.is-invalid]="hasError('update', 'address', 'required') || hasError('update', 'address', 'minlength')">
+              <div *ngIf="hasError('update', 'address', 'required')" class="invalid-feedback">
+                Address is required
+              </div>
+              <div *ngIf="hasError('update', 'address', 'minlength')" class="invalid-feedback">
+                Address must be at least 5 characters
               </div>
             </div>
 
             <div class="form-group">
-              <label for="lastName">Last Name *</label>
-              <input
-                type="text"
-                id="lastName"
-                formControlName="lastName"
-                class="form-control"
-                placeholder="Enter your last name"
-                [class.is-invalid]="hasError('update', 'lastName', 'required') || hasError('update', 'lastName', 'minlength')">
-              <div *ngIf="hasError('update', 'lastName', 'required')" class="invalid-feedback">
-                Last name is required
-              </div>
-              <div *ngIf="hasError('update', 'lastName', 'minlength')" class="invalid-feedback">
-                Last name must be at least 2 characters
+              <label for="city">City *</label>
+              <select id="city" formControlName="city" class="form-control"
+                      [class.is-invalid]="hasError('update', 'city', 'required')">
+                <option value="" disabled>Select a city</option>
+                <option value="Cairo">Cairo</option>
+                <option value="Alexandria">Alexandria</option>
+                <option value="Mansoura">Mansoura</option>
+              </select>
+              <div *ngIf="hasError('update', 'city', 'required')" class="invalid-feedback">
+                City is required
               </div>
             </div>
 
             <div class="form-group">
-              <label for="email">Email *</label>
-              <input
-                type="email"
-                id="email"
-                formControlName="email"
-                class="form-control"
-                placeholder="Enter your email address"
-                [class.is-invalid]="hasError('update', 'email', 'required') || hasError('update', 'email', 'email')">
-              <div *ngIf="hasError('update', 'email', 'required')" class="invalid-feedback">
-                Email is required
-              </div>
-              <div *ngIf="hasError('update', 'email', 'email')" class="invalid-feedback">
-                Please enter a valid email address
+              <div class="geolocation-section">
+                <button type="button" class="btn btn-location" 
+                        (click)="getCurrentLocation('update')"
+                        [disabled]="loadingLocation">
+                  <span *ngIf="loadingLocation" class="spinner-sm"></span>
+                  <i *ngIf="!loadingLocation" class="fas fa-map-marker-alt"></i>
+                  {{ loadingLocation ? 'Getting Location...' : 'Use My Current Location' }}
+                </button>
+                <small class="location-help-text">
+                  Click to automatically fill latitude and longitude with your current location
+                </small>
               </div>
             </div>
 
-            <div class="form-group">
-              <label for="phone">Phone *</label>
-              <input
-                type="tel"
-                id="phone"
-                formControlName="phone"
-                class="form-control"
-                placeholder="Enter your phone number"
-                [class.is-invalid]="hasError('update', 'phone', 'required') || hasError('update', 'phone', 'pattern')">
-              <div *ngIf="hasError('update', 'phone', 'required')" class="invalid-feedback">
-                Phone number is required
+            <div class="form-row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="latitude">Latitude *</label>
+                  <input type="number" id="latitude" formControlName="latitude" class="form-control" step="0.000001"
+                         [class.is-invalid]="hasError('update', 'latitude', 'required') || hasError('update', 'latitude', 'min') || hasError('update', 'latitude', 'max')">
+                  <div *ngIf="hasError('update', 'latitude', 'required')" class="invalid-feedback">
+                    Latitude is required
+                  </div>
+                  <div *ngIf="hasError('update', 'latitude', 'min') || hasError('update', 'latitude', 'max')" class="invalid-feedback">
+                    Latitude must be between -90 and 90
+                  </div>
+                </div>
               </div>
-              <div *ngIf="hasError('update', 'phone', 'pattern')" class="invalid-feedback">
-                Please enter a valid phone number (at least 10 digits)
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="longitude">Longitude *</label>
+                  <input type="number" id="longitude" formControlName="longitude" class="form-control" step="0.000001"
+                         [class.is-invalid]="hasError('update', 'longitude', 'required') || hasError('update', 'longitude', 'min') || hasError('update', 'longitude', 'max')">
+                  <div *ngIf="hasError('update', 'longitude', 'required')" class="invalid-feedback">
+                    Longitude is required
+                  </div>
+                  <div *ngIf="hasError('update', 'longitude', 'min') || hasError('update', 'longitude', 'max')" class="invalid-feedback">
+                    Longitude must be between -180 and 180
+                  </div>
+                </div>
               </div>
-            </div>
+            </div> -->
           </div>
           <div class="modal-footer custom-modal-footer">
             <button type="button" class="btn custom-modal-btn-secondary" (click)="toggleUpdateForm()">
@@ -226,6 +298,7 @@
   </div>
   <div class="modal-backdrop fade" [ngClass]="{'show': showUpdateForm}" *ngIf="showUpdateForm"></div>
 
+  <!-- Add Address Modal -->
   <div class="modal fade" [ngClass]="{'show d-block': showAddressForm}" *ngIf="showAddressForm">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content custom-modal-content">
@@ -249,13 +322,8 @@
 
             <div class="form-group">
               <label for="address">Address *</label>
-              <input
-                type="text"
-                id="address"
-                formControlName="address"
-                class="form-control"
-                placeholder="Enter full address"
-                [class.is-invalid]="hasError('address', 'address', 'required') || hasError('address', 'address', 'minlength')">
+              <input type="text" id="address" formControlName="address" class="form-control"
+                     [class.is-invalid]="hasError('address', 'address', 'required') || hasError('address', 'address', 'minlength')">
               <div *ngIf="hasError('address', 'address', 'required')" class="invalid-feedback">
                 Address is required
               </div>
@@ -266,11 +334,8 @@
 
             <div class="form-group">
               <label for="city">City *</label>
-              <select
-                id="city"
-                formControlName="city"
-                class="form-control"
-                [class.is-invalid]="hasError('address', 'city', 'required')">
+              <select id="city" formControlName="city" class="form-control"
+                      [class.is-invalid]="hasError('address', 'city', 'required')">
                 <option value="" disabled>Select a city</option>
                 <option value="Cairo">Cairo</option>
                 <option value="Alexandria">Alexandria</option>
@@ -283,11 +348,9 @@
 
             <div class="form-group">
               <div class="geolocation-section">
-                <button
-                  type="button"
-                  class="btn btn-location"
-                  (click)="getCurrentLocation()"
-                  [disabled]="loadingLocation">
+                <button type="button" class="btn btn-location" 
+                        (click)="getCurrentLocation('add')"
+                        [disabled]="loadingLocation">
                   <span *ngIf="loadingLocation" class="spinner-sm"></span>
                   <i *ngIf="!loadingLocation" class="fas fa-map-marker-alt"></i>
                   {{ loadingLocation ? 'Getting Location...' : 'Use My Current Location' }}
@@ -295,6 +358,35 @@
                 <small class="location-help-text">
                   Click to automatically fill latitude and longitude with your current location
                 </small>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="latitude">Latitude *</label>
+                  <input type="number" id="latitude" formControlName="latitude" class="form-control" step="0.000001"
+                         [class.is-invalid]="hasError('address', 'latitude', 'required') || hasError('address', 'latitude', 'min') || hasError('address', 'latitude', 'max')">
+                  <div *ngIf="hasError('address', 'latitude', 'required')" class="invalid-feedback">
+                    Latitude is required
+                  </div>
+                  <div *ngIf="hasError('address', 'latitude', 'min') || hasError('address', 'latitude', 'max')" class="invalid-feedback">
+                    Latitude must be between -90 and 90
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="longitude">Longitude *</label>
+                  <input type="number" id="longitude" formControlName="longitude" class="form-control" step="0.000001"
+                         [class.is-invalid]="hasError('address', 'longitude', 'required') || hasError('address', 'longitude', 'min') || hasError('address', 'longitude', 'max')">
+                  <div *ngIf="hasError('address', 'longitude', 'required')" class="invalid-feedback">
+                    Longitude is required
+                  </div>
+                  <div *ngIf="hasError('address', 'longitude', 'min') || hasError('address', 'longitude', 'max')" class="invalid-feedback">
+                    Longitude must be between -180 and 180
+                  </div>
+                </div>
               </div>
             </div>
 

@@ -27,6 +27,16 @@
   position: relative;
 }
 
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+  background: transparent;
+  color: #004e98;
+  border-radius: 0;
+  box-shadow: none;
+}
+
 .page-title::after {
   content: '';
   position: absolute;
@@ -39,64 +49,38 @@
   border-radius: 2px;
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 3rem;
-  padding: 2rem 0;
-  background: transparent;
-  color: #004e98;
-  border-radius: 0;
-  box-shadow: none;
-}
-
-.subtitle {
-  color: #3a6ea5;
-  font-size: 1.1rem;
-  margin: 0.5rem 0 0 0;
-  font-weight: 500;
-}
-
 /* Filter Container */
 .filter-container {
+  margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 2rem;
-  justify-content: flex-start; 
-  padding: 0 1rem;
 }
 
-.filter-container label {
+.filter-label {
   color: #004e98;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1.1rem;
 }
 
-.filter-container select {
-  padding: 0.5rem 1rem; /* Adjusted padding */
-  border: 1px solid #c0c0c0; /* Adjusted border color */
+.filter-select {
+  padding: 0.5rem 1rem;
+  border: 1px solid #c0c0c0;
   border-radius: 8px;
   font-size: 1rem;
-  color: #3a6ea5; /* Adjusted text color */
+  color: #3a6ea5;
   background-color: #ffffff;
-  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Adjusted box-shadow */
-  width: auto; /* Ensure it's not full width by default */
-  min-width: 150px; /* Set a minimum width */
+  width: auto;
+  min-width: 150px;
 }
 
-.filter-container select:hover {
-  border-color: #3a6ea5; /* Adjusted hover border color */
-  box-shadow: 0 4px 10px rgba(0, 78, 152, 0.1);
-}
-
-.filter-container select:focus {
+.filter-select:focus {
+  border-color: #3a6ea5;
+  box-shadow: 0 0 0 0.25rem rgba(58, 110, 165, 0.25);
   outline: none;
-  border-color: #3a6ea5; /* Adjusted focus border color */
-  box-shadow: 0 0 0 0.25rem rgba(58, 110, 165, 0.25); /* Adjusted focus box-shadow */
 }
-
 
 /* Loading Styles */
 .loading-container {
@@ -173,14 +157,14 @@
   margin-bottom: 1rem;
 }
 
-.empty-state h3 {
+.empty-state-title {
   color: #004e98;
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
-.empty-state p {
+.empty-state-text {
   color: #6c757d;
   font-size: 1.1rem;
   margin: 0;
@@ -514,7 +498,6 @@
   font-weight: 500;
 }
 
-<<<<<<< HEAD:src/app/Component/Customer/client-quotes/quotes.component.css
 /* Pagination */
 .pagination-container {
   display: flex;
@@ -562,7 +545,8 @@
   padding: 0.5rem 1rem;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-=======
+}
+
 /* Modal Styles */
 .modal-overlay {
   position: fixed !important;
@@ -826,7 +810,6 @@
   outline: none;
   border-color: #004e98;
   box-shadow: 0 0 0 3px rgba(0, 78, 152, 0.1);
->>>>>>> f2958a7a7a2d05d5b3dd0cec6040c4e147998256:src/app/Component/Customer/client-quotes/client-quotes.component.css
 }
 
 /* Responsive Design */
@@ -891,7 +874,6 @@
     padding: 1rem 1.5rem;
   }
   
-<<<<<<< HEAD:src/app/Component/Customer/client-quotes/quotes.component.css
   .pagination-container {
     flex-direction: column;
     gap: 0.5rem;
@@ -900,7 +882,8 @@
   .pagination-btn {
     width: 100%;
     justify-content: center;
-=======
+  }
+
   .modal-content {
     margin: 20px;
   }
@@ -911,7 +894,6 @@
   
   .modal-footer {
     flex-direction: column;
->>>>>>> f2958a7a7a2d05d5b3dd0cec6040c4e147998256:src/app/Component/Customer/client-quotes/client-quotes.component.css
   }
 }
 

@@ -21,6 +21,13 @@ export interface HandymanProfile {
   longitude: number;
 }
 
+export interface UpdateHandymanProfileRequest {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  experienceYears: number;
+}
+
 export interface UpdateHandymanProfilePhotoRequest {
   profilePhoto: File;
 }

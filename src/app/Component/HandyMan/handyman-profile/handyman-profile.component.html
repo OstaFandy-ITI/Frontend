@@ -30,13 +30,15 @@
       </div>
       <div class="profile-info">
         <h2>{{ handymanProfile.firstName }} {{ handymanProfile.lastName }}</h2>
-        <div class="user-id">User ID: {{ handymanProfile.userId }}</div>
         <span class="status-badge" [class.active]="handymanProfile.status === 'Active'">
           {{ handymanProfile.status }}
         </span>
       </div>
       <div class="profile-actions">
-        <button class="btn btn-primary" (click)="openPhotoModal()">
+        <button class="btn btn-primary" (click)="toggleUpdateForm()">
+          <i class="fas fa-edit"></i> Update Profile
+        </button>
+        <button class="btn btn-secondary" (click)="openPhotoModal()">
           <i class="fas fa-camera"></i> Change Photo
         </button>
       </div>
@@ -89,7 +91,103 @@
 
   </div>
 
-  <!-- Photo Upload Modal - Updated to match client profile modal styling -->
+  <!-- Update Profile Modal -->
+  <div class="modal fade" [ngClass]="{'show d-block': showUpdateForm}" *ngIf="showUpdateForm">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content custom-modal-content">
+        <div class="modal-header custom-modal-header">
+          <h5 class="modal-title">
+            <i class="fas fa-edit me-2"></i> Update Profile
+          </h5>
+          <button type="button" class="btn-close custom-btn-close"
+                  aria-label="Close" (click)="toggleUpdateForm()"></button>
+        </div>
+        <form [formGroup]="updateProfileForm" (ngSubmit)="onUpdateProfile()">
+          <div class="modal-body custom-modal-body">
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input
+                type="text"
+                id="firstName"
+                formControlName="firstName"
+                class="form-control"
+                placeholder="Enter your first name (optional)"
+                [class.is-invalid]="hasError('firstName', 'minlength')">
+              <div *ngIf="hasError('firstName', 'minlength')" class="invalid-feedback">
+                First name must be at least 2 characters
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input
+                type="text"
+                id="lastName"
+                formControlName="lastName"
+                class="form-control"
+                placeholder="Enter your last name (optional)"
+                [class.is-invalid]="hasError('lastName', 'minlength')">
+              <div *ngIf="hasError('lastName', 'minlength')" class="invalid-feedback">
+                Last name must be at least 2 characters
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input
+                type="tel"
+                id="phone"
+                formControlName="phone"
+                class="form-control"
+                placeholder="Enter your phone number (optional)"
+                [class.is-invalid]="hasError('phone', 'pattern')">
+              <div *ngIf="hasError('phone', 'pattern')" class="invalid-feedback">
+                Please enter a valid phone number (at least 10 digits)
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="experienceYears">Experience Years</label>
+              <input
+                type="number"
+                id="experienceYears"
+                formControlName="experienceYears"
+                class="form-control"
+                placeholder="Enter years of experience (optional)"
+                min="0"
+                max="50"
+                [class.is-invalid]="hasError('experienceYears', 'min') || hasError('experienceYears', 'max')">
+              <div *ngIf="hasError('experienceYears', 'min')" class="invalid-feedback">
+                Experience years must be 0 or greater
+              </div>
+              <div *ngIf="hasError('experienceYears', 'max')" class="invalid-feedback">
+                Experience years must be 50 or less
+              </div>
+            </div>
+
+            <div class="form-note">
+              <small class="text-muted">
+                <i class="fas fa-info-circle"></i>
+                All fields are optional. Only filled fields will be updated.
+              </small>
+            </div>
+          </div>
+          <div class="modal-footer custom-modal-footer">
+            <button type="button" class="btn custom-modal-btn-secondary" (click)="toggleUpdateForm()">
+              <i class="fas fa-times me-2"></i> Cancel
+            </button>
+            <button type="submit" class="btn custom-modal-btn-primary" [disabled]="loading">
+              <span *ngIf="loading" class="spinner-sm"></span>
+              <i *ngIf="!loading" class="fas fa-save me-2"></i> Update Profile
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade" [ngClass]="{'show': showUpdateForm}" *ngIf="showUpdateForm"></div>
+
+  <!-- Photo Upload Modal -->
   <div class="modal fade" [ngClass]="{'show d-block': showPhotoModal}" *ngIf="showPhotoModal">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content custom-modal-content">

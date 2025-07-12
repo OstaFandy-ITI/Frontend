@@ -5,6 +5,7 @@ import { URL } from '../../../core/Shared/URL';
 import { 
   HandymanProfile,
   UpdateHandymanProfilePhotoResponse,
+  UpdateHandymanProfileRequest,
   ApiResponse
 } from '../../../core/models/HandymanProfile.model';
 
@@ -36,6 +37,15 @@ export class HandymanProfileService {
       this.getHttpOptions()
     );
   }
+
+  updateHandymanProfile(handymanId: number, updateData: UpdateHandymanProfileRequest): Observable<any> {
+    return this.http.patch<any>(
+      `${this.baseUrl}/${handymanId}`,
+      updateData,
+      this.getHttpOptions()
+    );
+  }
+
 
   updateHandymanProfilePhoto(handymanId: number, profilePhoto: File): Observable<UpdateHandymanProfilePhotoResponse> {
     const formData = new FormData();
