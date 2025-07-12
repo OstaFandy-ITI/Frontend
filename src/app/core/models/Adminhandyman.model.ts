@@ -91,11 +91,11 @@ export interface EditHandymanDTO {
   img: string;
   experienceYears: number;
   status: string;
-  defaultAddressPlace?: string;
-  addressType: string;
-  defaultAddressCity?: string;
-  defaultAddressLatitude?: number;
-  defaultAddressLongitude?: number;
+  // defaultAddressPlace?: string;
+  // addressType: string;
+  // defaultAddressCity?: string;
+  // defaultAddressLatitude?: number;
+  // defaultAddressLongitude?: number;
 }
 
 export interface HandymanStatusUpdateDTO {

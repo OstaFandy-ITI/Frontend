@@ -43,15 +43,30 @@ export class HandymanService {
     return this.http.post<AdminHandyManDTO>(`${this.baseUrl}`, handyman);
   }
 
-  updateHandyman(id: number, handyman: EditHandymanDTO): Observable<AdminHandyManDTO> {
-    return this.http.put<AdminHandyManDTO>(`${this.baseUrl}/${id}`, handyman);
-  }
+  // updateHandyman(id: number, handyman: EditHandymanDTO): Observable<AdminHandyManDTO> {
+  //   return this.http.put<AdminHandyManDTO>(`${this.baseUrl}/${id}`, handyman);
+  // }  
 
-  updateHandymanStatus(userId: number, statusUpdate: HandymanStatusUpdateDTO): Observable<ApiResponse<string>> {
-    return this.http.put<ApiResponse<string>>(`${this.baseUrl}/status/${userId}`, statusUpdate);
+  // updateHandymanStatus(userId: number, statusUpdate: HandymanStatusUpdateDTO): Observable<ApiResponse<string>> {
+  //   return this.http.put<ApiResponse<string>>(`${this.baseUrl}/status/${userId}`, statusUpdate);
+  // }
+    updateHandymanStatus(userId: number, status: 'Active' | 'Inactive'): Observable<any> {
+    const statusUpdate: HandymanStatusUpdateDTO = {
+      userId: userId,
+      status: status
+    };
+    
+    return this.http.put(`${this.baseUrl}/status/${userId}`, statusUpdate);
+  }
+  
+  updateHandyman(userId: number, handyman: EditHandymanDTO): Observable<AdminHandyManDTO> {
+    return this.http.put<AdminHandyManDTO>(`${this.baseUrl}/${userId}`, handyman);
   }
 
   deleteHandyman(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
+  getSpecializations(): Observable<any[]> {
+  return this.http.get<any[]>(`${this.baseUrl}/specializations`)
 }
+} 

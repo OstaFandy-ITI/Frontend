@@ -1,4 +1,3 @@
-// services/handyman-block-date.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -32,8 +31,7 @@ export class HandymanBlockDateService {
     });
   }
 
-  // Get handyman block dates
-  getHandymanBlockDate(
+   getHandymanBlockDate(
     handymanId: number,
     pageNumber: number = 1,
     pageSize: number = 5,

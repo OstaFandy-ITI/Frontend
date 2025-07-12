@@ -18,6 +18,7 @@ export class AdminNotificationComponent implements OnInit {
   unreadCount = 0;
   isDropdownOpen = false;
   isProcessing = false;
+  newlyReadNotifications: Set<number> = new Set();
   constructor(
     private notificationService: AdminNotificationService, 
     private authService: AuthService, 
@@ -47,11 +48,32 @@ export class AdminNotificationComponent implements OnInit {
       }
     });
   }
-
   toggleDropdown() {
-    this.isDropdownOpen = !this.isDropdownOpen;
+  this.isDropdownOpen = !this.isDropdownOpen;
+  
+  if (this.isDropdownOpen && this.unreadCount > 0) {
+    this.markAllAsRead();
   }
-
+}private markAllAsRead() {
+  this.notificationService.markAllNotificationsAsRead(this.userId).subscribe({
+    next: () => {
+       this.notifications.forEach(n => {
+        if (!n.isRead) {
+          this.newlyReadNotifications.add(n.id);
+          n.isRead = true;
+        }
+      });
+      this.unreadCount = 0;
+    },
+    error: (error) => {
+      console.error('Error marking notifications as read:', error);
+      this.toastr.error('Failed to mark notifications as read');
+    }
+  });
+}
+isNewlyRead(notificationId: number): boolean {
+  return this.newlyReadNotifications.has(notificationId);
+}
   isVacationNotification(notification: Notification): boolean {
     return notification.type.includes(',') && notification.type.split(',').length === 4;
   }
@@ -90,14 +112,14 @@ export class AdminNotificationComponent implements OnInit {
   }
 
   formatVacationMessage(notification: Notification): string {
-    const vacationRequest = this.parseVacationRequest(notification);
-    if (!vacationRequest) return notification.message;
+  const vacationRequest = this.parseVacationRequest(notification);
+  if (!vacationRequest) return notification.message;
 
-    const handymanName = this.getHandymanName(notification.message);
-    const specialization = this.getSpecialization(notification.message);
-    
-    return `Handyman ${handymanName} (${specialization}) has requested vacation from ${this.formatDate(vacationRequest.startDate)} to ${this.formatDate(vacationRequest.endDate)}. Reason: ${vacationRequest.reason}`;
-  }
+  const handymanName = this.getHandymanName(notification.message);
+  const specialization = this.getSpecialization(notification.message);
+  
+  return `handyman with Id ${vacationRequest.handymanId} and name ${handymanName} in specialize ${specialization} applied for a days OFF from ${vacationRequest.startDate} to ${vacationRequest.endDate} the reason is ${vacationRequest.reason}waiting for your approve`;
+}
 
   approveVacation(notification: Notification) {
     const vacationRequest = this.parseVacationRequest(notification);
@@ -111,8 +133,6 @@ export class AdminNotificationComponent implements OnInit {
     ).subscribe({
       next: () => {
         notification.actionStatus  = 'approved';
-        notification.isRead = true;
-        this.unreadCount = this.notifications.filter(n => !n.isRead).length;
         this.toastr.success(`Vacation request approved for ${this.getHandymanName(notification.message)}`);
       },
       error: (error) => {
@@ -135,8 +155,6 @@ export class AdminNotificationComponent implements OnInit {
     ).subscribe({
       next: () => {
         notification.actionStatus  = 'rejected';
-        notification.isRead = true;
-        this.unreadCount = this.notifications.filter(n => !n.isRead).length;
         this.toastr.success(`Vacation request rejected for ${this.getHandymanName(notification.message)}`);
       },
       error: (error) => {
