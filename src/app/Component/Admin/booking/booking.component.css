@@ -9,6 +9,14 @@
   --icon-active: #ffffff;
 }
 
+.modal-header
+{
+  background-color: var(--blue-dark);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px 8px 0 0;
+}
+
 /* calender */
 .calendar-container {
     flex-direction: column;
