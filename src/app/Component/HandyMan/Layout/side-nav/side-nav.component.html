@@ -7,11 +7,7 @@
   </button>
 
   <div class="d-flex align-items-center gap-3">
-    <!-- Theme Toggle Button -->
-    <button class="btn btn-light theme-toggle-btn" (click)="toggleTheme()" 
-            [attr.aria-label]="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
-      <i class="bi" [class.bi-moon-stars]="!isDarkMode" [class.bi-sun]="isDarkMode"></i>
-    </button>
+   
 
 <!-- Chat -->
 <button class="icon-btn chat" [routerLink]="['/handyman/chatlist']" aria-label="Go to Chat">
@@ -66,7 +62,7 @@
       <i class="bi bi-receipt-cutoff me-2"></i>Quotes
     </a>
     <a routerLink="/handyman/blockdate" routerLinkActive="active" class="nav-link">
-      <i class="bi bi-receipt-cutoff me-2"></i>vacation
+    <i class="bi bi-calendar2-x"></i> Leave Requests
     </a>
     <!-- <a routerLink="/admin/booking" routerLinkActive="active" class="nav-link">
       <i class="bi bi-calendar-x"></i>Leave Requests
