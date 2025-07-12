@@ -5,6 +5,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CreateReviewRequest } from '../../../core/models/ClientProfile.model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-client-booking',
@@ -37,7 +38,8 @@ export class ClientBookingComponent implements OnInit {
   constructor(
     private clientProfileService: ClientProfileService,
     private bookingService: BookingService, 
-    private authService: AuthService
+    private authService: AuthService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -92,11 +94,10 @@ export class ClientBookingComponent implements OnInit {
           
           this.cancellingId = null;
           this.closeCancelModal();
-          
-          console.log(`Booking ${this.bookingToCancelId} cancelled successfully.`, response);
+          this.toastr.success(response.message || 'Booking cancelled successfully');
         },
         error: (error) => {
-          console.error('Error cancelling booking:', error);
+          this.toastr.error(error.error.message || 'Failed to cancel booking');
           this.cancellingId = null;
         }
       });

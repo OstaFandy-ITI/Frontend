@@ -127,7 +127,7 @@
 }
 
 .data-table th {
-  background-color: var(--primary-blue-dark); 
+  background-color: var(--blue-dark); 
   color: white;
   font-weight: bold;
   text-transform: uppercase;

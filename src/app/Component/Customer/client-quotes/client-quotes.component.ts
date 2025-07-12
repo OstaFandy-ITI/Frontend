@@ -242,11 +242,7 @@ onDateSelected() {
     if (this.selectedQuote.originalServices && this.selectedQuote.originalServices.length > 0) {
         serviceDto = this.selectedQuote.originalServices;
     } else {
-        serviceDto = [{ 
-            serviceId: 2,
-            quantity: 1,
-            price: totalPrice
-        }];
+        serviceDto = [];
     }
 
     const bookingData: CreateBookingDTO = {

@@ -230,8 +230,7 @@
               <p><strong>Client: </strong> <span class="text-primary">{{ selectedpagedbooking.clientName }}</span></p>
               <p><strong>Handyman: </strong> <span class="text-primary">{{ selectedpagedbooking.handymanName }}</span>
               </p>
-              <p><strong>Services: </strong> <span class="text-secondary">{{ selectedpagedbooking.serviceNames?.join(',
-                  ') || 'N/A' }}</span></p>
+              <p><strong>Services: </strong> <span class="text-secondary">{{ selectedpagedbooking.serviceNames?.join(',') || 'N/A' }}</span></p>
               <p><strong>Preferred Date: </strong> <span>{{ formatDate(selectedpagedbooking.preferredDate) || 'N/A'
                   }}</span></p>
             </div>
