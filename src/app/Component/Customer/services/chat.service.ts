@@ -15,7 +15,7 @@ export class ChatService {
   // Start SignalR connection and join chat group
  startConnection(chatId: number): Promise<void> {
   this.hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl("http://ostafandy.runasp.net/chatHub", {
+    .withUrl("https://ostafandy.runasp.net/chatHub", {
       
     })
     .withAutomaticReconnect()
@@ -51,7 +51,7 @@ startGlobalConnection(): Promise<void> {
     return Promise.resolve();
 
   this.hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl("http://ostafandy.runasp.net/chatHub") // no chatId here
+    .withUrl("https://ostafandy.runasp.net/chatHub") // no chatId here
     .withAutomaticReconnect()
     .build();
 
