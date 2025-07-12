@@ -1,24 +1,36 @@
-.top-bar {
-  height: 10vh ;
+app-navbar {
+  height: 60px;
+  display: block;
   position: fixed;
   top: 0;
-  left: 250px;
+  left: 0;
   right: 0;
-  z-index: 1050;
+  z-index: 1060; /* Increased to ensure it appears above top bar and sidebar */
+  background: white; /* Add background to ensure visibility */
+}
+
+/* Top bar styling */
+.top-bar {
+  height: 60px;
+  position: fixed;
+  top: 60px; /* Below navbar */
+  left: 0;
+  right: 0;
+  z-index: 1035;
   background: white;
   box-shadow: 0 1px 4px rgb(0 0 0 / 0.1);
   padding: 0 1rem;
-  transition: left 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 /* Sidebar */
 .sidebar {
   position: fixed;
-  top: 0;
+  top: 120px; /* Below navbar and top bar */
   left: 0;
   bottom: 0;
   width: 250px;
-  height: 100vh;
+  height: calc(100vh - 120px);
   z-index: 1050;
   background: linear-gradient(180deg, var(--blue-medium), var(--blue-dark));
   color: white;
@@ -31,51 +43,53 @@
   transition: width 0.3s ease, padding 0.3s ease;
 }
 
-/* close sidebar*/
+/* Collapsed sidebar */
 .sidebar.sidebar-collapsed {
   width: 0 !important;
   padding: 0 !important;
   border: none !important;
   overflow: hidden;
-  z-index: 1050;
 }
 
-/* header expand*/
+/* Header expand when sidebar collapsed */
 .top-bar.sidebar-collapsed-header {
   left: 0 !important;
 }
 
-.main-content.sidebar-collapsed-main {
-  margin-left: 0 !important;
-  width: 100% !important;
+/* Add padding to top-bar when sidebar is open */
+.top-bar:not(.sidebar-collapsed-header) {
+  padding-left: 270px;
 }
-
-
 
 /* Main content */
 .main-content {
-  margin-top: 56px;
-  margin-left: 250px;
+  position: fixed;
+  top: 120px;
+  left: 250px;
+  right: 0;
+  bottom: 0;
   padding: 20px;
-  width: calc(100% - 250px);
-  height: calc(100vh - 56px);
   overflow-y: auto;
-  transition: margin-left 0.3s ease, width 0.3s ease;
+  transition: left 0.3s ease;
 }
 
 .main-content.sidebar-collapsed-main {
-  margin-left: 0 !important;
-  width: 100% !important;
+  left: 0 !important;
 }
 
 /* Sidebar section titles */
 .sidebar-section h6 {
   font-weight: 600;
   font-size: 0.8rem;
-  color: var( --gray);
+  color: #fff;
   margin-top: 2rem;
   margin-bottom: 0.5rem;
   text-transform: uppercase;
+}
+
+/* First section title */
+.sidebar-section:first-child h6 {
+  margin-top: 0.5rem;
 }
 
 /* Sidebar nav links */
@@ -96,6 +110,15 @@
   background-color: rgba(255, 255, 255, 0.15);
   color: white;
   text-decoration: none;
+}
+
+/* Navigation text for collapsed state */
+.nav-text {
+  transition: opacity 0.3s ease;
+}
+
+.sidebar.sidebar-collapsed .nav-text {
+  opacity: 0;
 }
 
 /* Dropdown collapse */
@@ -123,28 +146,73 @@
   border: 1px solid transparent;
 }
 
+/* Toggle button styling */
 .toogle-btn {
   border: none;
-  color: var(--blue-medium);
+  top: 8rem;
+  left: 16rem;
+  /* color: var(--blue-medium); */
   cursor: pointer;
   width: 2.5rem;
   height: 2.5rem;
   border-radius: 0.5rem;
-  transition: background-color 0.25s ease, transform 0.2s ease;
+  /* transition: background-color 0.25s ease-in-out, transform 0.2s ease-in-out; */
   padding: 0;
+  /* background: transparent; */
+   position: relative; 
+  background-color: var(--blue-medium);
+  color: #fff;
+  transition: left 0.2s ease-in-out;
+  z-index: 1065; /* Higher than navbar to ensure toggle button is clickable */
+}
+.toogle-btn-positon{
+  left:0;
 }
 
 .toogle-btn i {
   font-size: 1.5rem;
 }
 
-.toogle-btn:hover {
+/* .toogle-btn:hover {
   background-color: var(--blue-medium);
   color: #fff;
   transform: scale(1.05);
-}
+} */
 
-.toogle-btn:active {
+/* .toogle-btn:active {
   transform: scale(0.90);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+} */
+
+.bi.bi-list {
+  color: var(--blue-medium);
+  font-size: 30px;
+  cursor: pointer;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar:not(.sidebar-collapsed) {
+    transform: translateX(0);
+  }
+
+  .top-bar {
+    left: 0;
+    top: 60px;
+    padding-left: 1rem !important;
+  }
+
+  .main-content {
+    left: 0;
+    top: 120px;
+  }
+
+  app-navbar {
+    z-index: 1060; /* Ensure navbar stays on top */
+  }
 }
