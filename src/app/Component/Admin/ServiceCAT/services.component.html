@@ -28,15 +28,18 @@
       <thead class="table-header">
         <tr>
           <th (click)="sortBy('name')" style="cursor: pointer;">
-            Name <i class="bi" [ngClass]="sortField === 'name' ? (sortOrder === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'"></i>
+            Name <i class="bi"
+              [ngClass]="sortField === 'name' ? (sortOrder === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'"></i>
           </th>
           <th>Description</th>
           <th (click)="sortBy('fixedPrice')" style="cursor: pointer;">
-            Fixed Price <i class="bi" [ngClass]="sortField === 'fixedPrice' ? (sortOrder === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'"></i>
+            Fixed Price <i class="bi"
+              [ngClass]="sortField === 'fixedPrice' ? (sortOrder === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'"></i>
           </th>
           <th>Category</th>
           <th (click)="sortBy('estimatedMinutes')" style="cursor: pointer;">
-            Duration (min) <i class="bi" [ngClass]="sortField === 'estimatedMinutes' ? (sortOrder === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'"></i>
+            Duration (min) <i class="bi"
+              [ngClass]="sortField === 'estimatedMinutes' ? (sortOrder === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down') : 'bi-arrow-down'"></i>
           </th>
           <th>Service Type</th>
           <th class="text-center">Status</th>
@@ -49,18 +52,15 @@
         <tr *ngFor="let service of services">
           <td>{{ service.name }}</td>
           <td>{{ service.description }}</td>
-          <td>{{ service.fixedPrice | currency }}</td>
+          <td>{{ service.fixedPrice }} le</td>
           <td>{{ service.categoryName }}</td>
           <td>{{ service.estimatedMinutes }}</td>
           <td>{{ service.serviceType }}</td>
           <td class="text-center">
-            <button class="status-btn" 
-  [ngClass]="service.isActive ? 'active' : 'inactive'"
-  data-bs-toggle="modal" 
-  data-bs-target="#confirmStatusModal" 
-  (click)="openStatusModal(service)">
-  {{ service.isActive ? 'Active' : 'Inactive' }}
-</button>
+            <button class="status-btn" [ngClass]="service.isActive ? 'active' : 'inactive'" data-bs-toggle="modal"
+              data-bs-target="#confirmStatusModal" (click)="openStatusModal(service)">
+              {{ service.isActive ? 'Active' : 'Inactive' }}
+            </button>
 
           </td>
           <td class="text-center">
@@ -85,7 +85,8 @@
       <li class="page-item" [class.disabled]="pageNumber === 1">
         <a class="page-link" (click)="onPageChange(pageNumber - 1)">&laquo;</a>
       </li>
-      <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index" [class.active]="pageNumber === i + 1">
+      <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
+        [class.active]="pageNumber === i + 1">
         <a class="page-link" (click)="onPageChange(i + 1)">{{ i + 1 }}</a>
       </li>
       <li class="page-item" [class.disabled]="pageNumber === totalPages">
@@ -99,193 +100,98 @@
 
 <!-- Add Service Modal -->
 <div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h5 class="modal-title" id="addServiceModalLabel">Add New Service</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" #addCloseBtn></button>
-            </div>
-
-            <div class="modal-body">
-                <form [formGroup]="addForm" (ngSubmit)="addService()" novalidate>
-
-                    <!-- Name -->
-                    <div class="mb-3">
-                        <label class="form-label">Name</label>
-                        <input type="text" class="form-control" formControlName="name"
-                            [ngClass]="{ 'is-invalid': addForm.get('name')?.invalid && addForm.get('name')?.touched }"
-                            placeholder="Enter service name" />
-                        <div class="invalid-feedback"
-                            *ngIf="addForm.get('name')?.invalid && addForm.get('name')?.touched">
-                            Name is required.
-                        </div>
-                    </div>
-
-                    <!-- Description -->
-                    <div class="mb-3">
-                        <label class="form-label">Description</label>
-                        <textarea class="form-control" formControlName="description" rows="3"
-                            placeholder="Describe the service..."></textarea>
-                    </div>
-
-                    <!-- Fixed Price -->
-                    <div class="mb-3">
-                        <label class="form-label">Fixed Price</label>
-                        <input type="number" min="1" class="form-control" formControlName="fixedPrice"
-                            placeholder="e.g. 150.00"
-                            [ngClass]="{ 'is-invalid': addForm.get('fixedPrice')?.invalid && addForm.get('fixedPrice')?.touched }" />
-                        <div class="invalid-feedback"
-                            *ngIf="addForm.get('fixedPrice')?.invalid && addForm.get('fixedPrice')?.touched">
-                            Fixed price must be greater than 0.
-                        </div>
-                    </div>
-
-                    <!-- Category -->
-                    <div class="mb-3">
-                        <label class="form-label">Category</label>
-                        <select class="form-select" formControlName="categoryId"
-                            [ngClass]="{ 'is-invalid': addForm.get('categoryId')?.invalid && addForm.get('categoryId')?.touched }">
-                            <option [ngValue]="null" disabled>Select category</option>
-                            <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
-                        </select>
-                        <div class="invalid-feedback"
-                            *ngIf="addForm.get('categoryId')?.invalid && addForm.get('categoryId')?.touched">
-                            Category is required.
-                        </div>
-                    </div>
-
-                    <!-- Estimated Minutes -->
-                    <div class="mb-3">
-                        <label class="form-label">Duration (minutes)</label>
-                        <input type="number" min="1" class="form-control" formControlName="estimatedMinutes"
-                            placeholder="e.g. 60"
-                            [ngClass]="{ 'is-invalid': addForm.get('estimatedMinutes')?.invalid && addForm.get('estimatedMinutes')?.touched }" />
-                        <div class="invalid-feedback"
-                            *ngIf="addForm.get('estimatedMinutes')?.invalid && addForm.get('estimatedMinutes')?.touched">
-                            Duration must be at least 1 minute.
-                        </div>
-                    </div>
-
-                    <!-- Service Type -->
-                    <div class="mb-3">
-                        <label class="form-label">Service Type</label>
-                        <select class="form-select" formControlName="serviceType"
-                            [ngClass]="{ 'is-invalid': addForm.get('serviceType')?.invalid && addForm.get('serviceType')?.touched }">
-                            <option value="Fixed">Fixed</option>
-                            <option value="Inspection">Inspection</option>
-                        </select>
-                        <div class="invalid-feedback"
-                            *ngIf="addForm.get('serviceType')?.invalid && addForm.get('serviceType')?.touched">
-                            Please select a service type.
-                        </div>
-                    </div>
-
-                    <!-- Status -->
-                    <div class="form-check form-switch mb-3">
-                        <input class="form-check-input" type="checkbox" formControlName="isActive"
-                            id="addIsActiveToggle" />
-                        <label class="form-check-label" for="addIsActiveToggle">Active</label>
-                    </div>
-
-                    <!-- Footer -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary" [disabled]="addForm.invalid">Save Service</button>
-                    </div>
-
-                </form>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-
-<div class="modal fade" id="editServiceModal" tabindex="-1" aria-labelledby="editServiceModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-
-            <div class="modal-header" style="background-color: var(--blue-medium);">
-                <h5 class="modal-title" id="editServiceModalLabel" style="color: white;">Edit Service</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" #editCloseBtn></button>
-            </div>
-
-            <div class="modal-body">
-                <form [formGroup]="editForm" (ngSubmit)="updateService()" novalidate>
-
-                    <!-- All fields same as addForm -->
-
-                    <!-- Category -->
-                    <div class="mb-3">
-                        <label class="form-label">Category</label>
-                        <select class="form-select" formControlName="categoryId">
-                            <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Name</label>
-                        <input type="text" class="form-control" formControlName="name" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Description</label>
-                        <textarea class="form-control" formControlName="description"></textarea>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Fixed Price</label>
-                        <input type="number" class="form-control" formControlName="fixedPrice" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Estimated Minutes</label>
-                        <input type="number" class="form-control" formControlName="estimatedMinutes" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Service Type</label>
-                        <select class="form-select" formControlName="serviceType">
-                            <option value="Fixed">Fixed</option>
-                            <option value="Inspection">Inspection</option>
-                        </select>
-                    </div>
-
-                  
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                    </div>
-
-                </form>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<!-- Confirm Status Modal -->
-<!-- Confirm Status Modal -->
-<div class="modal fade" id="confirmStatusModal" tabindex="-1" aria-labelledby="confirmStatusModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
-    
+
       <div class="modal-header">
-        <h5 class="modal-title" id="confirmStatusModalLabel">Confirm Status Change</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <h5 class="modal-title" id="addServiceModalLabel">Add New Service</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" #addCloseBtn></button>
       </div>
 
       <div class="modal-body">
-        Are you sure you want to 
-        <strong>{{ selectedService?.isActive ? 'deactivate' : 'activate' }}</strong> 
-        this service?
-      </div>
+        <form [formGroup]="addForm" (ngSubmit)="addService()" novalidate>
 
-      <div class="modal-footer">
-<button class="btn btn-secondary" type="button" data-bs-dismiss="modal" #statusCloseBtn>Cancel</button>
-        <button class="btn btn-warning" type="button" (click)="toggleStatus()">Yes, Confirm</button>
+          <!-- Name -->
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" formControlName="name"
+              [ngClass]="{ 'is-invalid': addForm.get('name')?.invalid && addForm.get('name')?.touched }"
+              placeholder="Enter service name" />
+            <div class="invalid-feedback" *ngIf="addForm.get('name')?.invalid && addForm.get('name')?.touched">
+              Name is required.
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" formControlName="description" rows="3"
+              placeholder="Describe the service..."></textarea>
+          </div>
+
+          <!-- Fixed Price -->
+          <div class="mb-3">
+            <label class="form-label">Fixed Price</label>
+            <input type="number" min="1" class="form-control" formControlName="fixedPrice" placeholder="e.g. 150.00"
+              [ngClass]="{ 'is-invalid': addForm.get('fixedPrice')?.invalid && addForm.get('fixedPrice')?.touched }" />
+            <div class="invalid-feedback"
+              *ngIf="addForm.get('fixedPrice')?.invalid && addForm.get('fixedPrice')?.touched">
+              Fixed price must be greater than 0.
+            </div>
+          </div>
+
+          <!-- Category -->
+          <div class="mb-3">
+            <label class="form-label">Category</label>
+            <select class="form-select" formControlName="categoryId"
+              [ngClass]="{ 'is-invalid': addForm.get('categoryId')?.invalid && addForm.get('categoryId')?.touched }">
+              <option [ngValue]="null" disabled>Select category</option>
+              <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+            </select>
+            <div class="invalid-feedback"
+              *ngIf="addForm.get('categoryId')?.invalid && addForm.get('categoryId')?.touched">
+              Category is required.
+            </div>
+          </div>
+
+          <!-- Estimated Minutes -->
+          <div class="mb-3">
+            <label class="form-label">Duration (minutes)</label>
+            <input type="number" min="1" class="form-control" formControlName="estimatedMinutes" placeholder="e.g. 60"
+              [ngClass]="{ 'is-invalid': addForm.get('estimatedMinutes')?.invalid && addForm.get('estimatedMinutes')?.touched }" />
+            <div class="invalid-feedback"
+              *ngIf="addForm.get('estimatedMinutes')?.invalid && addForm.get('estimatedMinutes')?.touched">
+              Duration must be at least 1 minute.
+            </div>
+          </div>
+
+          <!-- Service Type -->
+          <div class="mb-3">
+            <label class="form-label">Service Type</label>
+            <select class="form-select" formControlName="serviceType"
+              [ngClass]="{ 'is-invalid': addForm.get('serviceType')?.invalid && addForm.get('serviceType')?.touched }">
+              <option value="Fixed">Fixed</option>
+              <option value="Inspection">Inspection</option>
+            </select>
+            <div class="invalid-feedback"
+              *ngIf="addForm.get('serviceType')?.invalid && addForm.get('serviceType')?.touched">
+              Please select a service type.
+            </div>
+          </div>
+
+          <!-- Status -->
+          <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" formControlName="isActive" id="addIsActiveToggle" />
+            <label class="form-check-label" for="addIsActiveToggle">Active</label>
+          </div>
+
+          <!-- Footer -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="addForm.invalid">Save Service</button>
+          </div>
+
+        </form>
       </div>
 
     </div>
@@ -293,4 +199,93 @@
 </div>
 
 
+<div class="modal fade" id="editServiceModal" tabindex="-1" aria-labelledby="editServiceModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
 
+      <div class="modal-header" style="background-color: var(--blue-medium);">
+        <h5 class="modal-title" id="editServiceModalLabel" style="color: white;">Edit Service</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" #editCloseBtn></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="editForm" (ngSubmit)="updateService()" novalidate>
+
+          <!-- All fields same as addForm -->
+
+          <!-- Category -->
+          <div class="mb-3">
+            <label class="form-label">Category</label>
+            <select class="form-select" formControlName="categoryId">
+              <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" formControlName="name" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" formControlName="description"></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Fixed Price</label>
+            <input type="number" class="form-control" formControlName="fixedPrice" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Estimated Minutes</label>
+            <input type="number" class="form-control" formControlName="estimatedMinutes" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Service Type</label>
+            <select class="form-select" formControlName="serviceType">
+              <option value="Fixed">Fixed</option>
+              <option value="Inspection">Inspection</option>
+            </select>
+          </div>
+
+
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Status Modal -->
+<!-- Confirm Status Modal -->
+<div class="modal fade" id="confirmStatusModal" tabindex="-1" aria-labelledby="confirmStatusModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmStatusModalLabel">Confirm Status Change</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        Are you sure you want to
+        <strong>{{ selectedService?.isActive ? 'deactivate' : 'activate' }}</strong>
+        this service?
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal" #statusCloseBtn>Cancel</button>
+        <button class="btn btn-warning" type="button" (click)="toggleStatus()">Yes, Confirm</button>
+      </div>
+
+    </div>
+  </div>
+</div>
