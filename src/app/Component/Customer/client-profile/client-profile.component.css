@@ -19,6 +19,16 @@ body {
   padding: 20px;
 }
 
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+  background: transparent;
+  color: #004e98;
+  border-radius: 0;
+  box-shadow: none;
+}
+
 /* Loading Spinner Styles */
 .loading-spinner {
   display: flex;
@@ -211,50 +221,106 @@ body {
 }
 
 /* Form Modals (Update Profile, Add Address) */
-.form-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1000; /* Parent container for modal, consistent with original CSS */
+.modal-backdrop.show {
+  backdrop-filter: none;
+  background: rgba(0, 78, 152, 0.3);
+}
+
+.modal-dialog {
+  margin: 1.75rem auto;
+  position: relative;
+  width: auto;
+  max-width: 500px;
+}
+
+.modal-dialog-centered {
   display: flex;
   align-items: center;
-  justify-content: center;
-  animation: modalFadeIn 0.3s ease;
+  min-height: calc(100% - 3.5rem);
 }
 
-@keyframes modalFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.custom-modal-content {
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
 }
 
-.modal-backdrop {
-  position: absolute; /* Relative to .form-modal parent */
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 78, 152, 0.4);
-  backdrop-filter: blur(4px);
-  z-index: 999; /* Crucial: Explicitly lower than modal-content's z-index */
+.custom-modal-header {
+  background: linear-gradient(45deg, #004e98, #3a6ea5);
+  color: white;
+  border-bottom: none;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.modal-content {
-  background: white;
-  border-radius: 16px;
+.custom-modal-header .modal-title {
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.custom-btn-close {
+  filter: invert(1);
+  opacity: 0.8;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
   padding: 0;
-  max-width: 600px;
-  width: 90%;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative; /* Essential for z-index to work against sibling backdrop */
-  z-index: 1001; /* Crucial: Higher than modal-backdrop's z-index */
-  box-shadow: 0 20px 60px rgba(0, 78, 152, 0.2);
-  animation: modalSlideIn 0.3s ease;
 }
 
-/* Add these new styles to your existing CSS file */
+.custom-btn-close:hover {
+  opacity: 1;
+}
+
+.custom-modal-body {
+  padding: 2rem;
+  font-size: 1.1rem;
+  color: #004e98;
+}
+
+.custom-modal-footer {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid #e9ecef;
+  background: #f8f9fa;
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  justify-content: flex-end;
+}
+
+.custom-modal-btn-secondary {
+  background: #6c757d;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  width: auto;
+  color: white;
+}
+
+.custom-modal-btn-secondary:hover {
+  background: #5a6268;
+  transform: translateY(-1px);
+}
+
+.custom-modal-btn-primary {
+  background: linear-gradient(45deg, #004e98, #3a6ea5);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  width: auto;
+  color: white;
+}
+
+.custom-modal-btn-primary:hover {
+  background: linear-gradient(45deg, #003f7a, #2a5a8a);
+  transform: translateY(-1px);
+}
 
 /* Geolocation Section Styles */
 .geolocation-section {
@@ -348,6 +414,7 @@ body {
   border-top: 2px solid currentColor;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+  margin-right: 8px;
 }
 
 /* Responsive adjustments */
@@ -355,53 +422,19 @@ body {
   .geolocation-section {
     padding: 16px;
   }
-  
+
   .btn-location {
     padding: 12px 24px;
     font-size: 14px;
   }
-}
 
-@keyframes modalSlideIn {
-  from { transform: translateY(-30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px 32px;
-  border-bottom: 2px solid #ebebeb;
-  background: linear-gradient(135deg, #004e98 0%, #3a6ea5 100%);
-  color: white;
-  border-radius: 16px 16px 0 0;
-}
-
-.modal-header h3 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: white;
-  padding: 8px;
-  border-radius: 50%;
-  transition: background-color 0.3s ease;
-}
-
-.close-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  .custom-modal-footer {
+    flex-direction: column;
+  }
 }
 
 .form-group {
   margin-bottom: 24px;
-  padding: 0 32px;
 }
 
 .form-group label {
@@ -419,6 +452,7 @@ body {
   font-size: 14px;
   transition: border-color 0.3s ease;
   background: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .form-control:focus {
@@ -442,10 +476,6 @@ body {
   display: flex;
   gap: 12px;
   justify-content: flex-end;
-  padding: 24px 32px;
-  border-top: 2px solid #ebebeb;
-  background: #ebebeb;
-  border-radius: 0 0 16px 16px;
 }
 
 .form-row {
@@ -696,5 +726,9 @@ select.form-control {
   .form-row {
     flex-direction: column;
     gap: 0;
+  }
+
+  .custom-modal-footer {
+    flex-direction: column;
   }
 }

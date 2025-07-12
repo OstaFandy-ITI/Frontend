@@ -110,14 +110,15 @@
             </div>
           </div>
           <div *ngIf="!address.isDefault" class="set-default-btn">
-            <button class="btn btn-sm" 
-                    (click)="setDefaultAddress(address.id)"
-                    [disabled]="loading || isAddressBeingProcessed(address.id)">
-              <span *ngIf="isAddressBeingProcessed(address.id)" class="spinner-sm"></span>
-              <i *ngIf="!isAddressBeingProcessed(address.id)" class="fas fa-star"></i>
-              {{ isAddressBeingProcessed(address.id) ? 'Setting...' : 'Set as Default' }}
-            </button>
-          </div>
+  <button class="btn btn-sm" 
+          (click)="setDefaultAddress(address.id)"
+          [disabled]="loading || isAddressBeingProcessed(address.id)">
+    <span *ngIf="isAddressBeingProcessed(address.id)" class="spinner-sm"></span>
+    <i *ngIf="!isAddressBeingProcessed(address.id)" class="fas fa-star"></i>
+    {{ isAddressBeingProcessed(address.id) ? 'Setting...' : 'Set as Default' }}
+  </button>
+</div>
+
         </div>
       </div>
       <ng-template #noAddresses>
@@ -200,6 +201,7 @@
                 </div>
               </div>
             </div>
+
           </div>
           <div class="modal-footer custom-modal-footer">
             <button type="button" class="btn custom-modal-btn-secondary" (click)="toggleUpdateForm()">
@@ -321,7 +323,7 @@
             </button>
             <button type="submit" class="btn custom-modal-btn-primary" [disabled]="!addAddressForm.valid || loading">
               <span *ngIf="loading" class="spinner-sm"></span>
-              <i *ngIf="!loading" class="fas fa-save me-2"></i> Add Address
+              <i *ngIf="!loading" class="fas fa-plus me-2"></i> Add Address
             </button>
           </div>
         </form>

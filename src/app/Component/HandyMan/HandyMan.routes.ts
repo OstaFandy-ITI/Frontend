@@ -5,6 +5,7 @@ import { AllJobsComponent } from './alljobs/alljobs.component';
 import { QuotesComponent } from './quotes/quotes.component';
 import { ChatListComponent } from './chat-list/chat-list.component';
 import { HandymanBlockDateComponent } from './handyman-block-date/handyman-block-date.component';
+import { HandymanProfileComponent } from './handyman-profile/handyman-profile.component';
 
 export const handymanRoutes: Routes = [
   {
@@ -14,6 +15,7 @@ export const handymanRoutes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'alljobs', component: AllJobsComponent },
       { path: 'quotes', component: QuotesComponent },
+      {path: 'profile', component: HandymanProfileComponent },
       { path: 'chatlist', component: ChatListComponent },
       { path: 'blockdate', component: HandymanBlockDateComponent },
       {
