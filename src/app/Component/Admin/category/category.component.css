@@ -97,7 +97,7 @@
 .table thead th i {
   margin-left: 2px;
   font-size: 0.8rem;
-  color: white; /* Always white */
+  color: white; 
 }
 
 /* Status Button Styling inside table */

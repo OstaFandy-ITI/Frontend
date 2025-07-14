@@ -40,7 +40,6 @@ export class HandymanDetailsComponent {
     if (!this.handyman?.jobAssignments) {
       return '0.00';
     }
-    //Fixed rate per job || REAL SOLVE IS TO UPDATE THE MODEL , THIS HAS NOT IMPLEMENTED YET
     const fixedRatePerJob = 50; 
     const total = this.handyman.jobAssignments.length * fixedRatePerJob;
 

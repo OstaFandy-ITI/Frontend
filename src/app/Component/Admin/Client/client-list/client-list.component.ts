@@ -147,11 +147,7 @@ export class ClientListComponent implements OnInit {
     this.toastr.success('Client updated successfully', 'Success');
   }
 
-  // confirmDelete(client: AdminDisplayClientDTO): void {
-  //   if (confirm(`Are you sure you want to delete ${client.firstName} ${client.lastName}?`)) {
-  //     this.deleteClient(client.id);
-  //   }
-  // }
+
 private deleteModalInstance: any;
 
 confirmDelete(client: AdminDisplayClientDTO): void {

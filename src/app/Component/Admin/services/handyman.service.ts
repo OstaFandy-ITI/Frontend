@@ -43,13 +43,7 @@ export class HandymanService {
     return this.http.post<AdminHandyManDTO>(`${this.baseUrl}`, handyman);
   }
 
-  // updateHandyman(id: number, handyman: EditHandymanDTO): Observable<AdminHandyManDTO> {
-  //   return this.http.put<AdminHandyManDTO>(`${this.baseUrl}/${id}`, handyman);
-  // }  
-
-  // updateHandymanStatus(userId: number, statusUpdate: HandymanStatusUpdateDTO): Observable<ApiResponse<string>> {
-  //   return this.http.put<ApiResponse<string>>(`${this.baseUrl}/status/${userId}`, statusUpdate);
-  // }
+  
     updateHandymanStatus(userId: number, status: 'Active' | 'Inactive'): Observable<any> {
     const statusUpdate: HandymanStatusUpdateDTO = {
       userId: userId,

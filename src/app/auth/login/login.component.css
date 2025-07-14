@@ -214,6 +214,24 @@ button:disabled {
   border: 1px solid #999;   
 }
 
+.logo {
+  position: absolute;
+  top: 10px;
+  right: 10px; 
+  width: 60px; 
+  height: auto;
+  z-index: 10; 
+}
+
+.logo2 {
+  position: absolute;
+  top: 10px;
+  left: 10px; 
+  width: 60px; 
+  height: auto;
+  z-index: 10; 
+}
+
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }

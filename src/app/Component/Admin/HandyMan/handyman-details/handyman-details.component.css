@@ -1,4 +1,3 @@
-/* handyman-detail-modal.component.css */
 
 .modal-overlay {
   position: fixed;
@@ -416,7 +415,7 @@ opacity: 0.75;}
 .image-row {
   display: flex;
   align-items: center;
-  gap: 16px; /* space between images */
+  gap: 16px; 
   margin-top: 8px;
 }
 

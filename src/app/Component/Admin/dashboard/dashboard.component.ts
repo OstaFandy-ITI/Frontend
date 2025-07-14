@@ -67,8 +67,8 @@ export class DashboardComponent implements OnInit {
   private setupSearchDebounce(): void {
     this.searchSubject
       .pipe(
-        debounceTime(300), // Wait 300ms after user stops typing
-        distinctUntilChanged() // Only trigger if the search term actually changed
+        debounceTime(300), 
+        distinctUntilChanged() 
       )
       .subscribe(searchTerm => {
         this.searchString = searchTerm;
@@ -114,12 +114,10 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  // Called when user types in search input (real-time search)
   onSearchInput(): void {
     this.searchSubject.next(this.searchString);
   }
 
-  // Called when user presses Enter (immediate search)
   onSearch(): void {
     this.currentPage = 1;
     this.loadDashboardData();

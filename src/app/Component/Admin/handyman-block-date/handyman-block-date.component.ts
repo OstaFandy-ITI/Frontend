@@ -51,7 +51,6 @@ export class HandymanBlockDateComponent implements OnInit, OnDestroy {
 
   today!: string;
 
-  // isLoading = false;
   isBlockDatesLoading = false;
 
   constructor(
