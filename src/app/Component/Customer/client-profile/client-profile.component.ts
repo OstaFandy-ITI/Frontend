@@ -7,7 +7,7 @@ import {
   ClientProfile,
   UpdateClientProfileRequest,
   ApiResponse,
-  Address // Import Address type for defaultAddress mapping
+  Address 
 } from '../../../core/models/ClientProfile.model';
 import { AddressDTO, CreateAddressDTO } from '../../../core/models/Address.model';
 import { AuthService } from '../../../core/services/auth.service';
@@ -77,7 +77,7 @@ export class ClientProfileComponent implements OnInit {
 
     this.addAddressForm = this.fb.group({
       address: ['', [Validators.required, Validators.minLength(5)]],
-      city: ['', Validators.required], // Updated: removed minlength validator since it's now a dropdown
+      city: ['', Validators.required], 
       latitude: ['', [Validators.required, Validators.min(-90), Validators.max(90)]],
       longitude: ['', [Validators.required, Validators.min(-180), Validators.max(180)]],
       addressType: ['Home', Validators.required],
@@ -148,7 +148,6 @@ export class ClientProfileComponent implements OnInit {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
         
-        // Update the form with the coordinates
         this.addAddressForm.patchValue({
           latitude: latitude,
           longitude: longitude
@@ -156,9 +155,7 @@ export class ClientProfileComponent implements OnInit {
         
         this.loadingLocation = false;
         this.successMessage = 'Location coordinates updated successfully!';
-        
-        // // Optional: Try to reverse geocode to get address
-        // this.reverseGeocodeLocation(latitude, longitude);
+       
       },
       (error) => {
         this.loadingLocation = false;
@@ -223,19 +220,7 @@ export class ClientProfileComponent implements OnInit {
     }
   }
 
-  // toggleAddressForm(): void {
-  //   this.showAddressForm = !this.showAddressForm;
-  //   this.error = null;
-  //   this.successMessage = null;
 
-  //   if (!this.showAddressForm) {
-  //     this.addAddressForm.reset({
-  //       addressType: 'Home',
-  //       isDefault: false,
-  //       isActive: true
-  //     });
-  //   }
-  // }
 
   onUpdateProfile(): void {
     if (this.updateProfileForm.valid && !this.loading) {
@@ -323,17 +308,15 @@ export class ClientProfileComponent implements OnInit {
   }
 
   setDefaultAddress(addressId: number): void {
-    // Frontend-only: update the addresses array and clientProfile.defaultAddress
     this.addresses = this.addresses.map(addr => ({
       ...addr,
       isDefault: addr.id === addressId
     }));
     const newDefault = this.addresses.find(addr => addr.id === addressId) || null;
     if (newDefault) {
-      // Map AddressDTO to Address for defaultAddress assignment
       this.clientProfile.defaultAddress = {
         ...newDefault,
-        address: newDefault.address1, // Map address1 to address
+        address: newDefault.address1, 
         createdAt: newDefault.createdAt
           ? (newDefault.createdAt instanceof Date
               ? newDefault.createdAt.toISOString()

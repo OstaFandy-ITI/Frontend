@@ -1,25 +1,21 @@
-/* Universal Box-Sizing */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Body Styling */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, #ebebeb 0%, #c0c0c0 100%);
   min-height: 100vh;
 }
 
-/* Main Container for Client Profile */
 .client-profile-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
 }
 
-/* Loading Spinner Styles */
 .loading-spinner {
   display: flex;
   flex-direction: column;
@@ -70,7 +66,6 @@ body {
   border: 1px solid #37b24d;
 }
 
-/* Profile Header Section */
 .profile-header {
   display: flex;
   align-items: center;
@@ -217,7 +212,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 1000; /* Parent container for modal, consistent with original CSS */
+  z-index: 1000; 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -230,14 +225,14 @@ body {
 }
 
 .modal-backdrop {
-  position: absolute; /* Relative to .form-modal parent */
+  position: absolute; 
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   background: rgba(0, 78, 152, 0.4);
   backdrop-filter: blur(4px);
-  z-index: 999; /* Crucial: Explicitly lower than modal-content's z-index */
+  z-index: 999; 
 }
 
 .modal-content {
@@ -248,8 +243,8 @@ body {
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
-  position: relative; /* Essential for z-index to work against sibling backdrop */
-  z-index: 1001; /* Crucial: Higher than modal-backdrop's z-index */
+  position: relative; 
+  z-index: 1001; 
   box-shadow: 0 20px 60px rgba(0, 78, 152, 0.2);
   animation: modalSlideIn 0.3s ease;
 }
