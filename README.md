@@ -1,59 +1,83 @@
-# Frontend
+# ✨ OstaFandy Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.4.
+![OstaFandy](https://img.shields.io/badge/Angular-Frontend-red?style=flat-square&logo=angular)  
+*Modern, responsive, and user-friendly interface for the OstaFandy handyman booking platform.*
 
-## Development server
+---
 
-To start a local development server, run:
+## 📖 Overview
 
-```bash
-ng serve
+**OstaFandy Frontend** is the web application that allows users to explore and book handyman services effortlessly.  
+The application is built using **Angular** and communicates with a RESTful API backend to deliver a seamless experience.  
+It supports **Arabic language**, **responsive design**, and a clean, intuitive interface.
+
+---
+
+## 🚀 Features
+
+- User authentication (Sign In / Sign Up)  
+- Browse and book available services  
+- User dashboard with booking details and profile management  
+- Real-time notifications and chat
+- Clean and modern design
+
+---
+
+## 🛠️ Tech Stack
+
+| Technology      | Purpose                     |
+|-----------------|-----------------------------|
+| **Angular**     | Framework for SPA frontend |
+| **TypeScript**  | Strongly-typed JS          |
+| **HTML & CSS**  | Markup and styling         |
+| **RxJS**        | Reactive programming       |
+| **Bootstrap / Custom CSS** | Styling & layout |
+
+---
+
+## 📂 Project Structure 
+```
+├── app/
+│ ├── auth/ # Authentication components
+│ ├── components/ # Common UI components
+│ ├── Admin/ # Admin role modules, layouts & routes
+│ │ ├── ...
+│ │ ├── Layouts/
+│ │ ├── Services/
+│ │ ├── routes/
+│ ├── Customer/ # Customer role modules, layouts & routes
+│ │ ├── ...
+│ │ ├── Layouts/
+│ │ ├── Services/
+│ │ ├── routes/
+│ ├── Handyman/ # Handyman role modules, layouts & routes
+│ │ ├── ...
+│ │ ├── Layouts/
+│ │ ├── Services/
+│ │ ├── routes/
+│ ├── Core/ # Core app logic
+│ │ ├── guards/ # Route guards
+│ │ ├── interceptors/ # HTTP interceptors
+│ │ ├── modals/ # Common modals
+│ │ ├── Shared/ # Shared enums, URLs, utilities
+│ │ ├── Enum/
+│ │ ├── URL/ # Environment/config URLs
+│ └── app.module.ts # Root module
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## ⚙️ Getting Started
 
-## Code scaffolding
+### Prerequisites
+- [Node.js](https://nodejs.org/) 
+- [Angular CLI](https://angular.io/cli)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+### Installation
+Clone the repository and install dependencies:
 ```bash
-ng generate component component-name
+git clone https://github.com/OstaFandy-ITI/Frontend.git
+cd Frontend
+npm install
+ng serve --open
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
 
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
