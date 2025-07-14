@@ -1,4 +1,8 @@
-# ✨ OstaFandy Frontend
+<p align="right">
+  <img src="https://res.cloudinary.com/dy35wrc6z/image/upload/v1752076118/logo_nkqsnx.png" alt="OstaFandy Logo" height="60"/>
+</p>
+
+##  OstaFandy Frontend
 
 ![OstaFandy](https://img.shields.io/badge/Angular-Frontend-red?style=flat-square&logo=angular)  
 *Modern, responsive, and user-friendly interface for the OstaFandy handyman booking platform.*
