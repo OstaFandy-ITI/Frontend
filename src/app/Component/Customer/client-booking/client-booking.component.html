@@ -4,7 +4,6 @@
   
   <h1 class="page-title">My Bookings</h1>
 
-  <!-- Empty State -->
   <div *ngIf="orders.length === 0" class="empty-state">
     <div class="empty-state-icon">
       <i class="fas fa-calendar-times"></i>
@@ -13,7 +12,6 @@
     <p class="empty-state-text">You haven't made any bookings yet. Start by browsing our available services!</p>
   </div>
 
-  <!-- Bookings Grid -->
   <div class="bookings-grid" *ngIf="orders.length > 0">
     <div *ngFor="let booking of pagedOrders()" class="booking-card"
          [ngClass]="{
@@ -23,7 +21,6 @@
            'status-border-left-cancelled': booking.status === 'Cancelled'
          }">
       
-      <!-- Booking Header -->
       <div class="booking-header">
         <span>Booking #{{ booking.bookingId }}</span>
         <span class="ms-auto"
@@ -37,7 +34,6 @@
         </span>
       </div>
 
-      <!-- Booking Details Grid -->
       <div class="booking-details">
         <div class="booking-detail-item">
           <i class="fas fa-user booking-detail-icon"></i>
@@ -113,7 +109,6 @@
     </div>
   </div>
 
-  <!-- Enhanced Pagination -->
   <div class="pagination-container" *ngIf="totalPages > 1">
     <button class="pagination-btn" 
             (click)="prevPage()" 
@@ -132,7 +127,6 @@
     </button>
   </div>
 
-  <!-- Enhanced Cancel Confirmation Modal -->
   <div class="modal-backdrop" [ngClass]="{'show': showCancelModal}" *ngIf="showCancelModal"></div>
   <div class="modal" tabindex="-1" role="dialog" [ngClass]="{'show d-block': showCancelModal}" *ngIf="showCancelModal">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -168,7 +162,6 @@
     </div>
   </div>
 
-  <!-- Review Modal -->
   <div class="modal-backdrop" [ngClass]="{'show': showReviewModal}" *ngIf="showReviewModal"></div>
   <div class="modal" tabindex="-1" role="dialog" [ngClass]="{'show d-block': showReviewModal}" *ngIf="showReviewModal">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -254,7 +247,6 @@
     </div>
   </div>
 
-  <!-- Alert Dialog Modal -->
   <div class="modal fade show" 
        *ngIf="showAlertDialog" 
        style="display: block; background-color: rgba(0,0,0,0.5);" 

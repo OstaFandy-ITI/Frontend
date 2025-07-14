@@ -4,7 +4,6 @@
   min-height: 100vh;
 }
 
-/* Statistics Cards */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));

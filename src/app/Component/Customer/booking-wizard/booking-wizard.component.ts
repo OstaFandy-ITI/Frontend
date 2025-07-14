@@ -80,8 +80,6 @@ export class BookingWizardComponent implements OnInit {
       if (!user) return;
       this.currentUser = user;
       this.userId = Number(user?.NameIdentifier);
-      console.log('✅ userId:', this.userId);
-      console.log('✅ currentUser:', this.currentUser);
     });
 
     // Step 1: Load categoryId from query params
@@ -116,8 +114,8 @@ export class BookingWizardComponent implements OnInit {
 
     // ✅ Prevent going to step 5 without a valid chatId
     if (step === 5 && !this.chatId) {
-      this.toastr.error(
-        'Chat session not initialized. Please wait or try again.'
+      this.toastr.warning(
+        'Please Complete the booking process before confirming.'
       );
       return;
     }
@@ -482,8 +480,7 @@ export class BookingWizardComponent implements OnInit {
     }
 
     // Step 2: Location
-    // if (step === 2) {
-    // }
+    
 
     // Step 3: Schedule
     if (step === 3) {
@@ -497,8 +494,7 @@ export class BookingWizardComponent implements OnInit {
     }
 
     // Step 4: Payment
-    if (step === 4) {
-    }
+    
 
     //Step 5: Save Data
   }

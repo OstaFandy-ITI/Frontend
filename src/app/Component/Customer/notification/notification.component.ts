@@ -23,16 +23,7 @@ export class NotificationComponent implements OnInit {
   loading = false;
   userId: number;
   newlyReadNotifications: Set<number> = new Set();
-  // Multi-step quote acceptance flow
-  // showDatePicker = false;
-  // showTimeSlots = false;
-  // selectedQuote: any = null;
-  // selectedTime: string = '';
-  // availableTimeSlots: any[] = [];
   processingQuote = false;
-  // loadingTimeSlots = false;
-  // selectedDate: string = '';
-  // minDate: string;
   @Input() NotificationId!: number;
 
   constructor(
@@ -40,9 +31,7 @@ export class NotificationComponent implements OnInit {
     private authService: AuthService,
     private toastr: ToastrService
   ) {
-    // this.minDate = new Date().toISOString().slice(0, 16);
     this.userId = this.authService.getCurrentUserId() ?? 0;
-    // this.selectedDate = new Date().toISOString().slice(0, 10);
   }
 
   ngOnInit() {
@@ -54,18 +43,16 @@ export class NotificationComponent implements OnInit {
     if (userId) {
       this.notificationService.startConnection(userId);
 
-      // Listen for quote notifications (from SendNotificationToClient)
       this.notificationService.onQuoteNotification((message: string) => {
         this.toastr.success(message, 'New Quote');
-        this.loadNotifications(); // Refresh notifications list
+        this.loadNotifications(); 
       });
 
-      // Listen for quote responses (from SendQuoteResponse)
       this.notificationService.onQuoteResponse(
         (quoteId: number, action: string, message: string) => {
           console.log('Quote response received:', quoteId, action, message);
           this.toastr.success(message, 'Quote Update');
-          this.loadNotifications(); // Refresh notifications list
+          this.loadNotifications(); 
         }
       );
     }
@@ -96,22 +83,14 @@ export class NotificationComponent implements OnInit {
     });
   }
 
-  // toggleDropdown() {
-  //     this.isDropdownOpen = !this.isDropdownOpen;
-  // }
+  
   toggleDropdown() {
     this.isDropdownOpen = !this.isDropdownOpen;
-
-    // if (this.isDropdownOpen && this.unreadCount > 0) {
-    //   this.markAllAsRead();
-    // }
   }
   private markAllAsRead() {
-    //   const clientUserId = this.authService.getCurrentUserId();
 
     this.notificationService.markAllNotificationsAsRead(this.userId).subscribe({
       next: () => {
-        // Mark newly read notifications for styling
         this.notifications.forEach((n) => {
           if (!n.isRead) {
             this.newlyReadNotifications.add(n.id);

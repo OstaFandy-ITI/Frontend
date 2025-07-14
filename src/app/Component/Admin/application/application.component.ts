@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Application } from './../../../core/models/Application';
 import { ApplicationService } from './../services/application.service';
+import { ToastrService } from 'ngx-toastr';
 
-declare var bootstrap: any; // Declare bootstrap to access its JavaScript functions
+declare var bootstrap: any; 
 
 @Component({
   selector: 'app-application',
@@ -21,28 +22,23 @@ export class ApplicationComponent implements OnInit {
   // UI State
   isLoading = false;
   processingUserId: number | null = null;
-  selectedApplication: Application | null = null; // New property for modal data
+  selectedApplication: Application | null = null; 
 
   // Filters
   searchTerm = '';
   selectedSpecialty = '';
   
-  // Sorting
   sortField = '';
   sortDirection: 'asc' | 'desc' = 'asc';
   
-  // Pagination
   pageNumber = 1;
   pageSize = 5;
   totalCount = 0;
   totalPages = 0;
   
-  // Toast properties
-  toastTitle = '';
-  toastMessage = '';
-  toastIcon = '';
 
-  constructor(private applicationService: ApplicationService) {}
+
+  constructor(private applicationService: ApplicationService,private toastr:ToastrService) {}
 
   ngOnInit(): void {
     this.loadApplications();
@@ -54,7 +50,6 @@ export class ApplicationComponent implements OnInit {
       next: (response: any) => {
         console.log('Raw API Response:', response);
         
-        // Handle different response formats
         let applicationsData: any[] = [];
         
         if (Array.isArray(response)) {
@@ -71,15 +66,13 @@ export class ApplicationComponent implements OnInit {
             if (arrayKeys.length > 0) {
               applicationsData = response[arrayKeys[0]];
             } else {
-              console.error('No array found in response:', response);
-              this.showToast('Error', 'No applications data found in server response', 'bi bi-exclamation-triangle text-danger');
+              this.toastr.error('Error', 'No applications data found in server response');
               this.isLoading = false;
               return;
             }
           }
         } else {
-          console.error('Unexpected response format:', response);
-          this.showToast('Error', 'Invalid response format from server', 'bi bi-exclamation-triangle text-danger');
+          this.toastr.error('Error', 'Invalid response format from server');
           this.isLoading = false;
           return;
         }
@@ -112,7 +105,7 @@ export class ApplicationComponent implements OnInit {
       },
       error: (error: any) => {
         console.error('Error loading applications:', error);
-        this.showToast('Error', 'Failed to load applications', 'bi bi-exclamation-triangle text-danger');
+        this.toastr.error('Error', 'Failed to load applications');
         this.isLoading = false;
       }
     });
@@ -128,7 +121,6 @@ export class ApplicationComponent implements OnInit {
     this.specialties = Array.from(specialtySet).sort();
   }
 
-  // Renamed for clarity
   applyFilters(): void {
     this.filteredApplications = this.applications.filter(app => {
       const matchesSearch = !this.searchTerm || 
@@ -142,19 +134,14 @@ export class ApplicationComponent implements OnInit {
       return matchesSearch && matchesSpecialty;
     });
     
-    // Reset to first page when filtering
     this.pageNumber = 1;
     
-    // Reapply sorting if exists
     if (this.sortField) {
       this.applySorting();
     }
-    
-    // Apply pagination
-    this.updatePagination();
+       this.updatePagination();
   }
 
-  // Keep the old method name for backward compatibility with template
   filterApplications(): void {
     this.applyFilters();
   }
@@ -193,23 +180,19 @@ export class ApplicationComponent implements OnInit {
     });
   }
 
-  // Pagination methods
   private updatePagination(): void {
     this.totalCount = this.filteredApplications.length;
     this.totalPages = Math.ceil(this.totalCount / this.pageSize);
     
-    // Ensure current page is valid
     if (this.pageNumber > this.totalPages && this.totalPages > 0) {
       this.pageNumber = this.totalPages;
-    } else if (this.totalPages === 0) { // If no items, ensure pageNumber is 1
+    } else if (this.totalPages === 0) { 
       this.pageNumber = 1;
     }
     
-    // Calculate start and end indices
     const startIndex = (this.pageNumber - 1) * this.pageSize;
     const endIndex = startIndex + this.pageSize;
     
-    // Get paginated data
     this.paginatedApplications = this.filteredApplications.slice(startIndex, endIndex);
   }
 
@@ -242,14 +225,11 @@ export class ApplicationComponent implements OnInit {
     return this.pageNumber < this.totalPages;
   }
 
-  // Expose Math for template usage
   Math = Math;
 
-  // New method to open the modal and set the selected application
   openHandymanDetailsModal(application: Application): void {
     this.selectedApplication = application;
-    // Bootstrap modal is handled by data-bs-toggle and data-bs-target in HTML
-    // No need to manually show it here unless you want to add more logic before showing.
+   
   }
 
   closeHandymanDetailsModal(): void {
@@ -259,12 +239,11 @@ export class ApplicationComponent implements OnInit {
       if (modal) {
         modal.hide();
       } else {
-        // Fallback if getInstance returns null (e.g., modal not fully initialized)
         const newModal = new bootstrap.Modal(modalElement);
         newModal.hide();
       }
     }
-    this.selectedApplication = null; // Clear selected application after closing
+    this.selectedApplication = null; 
   }
 
   approveApplication(application: Application): void {
@@ -279,16 +258,16 @@ export class ApplicationComponent implements OnInit {
     this.applicationService.approveHandyman(application.userId).subscribe({
       next: (response) => {
         console.log('Application approved successfully:', response);
-        this.showToast('Success', `${application.fullName} has been approved successfully`, 'bi bi-check-circle text-success');
+        this.toastr.success('Success', `${application.fullName} has been approved successfully`);
         
         this.removeApplicationFromList(application.userId!);
-        this.extractSpecialties(); // Update specialties list
+        this.extractSpecialties(); 
         this.processingUserId = null;
-        this.closeHandymanDetailsModal(); // Close modal after action
+        this.closeHandymanDetailsModal(); 
       },
       error: (error) => {
         console.error('Error approving application:', error);
-        this.showToast('Error', `Failed to approve ${application.fullName}. Please try again.`, 'bi bi-exclamation-triangle text-danger');
+        this.toastr.success('Error', `Failed to approve ${application.fullName}. Please try again.`);
         this.processingUserId = null;
       }
     });
@@ -306,16 +285,16 @@ export class ApplicationComponent implements OnInit {
     this.applicationService.rejectHandyman(application.userId).subscribe({
       next: (response) => {
         console.log('Application rejected successfully:', response);
-        this.showToast('Success', `${application.fullName} has been rejected`, 'bi bi-x-circle text-warning');
+        this.toastr.success('Success', `${application.fullName} has been rejected`);
         
         this.removeApplicationFromList(application.userId!);
-        this.extractSpecialties(); // Update specialties list
+        this.extractSpecialties(); 
         this.processingUserId = null;
-        this.closeHandymanDetailsModal(); // Close modal after action
+        this.closeHandymanDetailsModal(); 
       },
       error: (error) => {
         console.error('Error rejecting application:', error);
-        this.showToast('Error', `Failed to reject ${application.fullName}. Please try again.`, 'bi bi-exclamation-triangle text-danger');
+        this.toastr.success('Error', `Failed to reject ${application.fullName}. Please try again.`);
         this.processingUserId = null;
       }
     });
@@ -327,64 +306,29 @@ export class ApplicationComponent implements OnInit {
     const initialCount = this.applications.length;
     const initialFilteredCount = this.filteredApplications.length;
     
-    // Remove from main applications array
     this.applications = this.applications.filter(app => app.userId !== userId);
     
-    // Remove from filtered applications array
     this.filteredApplications = this.filteredApplications.filter(app => app.userId !== userId);
     
     console.log(`Applications removed. Before: ${initialCount}, After: ${this.applications.length}`);
     console.log(`Filtered applications removed. Before: ${initialFilteredCount}, After: ${this.filteredApplications.length}`);
     
-    // Force change detection by triggering filter update
     this.applyFilters();
   }
 
-  /**
-   * Enhanced toast method with better error handling
-   */
-  private showToast(title: string, message: string, icon: string): void {
-    this.toastTitle = title;
-    this.toastMessage = message;
-    this.toastIcon = icon;
-    
-    setTimeout(() => {
-      const toastElement = document.getElementById('actionToast');
-      if (toastElement) {
-        try {
-          const toast = new bootstrap.Toast(toastElement, {
-            autohide: true,
-            delay: 4000
-          });
-          toast.show();
-        } catch (error) {
-          console.error('Error showing toast:', error);
-        }
-      }
-    }, 0);
-  }
+
+  
 
   trackByUserId(index: number, item: Application): number {
     return item.userId || index;
   }
 
-  /**
-   * Getter for pending applications count
-   */
   get pendingCount(): number {
     return this.applications.length;
   }
-
-  /**
-   * Check if sorting is active for a field
-   */
   isSortedBy(field: string): boolean {
     return this.sortField === field;
   }
-
-  /**
-   * Get sort icon for a field
-   */
   getSortIcon(field: string): string {
     if (!this.isSortedBy(field)) {
       return 'bi bi-arrow-down-up';

@@ -2,12 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ServiceItem, PaginatedResult, ServiceCreateDTO, ServiceUpdateDTO } from '../../../core/models/service.models';
+import { URL } from '../../../core/Shared/URL';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ServiceService {
-  private apiUrl = 'https://localhost:7187/api/Service';
+  private apiUrl = `${URL.apiUrl}/Service`;
 
   constructor(private http: HttpClient) {}
 
