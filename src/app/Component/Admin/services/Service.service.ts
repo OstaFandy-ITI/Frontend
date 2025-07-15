@@ -9,6 +9,8 @@ import { URL } from '../../../core/Shared/URL';
 })
 export class ServiceService {
   private apiUrl = `${URL.apiUrl}/Service`;
+    private apiUrl2 = `${URL.apiUrl}/Category`;
+
 
   constructor(private http: HttpClient) {}
 
@@ -49,6 +51,6 @@ export class ServiceService {
   }
 
   getCategories(): Observable<{ id: number; name: string }[]> {
-    return this.http.get<{ id: number; name: string }[]>('https://localhost:7187/api/Category');
+    return this.http.get<{ id: number; name: string }[]>(`${this.apiUrl2}`);
   }
 }
