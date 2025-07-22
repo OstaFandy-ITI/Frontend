@@ -111,7 +111,7 @@
     <!-- Sign In -->
     <div class="form-container sign-in-container">
       <form [formGroup]="loginForm" (ngSubmit)="login()">
-        <h1>Sign in to OstaFandy</h1>
+        <h1>Sign in to HandFandy</h1>
         <input type="email" placeholder="Email" formControlName="email" />
         <small class="text-danger" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
           Valid email is required.
